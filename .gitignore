@@ -1,0 +1,7 @@
+*.npz
+*.pt
+*.pth
+*.pkl
+*.npy
+data/
+__pychache__/
