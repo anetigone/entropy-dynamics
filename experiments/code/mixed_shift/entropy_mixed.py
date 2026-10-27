@@ -1,13 +1,17 @@
 """Mixed translation/prior cancellation and prediction ablations. Run directly.
 
-Edit constants here for a separate server run; existing output is never replaced.
+Use command-line arguments for run budgets and output; existing output is never replaced.
 No parameters are fitted to simulated exits. delta changes x0 and the frozen
 risk comparator, not the centered entropy field.
 """
 from pathlib import Path
+import argparse
+import sys
 import json
 import numpy as np
 from scipy.special import ndtr
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'entropy'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'common'))
 from entropy_critical import Geometry, ETA, M, SIGMA, W, simulate_actual
 from entropy_prediction import joint_prediction, observed_cdf, summarize
 
@@ -51,8 +55,10 @@ def ablations(g, rho, n, epsilon, x0):
 
 
 def run(out=OUT, batches=BATCHES, kappas=KAPPAS, offsets=OFFSETS,
-        paths=PATHS, max_steps=MAX_STEPS):
+        paths=PATHS, max_steps=MAX_STEPS, seed=SEED):
     out = Path(out)
+    if paths <= 0 or max_steps <= 0 or not batches or min(batches) <= 0:
+        raise ValueError('Batch sizes, paths and max_steps must be positive')
     if out.exists():
         raise FileExistsError(f'Choose a new output directory: {out}')
     g = Geometry()
@@ -65,7 +71,7 @@ def run(out=OUT, batches=BATCHES, kappas=KAPPAS, offsets=OFFSETS,
                 delta = g.beta/g.lam*rho+offset*g.seed_sd/np.sqrt(n)
                 x0 = -delta
                 predictions = ablations(g, rho, n, EPSILON, x0)
-                rng = np.random.default_rng(np.random.SeedSequence([SEED, ni, ki, oi]))
+                rng = np.random.default_rng(np.random.SeedSequence([seed, ni, ki, oi]))
                 tt, dd = simulate_actual(n, paths, rho, EPSILON, rng, g,
                                          max_steps=max_steps, x0=x0)
                 key = f'case_{len(rows)}'
@@ -91,7 +97,7 @@ def run(out=OUT, batches=BATCHES, kappas=KAPPAS, offsets=OFFSETS,
                         **summarize(tt, dd, grid, left, right))
                 rows.append(row)
                 print(f'n={n}, kappa={kappa}, offset={offset}, censored={sum(tt<0)}', flush=True)
-    result = dict(protocol=dict(seed=SEED, batches=list(batches), kappas=list(kappas),
+    result = dict(protocol=dict(seed=seed, batches=list(batches), kappas=list(kappas),
                   offsets=list(offsets), paths=paths, max_steps=max_steps,
                   epsilon=EPSILON, eta=ETA, m=M, sigma=SIGMA, w=W,
                   calibration='Exact distribution; no use of exit observations',
@@ -104,5 +110,19 @@ def run(out=OUT, batches=BATCHES, kappas=KAPPAS, offsets=OFFSETS,
     return result
 
 
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=OUT)
+    parser.add_argument('--batches', nargs='+', type=int, default=BATCHES)
+    parser.add_argument('--kappas', nargs='+', type=float, default=KAPPAS)
+    parser.add_argument('--offsets', nargs='+', type=float, default=OFFSETS)
+    parser.add_argument('--paths', type=int, default=PATHS)
+    parser.add_argument('--max-steps', type=int, default=MAX_STEPS)
+    parser.add_argument('--seed', type=int, default=SEED)
+    args = parser.parse_args()
+    run(out=args.output, batches=args.batches, kappas=args.kappas, offsets=args.offsets,
+        paths=args.paths, max_steps=args.max_steps, seed=args.seed)
+
+
 if __name__ == '__main__':
-    run()
+    main()

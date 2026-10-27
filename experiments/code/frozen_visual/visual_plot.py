@@ -1,4 +1,6 @@
 """Plot independent calibration predictions and scale/LA probes from saved data."""
+import argparse
+from pathlib import Path
 import json
 import numpy as np
 import matplotlib
@@ -7,15 +9,17 @@ import matplotlib.pyplot as plt
 from entropy_visual import OUT
 
 
-def main():
-    result = json.loads((OUT/'results.json').read_text(encoding='utf-8'))
-    with np.load(OUT/'samples.npz',allow_pickle=False) as saved:
+def main(out=OUT):
+    out = Path(out)
+    result = json.loads((out/'results.json').read_text(encoding='utf-8'))
+    with np.load(out/'samples.npz',allow_pickle=False) as saved:
         arrays = dict(saved)
     # One figure for every preselected pair/prior/batch, not a best-looking subset.
     groups = sorted({(tuple(r['pair']),r['prior'],r['n']) for r in result['cases']})
     for pair, p, n in groups:
         rows = [r for r in result['cases'] if tuple(r['pair'])==pair and r['prior']==p and r['n']==n]
-        fixed = sorted([r for r in rows if r['mode']=='threshold'],key=lambda r:r['offset'])
+        reference_mode = 'threshold' if any(r['mode']=='threshold' for r in rows) else rows[0]['mode']
+        fixed = sorted([r for r in rows if r['mode']==reference_mode],key=lambda r:r['offset'])
         if not fixed:
             continue
         fig, axes = plt.subplots(1,3,figsize=(15,4),constrained_layout=True)
@@ -44,15 +48,18 @@ def main():
                 trace=arrays[center['key']+'_trace']
                 axes[2].plot(trace[:,0],trace[:,1]-center['evaluation']['frozen_risk'],label=mode)
         axes[2].axhline(result['protocol']['epsilon'],color='k',ls=':',label='tolerance')
-        axes[0].set(xlabel='Update',ylabel='First exceedance CDF',ylim=(0,1),title='Solid: SGD; dashed: independent prediction')
+        axes[0].set(xlabel='Update',ylabel='First exceedance CDF',ylim=(0,1),title=f'{reference_mode}: SGD and fixed-slope prediction')
         axes[1].set(xlabel=f"Translation offset ({fixed[0]['offset_units']})",ylabel='Right exit probability bounds',ylim=(0,1))
         axes[2].set(xlabel='Update',ylabel='Mean excess empirical risk',title='Closest offset to cancellation')
         for ax in axes:
             ax.legend(fontsize=7,frameon=False)
         fig.suptitle(f'Classes {pair}, prior={p}, batch={n}')
-        fig.savefig(OUT/f'pair_{pair[0]}_{pair[1]}_p{p:g}_n{n}.png',dpi=180)
+        fig.savefig(out/f'pair_{pair[0]}_{pair[1]}_p{p:g}_n{n}.png',dpi=180)
         plt.close(fig)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', type=Path, default=OUT, help='Saved experiment directory')
+    args = parser.parse_args()
+    main(args.input)

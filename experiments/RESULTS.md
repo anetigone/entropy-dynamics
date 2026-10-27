@@ -2,13 +2,9 @@
 
 这是与原始 pilot 输出一起保留的历史实验分析，以下结论按当次运行范围解读。当前理论完成范围、采用证据与后续安排见根目录 [STATUS.md](../STATUS.md)；运行方式见 [README.md](README.md)。
 
-实际运行，CPU，Python 环境 `H:/anaconda3/envs/py312/python.exe`。未跑 GPU 或图像数据。探索性扫描，不是预注册实验，也不用于宣称新颖性。
+实际运行，CPU，使用项目约定的 Python 环境（见根目录 AGENTS.md）。未跑 GPU 或图像数据。探索性扫描，不是预注册实验，也不用于宣称新颖性。
 
-运行命令（在本项目目录）：
-
-```powershell
-& H:/anaconda3/envs/py312/python.exe experiments/code/entropy/entropy_pilot.py --phase compute
-```
+运行方式见 [理论复现实验 README](code/entropy/README.md)。
 
 固定 m=σ=1，w=2，η=.1，共 2500 更新。δ∈{−.6,−.3,0,.3,.6,1}，π∈{.2,.35,.5,.65,.8}，共 30 格。160 点标准正态 Gauss–Hermite 求总体梯度，风险由 Gaussian CDF 精确计算。8 格满足风险最低值比初始低 .001 以上，且最终超过初始 .005；全部格保存在 `population_grid.csv`，不只保留成功结果。
 

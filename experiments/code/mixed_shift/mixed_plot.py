@@ -1,4 +1,6 @@
 """Plot saved mixed-shift computations in a separate process."""
+import argparse
+from pathlib import Path
 import json
 import numpy as np
 import matplotlib
@@ -7,9 +9,10 @@ import matplotlib.pyplot as plt
 from entropy_mixed import OUT
 
 
-def main():
-    result = json.loads((OUT/'results.json').read_text(encoding='utf-8'))
-    with np.load(OUT/'samples.npz',allow_pickle=False) as saved:
+def main(out=OUT):
+    out = Path(out)
+    result = json.loads((out/'results.json').read_text(encoding='utf-8'))
+    with np.load(out/'samples.npz',allow_pickle=False) as saved:
         arrays = dict(saved)
     fig, axes = plt.subplots(1,3,figsize=(15,4),constrained_layout=True)
     for n in result['protocol']['batches']:
@@ -36,9 +39,12 @@ def main():
                 title=f"n={selected['n']}, kappa={selected['kappa']}, offset={selected['offset']}")
     for ax in axes:
         ax.legend(fontsize=8,frameon=False)
-    fig.savefig(OUT/'mixed_shift.png',dpi=180)
+    fig.savefig(out/'mixed_shift.png',dpi=180)
     plt.close(fig)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', type=Path, default=OUT, help='Saved experiment directory')
+    args = parser.parse_args()
+    main(args.input)

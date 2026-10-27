@@ -11,11 +11,14 @@ used directly, so this does not assume Gaussian visual marginals. Failure to
 find an unstable peak or a safe interval is saved as an applicability failure.
 """
 from pathlib import Path
+import argparse
+import sys
 import json
 import numpy as np
 from scipy.special import expit, ndtr
 from scipy.optimize import brentq
 from scipy.interpolate import PchipInterpolator
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'common'))
 from entropy_prediction import joint_prediction, observed_cdf, summarize
 
 BASE = Path(__file__).resolve().parents[3]/'experiments/results'
@@ -231,8 +234,10 @@ def simulate_visual(target, n, paths, delta, mode, rng, max_steps=MAX_STEPS):
 
 
 def run(cache=CACHE, out=OUT, pairs=PAIRS, batches=BATCHES, priors=PRIORS,
-        offsets=OFFSETS, modes=MODES, paths=PATHS, max_steps=MAX_STEPS):
+        offsets=OFFSETS, modes=MODES, paths=PATHS, max_steps=MAX_STEPS, seed=SEED):
     out = Path(out)
+    if paths <= 0 or max_steps <= 0 or not batches or min(batches) <= 0:
+        raise ValueError('Batch sizes, paths and max_steps must be positive')
     if out.exists():
         raise FileExistsError(f'Choose a new output directory: {out}')
     with np.load(cache, allow_pickle=False) as saved:
@@ -270,7 +275,7 @@ def run(cache=CACHE, out=OUT, pairs=PAIRS, batches=BATCHES, priors=PRIORS,
                         predictions, diagnostic = {}, {'unavailable':str(exc)}
                     for mode in modes:
                         # Common random batches across adaptation modes.
-                        rng = np.random.default_rng(np.random.SeedSequence([SEED,pi,ri,ni,oi]))
+                        rng = np.random.default_rng(np.random.SeedSequence([seed,pi,ri,ni,oi]))
                         sample, summary = simulate_visual(target,n,paths,delta,mode,rng,max_steps)
                         key = f'case_{len(rows)}'
                         for name, values in sample.items():
@@ -294,7 +299,7 @@ def run(cache=CACHE, out=OUT, pairs=PAIRS, batches=BATCHES, priors=PRIORS,
                         print(f'pair={pair}, p={p}, n={n}, offset={offset}, mode={mode}',flush=True)
     protocol = dict(cache=str(cache),pairs=[list(p) for p in pairs],batches=list(batches),
         priors=list(priors),offsets=list(offsets),modes=list(modes),paths=paths,
-        max_steps=max_steps,seed=SEED,eta=ETA,w=W,epsilon=EPSILON,
+        max_steps=max_steps,seed=seed,eta=ETA,w=W,epsilon=EPSILON,
         calibration='Official train labels, source projection and shifted empirical geometry; oracle offline calibration',
         evaluation='Official test weighted empirical risk; fresh iid mixture draws with replacement from that finite pool',
         translation='Input score z+delta, original frozen threshold 0; centered initialization x0=-delta',
@@ -313,5 +318,35 @@ def run(cache=CACHE, out=OUT, pairs=PAIRS, batches=BATCHES, priors=PRIORS,
     return result
 
 
+def class_pair(value):
+    try:
+        a, b = map(int, value.split(':'))
+        if a == b or min(a,b) < 0:
+            raise ValueError
+        return a, b
+    except ValueError:
+        raise argparse.ArgumentTypeError('Use two distinct class IDs, e.g. 3:5') from None
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--features', type=Path, default=CACHE, help='Frozen feature NPZ')
+    parser.add_argument('--output', type=Path, default=OUT)
+    parser.add_argument('--pairs', nargs='+', type=class_pair, default=PAIRS)
+    parser.add_argument('--batches', nargs='+', type=int, default=BATCHES)
+    parser.add_argument('--priors', nargs='+', type=float, default=PRIORS)
+    parser.add_argument('--offsets', nargs='+', type=float, default=OFFSETS)
+    parser.add_argument('--modes', nargs='+', default=MODES, choices=[
+        'threshold', 'joint_scale', 'la_threshold', 'la_joint_scale',
+        'oracle_la_threshold', 'oracle_la_joint_scale'])
+    parser.add_argument('--paths', type=int, default=PATHS)
+    parser.add_argument('--max-steps', type=int, default=MAX_STEPS)
+    parser.add_argument('--seed', type=int, default=SEED)
+    args = parser.parse_args()
+    run(cache=args.features, out=args.output, pairs=args.pairs, batches=args.batches,
+        priors=args.priors, offsets=args.offsets, modes=args.modes, paths=args.paths,
+        max_steps=args.max_steps, seed=args.seed)
+
+
 if __name__ == '__main__':
-    run()
+    main()
