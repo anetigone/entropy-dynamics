@@ -4,7 +4,11 @@
 
 ## 当前判断
 
-已将两轮外部推导接入 [论文初稿](paper/DRAFT.md)：分布结构决定熵阈值稳定性，随后分析确定性安全时长、正漂移区间首次退出，以及临界区真实 fresh-batch SGD 的方向和越界时间分布。模型内已有带证明的陈述；已补齐几何与安全时长复现包，并把实验代码按用途统一到 experiments/code/entropy/；计算、修正和绘图由同一入口的 phase 参数选择，分进程运行。未进行独立完整复证、完整模拟重跑或新的文献检索。新颖性、视觉有效性和可执行无标签停止仍未完成。
+已将两轮外部推导接入 [论文初稿](paper/DRAFT.md)：分布结构决定熵阈值稳定性，随后分析确定性安全时长、正漂移区间首次退出，以及临界区真实 fresh-batch SGD 的方向和越界时间分布。模型内已有带证明的陈述；已补齐几何与安全时长复现包，计算与绘图分进程运行。未进行独立完整复证、完整模拟重跑或新的文献检索。新颖性、视觉有效性和可执行无标签停止仍未完成。
+
+按本轮评审意见，优先验证混合偏移抵消和冻结视觉特征上的独立时间预测，暂不把停止证书作为主方法贡献。已补齐相应计算、预测消融、特征提取和绘图代码，运行约定见 [实验 README](experiments/README.md)。视觉设置采用预先指定的 CIFAR-10 类别对、冻结 ResNet-18 表征和官方 train/test；官方 train 负责源锚和受控偏移下的有标签离线校准，官方 test 负责目标经验分布上的采样及风险评估，不使用退出曲线反向拟合。包含阈值/尺度联合更新、估计先验 LA 和单列的 oracle LA 压力检查。该设置仍是机制验证，不代表真实无标签归一化适应；完整视觉和混合偏移实验尚未运行，不能视为已有视觉证据。
+
+本轮小规模合成验证：局部线性预测在 κ=2、n=32/128/512 的中位数为 165/224/294，完整共轭为 167/225/294，复现评审中的计算。每点 24 条短合成轨迹显示抵消点两侧方向翻转、抵消附近退出延长，仅检查机制与代码；另通过经验几何、LA 梯度有限差分、含删失 CDF、微型合成特征流程和绘图检查。没有下载真实数据、提取真实视觉特征或运行完整实验；这些检查输出保存在临时目录，未改写历史结果。
 
 论文文档已改为自包含：初稿纳入完整模型、主要证明、实验设置与必要数值，相关工作独立定义比较问题和文献边界；两份正文不再依赖其它仓库文件。文件之间的关系集中在 paper/README.md。此次仅改写文档，没有新增理论结果、文献检索或实验运行。
 
@@ -30,19 +34,19 @@
 ## 采用的实验与数值证据
 
 - [基础 pilot 分析](experiments/RESULTS.md)、[汇总](experiments/pilot_summary.json)、[全网格](experiments/population_grid.csv)、[轨迹](experiments/pilot_paths.npz)、[图](experiments/pilot.png)：30 格探索扫描，8 格出现指定反弹；展示例 δ=0、p=.35 的最低风险在第 47 步，T0.005=94。保留其历史结果含义。
-- [临界 SGD 分析](critical_sgd_reproducibility/critical_sgd/analysis.md)、[完整汇总](critical_sgd_reproducibility/critical_sgd/critical_results.json)、[轨迹](critical_sgd_reproducibility/critical_sgd/critical_samples.npz)、[图](critical_sgd_reproducibility/critical_sgd/critical_checks.png)：固定容忍度九组各 600 路径；微小容忍度三组各 2000 路径，AR 参考 150000 路径；一步检查各 12000 batch。保留平衡预测失准、修正后仍超单组 DKW 带的组及宽区间无明显收益的检查。
-- [几何诊断结果](critical_sgd_reproducibility/critical_sgd/geometry_audit.json)：现有浮点诊断，不是区间认证或训练/汇总门槛。
-- [几何与安全时长分析](theory_progress_reproducibility/analysis.md)、[汇总](theory_progress_reproducibility/results.json)、[2000 条越界时间](theory_progress_reproducibility/sgd_crossing_times.npz)、[图](theory_progress_reproducibility/theory_checks.png)：原缺失附件现已补齐。非零 δ 的 T0.005 为 67 和 124；n=64 的越界时间范围 80–112、中位数 94，与保存轨迹和汇总一致。漂移包围和 .99763428 的下界仍按原报告的浮点精度范围解释，模拟不代替证明。
+- [临界 SGD 分析](experiments/results/critical/analysis.md)、[完整汇总](experiments/results/critical/critical_results.json)、[轨迹](experiments/results/critical/critical_samples.npz)、[图](experiments/results/critical/critical_checks.png)：固定容忍度九组各 600 路径；微小容忍度三组各 2000 路径，AR 参考 150000 路径；一步检查各 12000 batch。保留平衡预测失准、修正后仍超单组 DKW 带的组及宽区间无明显收益的检查。
+- [几何诊断结果](experiments/results/critical/geometry_audit.json)：现有浮点诊断，不是区间认证或训练/汇总门槛。
+- [几何与安全时长分析](experiments/results/geometry/analysis.md)、[汇总](experiments/results/geometry/results.json)、[2000 条越界时间](experiments/results/geometry/sgd_crossing_times.npz)、[图](experiments/results/geometry/theory_checks.png)：原缺失附件现已补齐。非零 δ 的 T0.005 为 67 和 124；n=64 的越界时间范围 80–112、中位数 94，与保存轨迹和汇总一致。漂移包围和 .99763428 的下界仍按原报告的浮点精度范围解释，模拟不代替证明。
 
-代码统一放在 [experiments/code/entropy/](experiments/code/entropy/)，入口与命令见 [实验 README](experiments/README.md)。旧复现包目录只保留历史结果、图、日志和分析，结果内容与位置保持不变；新的实验参数应显式使用独立 --output 目录。导入的重复理论副本及历史检索记录放在 [archive](paper/notes/archive/)。
+代码入口与运行约定见 [实验 README](experiments/README.md)。新参数使用独立输出目录，不覆盖历史结果。导入的重复理论副本及历史检索记录放在 [archive](paper/notes/archive/)。
 
 本次验证：四个入口的内存语法检查与 CLI help、迁移后的直接 import、历史默认路径、100 步 population 轨迹及两组各 8 条 fresh-batch 合成 smoke 均通过；三个 plot 入口和可选数值检查在独立进程中读取临时结果副本并通过，生成图片可解码。文档本地链接已检查。未重新运行完整实验，未覆盖历史结果。
 
 ## 下一步安排
 
-1. 逐式复核整合后的证明，优先看共轭 C² 延拓、停止噪声尾部、精确退出事件和格点子序列；若要报告可用有限 n 覆盖率，再处理分布误差常数。第一轮数值漂移包围若作为严格计算机辅助证明使用，需要相应数值认证；这不是普通实验运行要求。
-2. 按 [相关工作](paper/RELATED_WORK.md)，以 WACV 全部结论正确为前提比较新增结果，继续对照 PeTTA、CED、GALA/STAG、风险监测与经典随机退出。WACV 补充证明审查不再作为任务；其它文献的历史阅读范围未变。经典对数逃逸、高斯种子、卷积保对数凹不计为新发现。
-3. 在已知锚的模型中研究可识别的逐步拒绝/停止证据，纳入参数不确定性和锚误差；比较一次校准与直接 plug-in Bayes 阈值。条件 supremum 证书仍只是通用基线。
-4. 再开展冻结视觉表征验证，分别操纵先验与位置偏移；使用官方数据划分，标签只作评估，正式训练仅在服务器运行。本机仅小规模合成验证与结果分析。
+1. 在服务器运行混合偏移抵消实验，报告方向概率、左右联合退出 CDF 和未越界比例；比较真实参数局部线性与共轭预测，并分别消融峰值、曲率、噪声和风险端点。精度来源必须按结果陈述，不能预设共轭是主要数值收益。
+2. 在服务器准备本地数据与预训练权重，开展冻结视觉特征的独立校准预测；报告所有预选类别对及经验几何失效条件、风险分辨率和评估误差。校准标签与受控先验采样明确标为 oracle 实验条件，目标轨迹标签仅用于离线风险评价。新代码不新增数据划分、不自动下载。
+3. 比较放开尺度、预测计数与 EMA 估计先验的 LA、以及单列的 oracle LA 后机制的保留/失效条件。LA 只调整熵目标，风险使用原始 logits。现有联合尺度实验仍是单投影模型，不能替代实际归一化参数适应；根据前两项结果再决定是否扩展到真实 BN 更新或加强理论范围。
+4. 按 [相关工作](paper/RELATED_WORK.md)，以 WACV 全部结论正确为前提具体比较 PeTTA、风险监测与经典随机退出，并重写贡献定位。经典对数逃逸、高斯种子、卷积保对数凹不计为新发现。停止证书暂作讨论；逐式复证和误差常数问题保留，但不代替视觉有效性验证。
 
 若结果最终只剩已知不稳定点机制加通用拒绝规则，或视觉表征不支持预测的相区差异，应重新判断论文主线。

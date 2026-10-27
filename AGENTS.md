@@ -11,7 +11,7 @@
 
 ## 当前状态与文档
 
-- 仓库根目录 `STATUS.md` 是当前研究状态、已完成工作和下一步安排的唯一入口。研究阶段完成或研究计划改变时更新它；仅整理代码路径和运行方式时只更新 AGENTS.md，不扩散到其它文档。不另建 CURRENT、PROGRESS、NEXT_EXPERIMENTS、收尾报告等同用途文件。
+- 仓库根目录 `STATUS.md` 是当前研究状态、已完成工作和下一步安排的唯一入口。研究阶段完成或研究计划改变时更新它；代码路径、用途和运行方式集中在 `experiments/README.md`；仅整理运行说明时更新该 README，AGENTS.md 只保留工作约定。不另建 CURRENT、PROGRESS、NEXT_EXPERIMENTS、收尾报告等同用途文件。
 - 各级 `README.md` 只负责导航、用途和运行方式；当前结果与待办链接到 `STATUS.md`，不要复制多份会过时的状态摘要。
 - `paper/notes/` 保留当前理论核验、文献对照及仍由代码直接引用的记录；其它历史推导、审阅及临时工作记录放 `paper/notes/archive/`。讨论不默认生成新的日期笔记。
 - 参考文献 PDF 统一保存在 `paper/references/`，不留在仓库根目录；文件使用简短清楚的 snake_case，不另建文献文件登记表。
@@ -32,15 +32,4 @@
 - 已有历史阶段结果保留原位置，文档中标为历史即可；新产生且明确不再使用的开发结果可归入 `experiments/results/archive/`。不要为整理目录而复制整套结果、删除历史证据或重新运行实验。
 - 移动结果套件时保留 `seed_*`、checkpoint、evaluation 和协议等内部结构；JSON 中原服务器来源路径属于运行记录，不批量改写成本机新路径。
 - 未另行要求时，工作区整理限于本地文档。服务器已有源码、结果与 checkpoint 无需跟着移动；正式训练只在服务器运行，本机只做小规模合成验证和结果分析。
-- 移动或重命名后同步修复运行代码、import、默认路径和论文构图脚本；代码路径仅在 AGENTS.md 中记录，不向其它文档同步入口或命令。只运行必要的语法、合成 smoke 和已有结果汇总检查，不新增迁移清单、哈希或审计系统。
-
-## 本仓库适用说明
-
-代码目录为 experiments/code/entropy/。直接运行相应文件，不带阶段参数，也不需要统一入口。实验参数与输出路径在代码中直接修改；不同参数使用独立目录，避免覆盖已有结果。
-
-- entropy_pilot.py：基础扫描与合成轨迹计算；pilot_plot.py：读取保存结果绘图。
-- entropy_geometry.py：几何、安全时长和正漂移 SGD 计算；geometry_plot.py：读取保存结果绘图。
-- entropy_critical.py：临界 SGD 计算及有限参数修正；critical_plot.py：读取保存结果绘图。
-- entropy_check.py：独立数值检查。
-
-结果位置：pilot 在 experiments/，几何结果在 experiments/results/geometry/，临界 SGD 在 experiments/results/critical/。两套外部包的结果与分析已完整归并，原包目录已删除。绘图和检查代码复用对应计算代码中的路径。代码路径和运行约定仅记在本文件，不更新其它文档。上述说明用于直接定位代码，不另建登记文件或维护登记门槛。
+- 移动或重命名后同步修复运行代码、import、默认路径和论文构图脚本；代码路径和运行方式集中在 `experiments/README.md`，其它文档只链接该入口，不复制命令。只运行必要的语法、合成 smoke 和已有结果汇总检查，不新增迁移清单、哈希或审计系统。

@@ -150,12 +150,12 @@ def refine_saved_results():
     (ROOT/'critical_results.json').write_text(json.dumps(results,indent=2),encoding='utf-8')
 
 
-def simulate_actual(n,paths,rho,epsilon,rng,geometry,max_steps=2500,scaled_endpoints=None):
+def simulate_actual(n,paths,rho,epsilon,rng,geometry,max_steps=2500,scaled_endpoints=None,x0=0.):
     if scaled_endpoints is None:
-        lo,hi=geometry.endpoints(rho,epsilon)
+        lo,hi=geometry.endpoints(rho,epsilon,x0)
     else:
         lo,hi=np.array(scaled_endpoints)/np.sqrt(n)
-    x=np.zeros(paths)
+    x=np.full(paths,x0,dtype=float)
     times=np.full(paths,-1,dtype=np.int32)
     directions=np.zeros(paths,dtype=np.int8)
     for t in range(1,max_steps+1):
