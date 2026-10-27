@@ -5,3 +5,6 @@
 *.npy
 data/
 __pychache__/
+*.png
+*.pdf
+*.svg

@@ -1,0 +1,46 @@
+{
+  "constant_comparison": {
+    "beta": 2.1371793224034263e-15,
+    "lambda": 2.7200464103316335e-15,
+    "variance": 7.216449660063518e-16
+  },
+  "peak_comparison": [
+    {
+      "rho": 0.0,
+      "quad_peak": 0.0,
+      "hermite_peak": 0.0,
+      "difference": 0.0
+    },
+    {
+      "rho": 0.02,
+      "quad_peak": -0.044385422074835326,
+      "hermite_peak": -0.04438542207483727,
+      "difference": 1.942890293094024e-15
+    },
+    {
+      "rho": 0.04,
+      "quad_peak": -0.08841204172266356,
+      "hermite_peak": -0.08841204172266752,
+      "difference": 3.95516952522712e-15
+    }
+  ],
+  "max_entropy_gradient_error": 5.651007439766431e-12,
+  "micro_boundary_checks": [
+    {
+      "n": 32,
+      "scaled_risk_error": 2.742684551693131e-14
+    },
+    {
+      "n": 128,
+      "scaled_risk_error": 4.5475775922732e-15
+    },
+    {
+      "n": 512,
+      "scaled_risk_error": 1.8758432307475204e-14
+    }
+  ],
+  "max_cutoff_comparison": 3.708255924550485e-12,
+  "max_conjugacy_residual": 5.551115123125783e-17,
+  "all_nine_finite_parameter_cdfs_valid": true,
+  "interpretation": "Floating-point diagnostic only; not interval-certified error bounds or validation of novelty."
+}

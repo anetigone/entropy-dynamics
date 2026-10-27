@@ -3,11 +3,8 @@ from pathlib import Path
 import json, csv
 import numpy as np
 from scipy.special import expit, ndtr, roots_hermitenorm
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
-OUT = Path(__file__).resolve().parent
+OUT = Path(__file__).resolve().parents[3] / "experiments"
 X, Q = roots_hermitenorm(160)
 Q /= np.sqrt(2*np.pi)
 M, SIGMA, W, ETA, T = 1., 1., 2., .1, 2500
@@ -67,12 +64,9 @@ def main():
     with (OUT/'population_grid.csv').open('w',newline='') as f:
         wr=csv.DictWriter(f,fieldnames=rows[0].keys());wr.writeheader();wr.writerows(rows)
     np.savez_compressed(OUT/'pilot_paths.npz',b=b,risk=r,entropy=entropy,b_sgd=paths,risk_sgd=rr)
-    fig,ax=plt.subplots(1,3,figsize=(12,3.4))
-    ax[0].plot(b);ax[0].set(title='Threshold trajectory',xlabel='Update',ylabel='b')
-    ax[1].plot(rr.T,color='gray',alpha=.12);ax[1].plot(r,color='navy',label='Population');ax[1].axhline(r[0],color='red',ls='--',label='Source risk');ax[1].legend();ax[1].set(title='Fresh-sample classification risk',xlabel='Update')
-    ax[2].plot(entropy);ax[2].set(title='Population prediction entropy',xlabel='Update')
-    fig.suptitle(f'Gaussian pilot: delta={delta}, pi={pi}, m=sigma=1, w=2, eta=.1')
-    fig.tight_layout();fig.savefig(OUT/'pilot.png',dpi=170);plt.close(fig)
     print(json.dumps(report,indent=2))
 
-if __name__=='__main__': main()
+
+if __name__ == '__main__':
+    OUT.mkdir(parents=True, exist_ok=True)
+    main()

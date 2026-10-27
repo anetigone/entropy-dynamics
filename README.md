@@ -1,14 +1,21 @@
 # 熵适应的安全时域与风险回升
 
-2026-10-24，从 `literature_scout/round2-2026-10-18/B-notes.md` 的 B1 独立展开。A 已在 frequency_dynamics 推进，此处不修改 A 项目。
+研究固定表征、固定斜率的二分类阈值模型中，混合位置与先验偏移下的熵更新、风险反弹和首次越界时间。
 
-**当前判断：值得做下一轮理论核验，尚未确认新颖性，也不是完成论文。** 实际熵阈值更新确有先改善后恶化的数值特例；发现这个现象本身不构成贡献。拟争取的结果是从混合偏移参数推出漂移相图、有限步风险越界时间及可执行停止的条件，而不是重新提出熵坍塌或无标签早停。
+- [当前研究状态、证据与下一步](STATUS.md)：唯一状态入口。
+- [工作纪律](AGENTS.md)。
+- [论文初稿](paper/DRAFT.md)：统一模型、理论主线与证明索引。
+- [分布几何与确定性安全时长](paper/notes/entropy_geometry.md)：详细证明。
+- [临界 SGD 与容忍度标度](paper/notes/critical_sgd.md)：详细证明。
+- [相关工作](paper/RELATED_WORK.md)：文献对照与新颖性边界。
+- [实验代码与统一运行方式](experiments/README.md)。
+- [几何历史结果](theory_progress_reproducibility/README.md) 与 [临界 SGD 历史结果](critical_sgd_reproducibility/critical_sgd/README.md)：原始输出及分析导航。
+- [历史记录](paper/notes/archive/)：导入的前序笔记副本与历史检索记录。
 
-- [论文初稿](paper/DRAFT.md)：英文摘要、引言、模型、已推导命题及证明、待证主结果、实验与限制。
-- [相关工作与查重](paper/RELATED_WORK.md)：决定性近邻、版本纠正和剩余阻断。
-- [初步实验](experiments/RESULTS.md)：实际 CPU 数值结果和可复现命令。
-- [检索记录](research/SEARCH_NOTES.md)：API 状态、检索范围和阅读深度；原始结构元数据见 `research/search_log.json`。
+从仓库根目录运行基础合成实验：
 
-![Gaussian pilot](experiments/pilot.png)
+```powershell
+& H:/anaconda3/envs/py312/python.exe experiments/code/entropy/entropy_pilot.py --phase compute
+```
 
-下一步优先证明漂移的零点和符号区，特别是“稳定低密度边界”与“越过风险最优点后逃逸”的区分；随后才做更紧的有限批量越界界与冻结视觉表征实验。若最后只剩一维积分和通用置信集合拒绝更新，不足以支撑论文。
+其他复现命令见对应实验 README。脚本可能覆盖各自已有输出；仅做文档整理时无需重新运行。

@@ -1,5 +1,7 @@
 # 检索与来源记录
 
+历史检索快照；下文的“本次”均指 2026-10-24 的原始检索，不代表当前完成状态。当前状态见 [STATUS.md](../../../STATUS.md)，文献对照见 [RELATED_WORK.md](../../RELATED_WORK.md)。缓存文本、检索脚本与 JSON 仍在仓库根目录下的 `research/` 中。
+
 日期：2026-10-24（Asia/Shanghai）。范围：由 B1 的决定性近邻出发，标题检索、熵动态、早停与风险边界横向检索；不是整个 TTA 领域的系统综述。A-notes 与 frequency_dynamics/README 仅浏览，未修改。
 
 ## API

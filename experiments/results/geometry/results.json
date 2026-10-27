@@ -1,0 +1,198 @@
+{
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0"
+  },
+  "beta": 0.18351118160211827,
+  "lambda_": 0.08257714600243793,
+  "log_slope": 121.59819596128077,
+  "zero_continuous_index": 78.04626183888725,
+  "pilot": [
+    {
+      "delta": 0.0,
+      "initial_risk": 0.15865525393145707,
+      "min_risk": 0.1475976064437227,
+      "min_step": 47,
+      "T_epsilon": 94,
+      "entropy_initial": 0.35631636021311397,
+      "entropy_final": 0.0018509893973688287,
+      "max_entropy_increment": -9.478652924891934e-07
+    },
+    {
+      "delta": -0.1,
+      "initial_risk": 0.15260398348651455,
+      "min_risk": 0.147597604097726,
+      "min_step": 30,
+      "T_epsilon": 67,
+      "entropy_initial": 0.35041027960257487,
+      "entropy_final": 0.0018349941819761602,
+      "max_entropy_increment": -9.322538333650637e-07
+    },
+    {
+      "delta": 0.1,
+      "initial_risk": 0.1671222028066276,
+      "min_risk": 0.14759777847177993,
+      "min_step": 67,
+      "T_epsilon": 124,
+      "entropy_initial": 0.36139655957437433,
+      "entropy_final": 0.0018699479048287387,
+      "max_entropy_increment": -9.665254666216348e-07
+    }
+  ],
+  "log_law": [
+    {
+      "rho": 0.3,
+      "T_fixed_epsilon": 94,
+      "T_zero": 86,
+      "centered_fixed_time": -52.40092099247792
+    },
+    {
+      "rho": 0.1,
+      "T_fixed_epsilon": 112,
+      "T_zero": 79,
+      "centered_fixed_time": -167.9901933554139
+    },
+    {
+      "rho": 0.03,
+      "T_fixed_epsilon": 185,
+      "T_zero": 79,
+      "centered_fixed_time": -241.3911143478918
+    },
+    {
+      "rho": 0.01,
+      "T_fixed_epsilon": 288,
+      "T_zero": 79,
+      "centered_fixed_time": -271.9803867108278
+    },
+    {
+      "rho": 0.003,
+      "T_fixed_epsilon": 422,
+      "T_zero": 79,
+      "centered_fixed_time": -284.38130770330565
+    },
+    {
+      "rho": 0.001,
+      "T_fixed_epsilon": 552,
+      "T_zero": 79,
+      "centered_fixed_time": -287.9705800662416
+    },
+    {
+      "rho": 0.0003,
+      "T_fixed_epsilon": 697,
+      "T_zero": 79,
+      "centered_fixed_time": -289.37150105871945
+    },
+    {
+      "rho": 0.0001,
+      "T_fixed_epsilon": 830,
+      "T_zero": 79,
+      "centered_fixed_time": -289.96077342165563
+    },
+    {
+      "rho": 3e-05,
+      "T_fixed_epsilon": 976,
+      "T_zero": 79,
+      "centered_fixed_time": -290.36169441413335
+    },
+    {
+      "rho": 1e-05,
+      "T_fixed_epsilon": 1110,
+      "T_zero": 79,
+      "centered_fixed_time": -289.9509667770694
+    },
+    {
+      "rho": 3e-06,
+      "T_fixed_epsilon": 1256,
+      "T_zero": 79,
+      "centered_fixed_time": -290.35188776954715
+    },
+    {
+      "rho": 1e-06,
+      "T_fixed_epsilon": 1390,
+      "T_zero": 79,
+      "centered_fixed_time": -289.9411601324832
+    }
+  ],
+  "stable_examples": [
+    {
+      "m": 2.0,
+      "sigma": 1.0,
+      "w": 5.0,
+      "prior": 0.5,
+      "delta": 0.2,
+      "eta": 0.02,
+      "initial_risk": 0.024916883313212193,
+      "final_risk": 0.022750131949139087,
+      "max_risk_excess": 0.0,
+      "final_centered_threshold": -4.216478604052316e-06,
+      "symmetric_entropy_curvature": 0.08970206698073709,
+      "sufficient_wsigma_squared": 17.016314138577155,
+      "actual_wsigma_squared": 25.0
+    },
+    {
+      "m": 2.0,
+      "sigma": 1.0,
+      "w": 5.0,
+      "prior": 0.49,
+      "delta": 0.2,
+      "eta": 0.02,
+      "initial_risk": 0.025137152029206463,
+      "final_risk": 0.022747124747074084,
+      "max_risk_excess": 0.0,
+      "final_centered_threshold": 0.01665894784468243,
+      "symmetric_entropy_curvature": 0.08970206698073709,
+      "sufficient_wsigma_squared": 17.016314138577155,
+      "actual_wsigma_squared": 25.0
+    }
+  ],
+  "drift_enclosure": {
+    "interval": [
+      -0.063,
+      0.714
+    ],
+    "raw_min": 0.04970517671005542,
+    "raw_max": 0.09726291302125781,
+    "quadrature_error": 7.82538419506734e-06,
+    "tail_error": 6.22096057427174e-16,
+    "interpolation_error": 0.00048562499999999995,
+    "numerical_rounding_guard": 1e-08,
+    "lower": 0.04921171632585973,
+    "upper": 0.0977563734054535,
+    "status": "analytic discretization error; no formal floating-point certification"
+  },
+  "stochastic": {
+    "paths": 2000,
+    "batch": 64,
+    "seed": 20261024,
+    "left_root": -0.062394602647110255,
+    "right_root": 0.7130542051864688,
+    "observed_min": 80,
+    "observed_max": 112,
+    "percentiles": {
+      "2.5": 85.0,
+      "25": 90.0,
+      "50": 94.0,
+      "75": 97.0,
+      "97.5": 104.0
+    },
+    "observed_left_exits": 0,
+    "observed_outside_bound": 0,
+    "proposed_interval": [
+      50,
+      210
+    ],
+    "failure_terms": {
+      "left": 1.7568732225347303e-07,
+      "early": 2.959104112903817e-06,
+      "late": 0.0023625824493726036
+    },
+    "computed_coverage_lower_bound": 0.9976342827591923,
+    "numerical_caveat": "coverage instantiation uses the separately checked drift constants"
+  },
+  "checks": {
+    "pilot_matches": true,
+    "small_imbalance_zero_crossing_is_79": true,
+    "safe_examples_no_risk_increase": true
+  }
+}
