@@ -105,6 +105,21 @@ python experiments/code/frozen_visual/calibration_plot.py --input experiments/re
 
 ## 扩展理论对应的验证
 
+### 长尾噪声消融
+
+[tail_noise.py](tail_noise.py) 用固定目标经验场对照四种过程：`real_sgd` 为原始SGD；`frozen_root` 保留真实平均漂移、全程注入根处的中心化batch噪声；`near_noise` 只在距目标峰不超过 `--radius` 的位置保留状态依赖噪声；`far_noise` 只在其它位置保留。后三者是噪声修改后的机制诊断，不是原SGD或新TTA方法。每个设置在四模式间共享随机batch；保存分量与风险退出、跳跃、确定性轨迹及一阶沿程方差诊断。
+
+均值漂移采用8193点PCHIP插值，根显式入网格；记录全部中点的最大漂移误差。真实SGD直接使用样本梯度，不依赖漂移插值。输入、输出、设置选择、预算均可通过参数指定。先验证offset=-2的单侧主导设置，用两个半径检验分区敏感性；不把多分支设置的一阶时间标准差解释成完整分布保证。
+
+```shell
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.5 --workers 3 --output experiments/results/tail_noise
+python experiments/code/frozen_visual/noise_plot.py --input experiments/results/tail_noise
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.25 --workers 3 --output experiments/results/tail_inner
+python experiments/code/frozen_visual/noise_plot.py --input experiments/results/tail_inner
+```
+
+中断后原计算命令加 `--resume`。保存单元为一个设置的全部四种模式；未保存设置会重算。参数与输入路径保持不变，workers允许调整。每个设置的NPZ先写临时文件，JSON最后原子写入，作为完成标记；最终汇总为results.json。若实际漂移插值误差或分区敏感性较大，应在新输出目录调整 `--grid-points` 复核，再解释噪声消融。几何不适用或数值错误会直接报错，已完成设置仍可续跑。绘图独立生成noise_ablation.png。
+
 校准支持 `--workers` 多进程（默认1），每个任务是一个类别对、先验和校准重复，内部预算保持嵌套前缀。网格漂移和共轭逆迭代已批量计算；节点数、网格密度、截止半径及实验预算不变。建议先用4个worker；Linux运行前可设 `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1`，避免每个进程再启动大量数值库线程，按CPU与内存情况调整worker数，不承诺线性加速。
 
 每个重复完成后保存到输出目录的 `repeats/`；JSON最后以原子替换写入，表示该重复已经完整保存。中断后用同一命令、同一输出目录加 `--resume`，仅重算尚未保存的重复，worker数可改变。续跑直接比较输入路径与实验参数，不计算文件哈希；不要在原路径替换输入内容。未保存的正在计算的重复需要重算。Ctrl+C会取消尚未启动的任务并等待正在运行的worker结束；必要时终止进程后，已写出的重复仍可复用。全部重复保存后按固定顺序汇总，进程调度及续跑不改变校准编号与汇总顺序。旧版本只在结尾写结果，没有这些重复文件，不能恢复其打印过的进度。
