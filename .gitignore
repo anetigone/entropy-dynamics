@@ -4,7 +4,10 @@
 *.pkl
 *.npy
 data/
+models/
+results/
 __pycache__/
 *.png
 *.pdf
 *.svg
+/experiments/pilot_summary.json
