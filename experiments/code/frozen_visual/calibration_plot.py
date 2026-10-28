@@ -64,6 +64,36 @@ def main(folder=OUT):
     fig.suptitle('Independent calibration; oracle_risk still uses target-label endpoints')
     fig.savefig(folder/'calibration.png',dpi=160)
     plt.close(fig)
+    # Each point summarizes forecasts over calibration draws for one saved case.
+    # These repeats are not additional independent SGD paths.
+    groups = []
+    for row in cases:
+        for budget in budgets:
+            fits = [f for f in result['fits'] if f['case']==row['key'] and f['budget']==budget
+                    and 'theoretical_ratio' in f]
+            if fits:
+                groups.append((row, budget, fits))
+    if groups:
+        fig, ax = plt.subplots(1, 2, figsize=(11, 4), constrained_layout=True)
+        for row, budget, fits in groups:
+            ratio = fits[0]['theoretical_ratio']
+            for name, color in [('source_risk', '#b45d32'), ('oracle_risk', '#4775a4')]:
+                errors = [f['predictions'][name]['cdf_error'] for f in fits if name in f['predictions']]
+                if errors:
+                    ax[0].scatter(ratio, np.mean(errors), c=color, s=14, alpha=.6)
+            # Compare the local root diagnostic with its matching local target
+            # reference. The arctan law only applies at target-critical centering.
+            error = np.mean([abs(f['local_direction']-f['target_local_direction']) for f in fits])
+            ax[1].scatter(ratio, error, s=14, alpha=.6)
+        xx = np.geomspace(.01, 100, 200)
+        ax[1].plot(xx, np.arctan(xx)/np.pi, 'k--', label='Critical-centered limit only')
+        ax[0].set(xscale='log', xlabel='Theoretical calibration / SGD scale', ylabel='Mean CDF error',
+                  title='Orange: training endpoints; blue: oracle endpoints')
+        ax[1].set(xscale='log', xlabel='Theoretical calibration / SGD scale', ylabel='Local direction probability MAE',
+                  title='All initializations; curve is not a fit')
+        ax[1].legend(fontsize=8)
+        fig.savefig(folder/'calibration_scale.png', dpi=160)
+        plt.close(fig)
 
 
 if __name__ == '__main__':

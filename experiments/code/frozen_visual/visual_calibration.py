@@ -59,7 +59,7 @@ def run(features=CACHE, results=RESULTS/'results.json', samples=RESULTS/'samples
     if original['protocol']['eta'] != ETA or original['protocol']['w'] != W:
         raise ValueError('Saved update parameters must match the field calculation')
     selected = [r for r in original['cases'] if r['prior'] in priors and r['n'] in batches
-                and r['offset'] in offsets and (pairs is None or r['pair'] in pairs)]
+                and r['offset'] in offsets and (pairs is None or tuple(r['pair']) in {tuple(p) for p in pairs})]
     if not selected:
         raise ValueError('No saved cases match the requested parameters')
     with np.load(features,allow_pickle=False) as saved:
@@ -119,6 +119,9 @@ def run(features=CACHE, results=RESULTS/'results.json', samples=RESULTS/'samples
                         n,x0,key = row['n'],-row['delta'],row['key']
                         old = next(r for r in oracle['cases'] if r['key']==key)
                         fit = dict(calibration=cal_key,case=key,budget=budget,repeat=repeat,
+                                   theoretical_ratio=float(np.sqrt(n/budget*(2+ETA*true['lambda_'])/(ETA*true['lambda_']))),
+                                   target_standardized_initialization=float(np.sqrt(n)*(x0-true['q'])/true['seed_sd']),
+                                   target_local_direction=float(ndtr(np.sqrt(n)*(x0-true['q'])/true['seed_sd'])),
                                    root_noise_ratio=float(np.sqrt(n)*se_q/cg['seed_sd']),
                                    root_standardized_error=float(np.sqrt(n)*(cg['q']-true['q'])/true['seed_sd']),
                                    local_direction=float(ndtr(np.sqrt(n)*(x0-cg['q'])/cg['seed_sd'])),
@@ -159,18 +162,22 @@ def run(features=CACHE, results=RESULTS/'results.json', samples=RESULTS/'samples
                             avg_key = f'{key}_m{budget}_{name}'
                             if avg_key not in averages:
                                 averages[avg_key] = dict(key=avg_key,case=key,budget=budget,model=name,
-                                    count=0,cdf_errors=[],joint_errors=[],direction_errors=[],
+                                    count=0,cdf_errors=[],joint_errors=[],direction_errors=[],forecasts=[],
                                     left=np.zeros_like(left),right=np.zeros_like(right))
                             avg = averages[avg_key]
                             avg['count'] += 1
                             avg['cdf_errors'].append(score['cdf_error'])
                             avg['joint_errors'].append(score['joint_cdf_error'])
                             avg['direction_errors'].append(score['direction_bound_distance'])
+                            avg['forecasts'].append(score['eventual_right'])
                             avg['left'] += left
                             avg['right'] += right
             print(f'calibrated pair={pair}, prior={prior}, repeats={repeats}, budgets={budgets}',flush=True)
     aggregate = []
     for avg in averages.values():
+        forecasts = avg.pop('forecasts')
+        avg['direction_forecast_quantiles'] = np.quantile(forecasts,[.1,.5,.9]).tolist()
+        avg['direction_forecast_std'] = float(np.std(forecasts))
         for direction in ['left','right']:
             curves[avg['key']+'_'+direction] = avg.pop(direction)/avg['count']
         avg.update(availability=avg['count']/repeats,

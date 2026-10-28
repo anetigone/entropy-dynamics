@@ -102,3 +102,29 @@ python experiments/code/frozen_visual/calibration_plot.py --input experiments/re
 单个校准重复的 CDF 误差分别评分，再汇总平均；`curves.npz` 另保存有效重复的平均预测曲线。失败校准及每组有效重复比例也保存在 JSON 中，不将只在有效重复上计算的平均误差解释为全部重复的成功率。相同 SGD 路径被重复用于评分，因此不能将校准重复当作新增的独立 SGD 测试轨迹。
 
 根标准误及 Wald 区间为一阶渐近诊断，方向区间仅传播根误差，不是完整风险或退出时间置信保证。已有初始化不依赖这批校准，因此代码不将校准方差加进实际 SGD 种子方差。数值几何计算由 [field_geometry.py](field_geometry.py) 复用，绘图由 [calibration_plot.py](calibration_plot.py) 独立读取保存结果。
+
+## 扩展理论对应的验证
+
+校准入口支持全部已有先验与offset；新一批参数应使用新目录。每次拟合增加 `theoretical_ratio`（目标经验场下的 R）、`target_standardized_initialization` 和匹配的局部方向参考。汇总保留跨校准重复的方向预测10/50/90%分位和标准差。绘图另生成 `calibration_scale.png`，比较CDF误差与理论尺度；方向图的 arctan(R)/π 曲线仅适用于目标临界居中，原训练峰 offset=0 不代表目标临界居中，不能将所有点都视为该极限的验证。逐重复预测在 `fits` 中保存；校准根失败在 `calibrations` 中保留，报告成功率时包含这些失败。
+
+```shell
+python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_grid --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2
+python experiments/code/frozen_visual/calibration_plot.py --input experiments/results/calibration_grid
+```
+
+[exit_probe.py](exit_probe.py) 读取原特征和threshold结果参数，检查目标初始安全分量、含一步overshoot余量的区间、网格向外漂移、映射导数、峰曲率/噪声及标准化初始化。`--geometry-only` 不模拟路径；网格检查只是数值诊断，不能作为区间证明，也不能从单个有限n验证渐近初始化条件。不适用的设置写入JSON。
+
+```shell
+python experiments/code/frozen_visual/exit_probe.py --geometry-only --pairs 3:5 1:9 4:7 0:8 --priors 0.5 0.4 0.3 --batches 32 128 512 --offsets -2 -1 0 1 2 --output experiments/results/exit_geometry
+```
+
+不加 `--geometry-only` 时，从固定池新采样独立SGD，逐步保留初始安全分量退出和真实风险退出、两种退出位置、跨分量跳跃标记及删失。方向统一相对目标峰定义；原批次方向相对初始化定义，比较时须区分。所有路径在退出分量后继续运行至预算，以观察后续风险退出；CDF始终保留全部路径。该入口只做固定斜率threshold更新，不用于LA或尺度模式。
+
+```shell
+python experiments/code/frozen_visual/exit_probe.py --pairs 1:9 --priors 0.5 --batches 32 128 512 --offsets -2 0 2 --paths 600 --max-steps 4000 --output experiments/results/exit_tail
+python experiments/code/frozen_visual/exit_plot.py --input experiments/results/exit_tail
+```
+
+共同路径上的总CDF和左右联合CDF差异应不超过预算内跳跃比例，代码直接检查这一关系；跳跃比例的标准误只描述有限池的路径抽样。全输出为 `results.json` 和 `samples.npz`，绘图独立生成 `exit_probe.png`。只检查几何的输出不运行退出CDF绘图。
+
+上述入口均可用 `--features`、`--results`、`--output` 指定位置；校准入口还需要 `--samples` 和 `--diagnosis`，默认沿用本README已有路径。新入口的 `--grid-points` 默认1025、`--seed` 默认20261029；`--paths` 默认600、`--max-steps` 默认4000。不覆盖已有目录；新批次更换输出目录，不修改历史结果。完整运行在服务器执行。
