@@ -1,0 +1,110 @@
+\section{Process and Risk Comparator}
+Let $Z$ be a scalar score and $x$ a decision threshold. With fixed confidence slope $w>0$, define
+\begin{align}
+ s(u)&=(1+e^{-u})^{-1},\quad a(u)=s(u)(1-s(u)),\\
+ U(x,z)&=-w^2(z-x)a(w(z-x)),\label{eq:update}\\
+ v(x)&=\E U(x,Z),\quad G(x)=x+\eta v(x).
+\end{align}
+The actual fresh-batch recursion is
+\begin{equation}
+ x_{t+1}=x_t+\frac\eta n\sum_{i=1}^n U(x_t,Z_{t,i}),\label{eq:sgd}
+\end{equation}
+with iid batches independent of the past. It is the gradient update for expected binary entropy, not a diffusion surrogate. Labels do not enter this update. Uniform bounds are $|U|\le w/4=:B_U$ and $|\partial_xU|\le w^2/4=:L_U$; fixed higher derivatives are bounded as well.
+
+For classification risk $r$, frozen initialization $x_0$, and tolerance $\epsilon\ge0$, define
+\begin{equation}
+ T_\epsilon=\inf\{t\ge0:r(x_t)>r(x_0)+\epsilon\}.
+ \label{eq:riskexit}
+\end{equation}
+The strict inequality specifies the first unsafe iterate. Both sides of the safe set can be unsafe, and lower entropy does not certify lower risk. For a disconnected safe set, leaving its initial connected component need not equal~\eqref{eq:riskexit}; an SGD step can jump into another safe component.
+
+\subsection{Gaussian geometry under mixed shifts}
+Take $Z_{\rm raw}=\delta+Ym+\sigma\xi$, with $\Prob(Y=1)=p$, $\xi\sim N(0,1)$, and $m,\sigma,w>0$. Center scores and thresholds by $\delta$; the frozen raw threshold zero becomes $x_0=-\delta$. Then
+\begin{equation}
+ r_p(x)=p\Phi((x-m)/\sigma)+(1-p)\Phi((-x-m)/\sigma).
+\end{equation}
+Its unique minimizer is $x_*(p)=\frac{\sigma^2}{2m}\log\frac{1-p}{p}$. Translation changes the initialization and comparator but not the centered entropy field.
+
+For $0<m\le\sigma$, the entropy has a unique unstable maximum $q_p$. For $p<1/2$, $q_p<0<x_*(p)$. An initialization strictly between $q_p$ and $x_*(p)$ moves right, initially improves risk for sufficiently small step size, and ultimately approaches risk $p$. It crosses the frozen risk plus tolerance precisely when $r_p(x_0)+\epsilon<p$. Thus entropy collapse alone does not imply crossing a poor frozen comparator. Sufficiently separated mixtures instead admit a locally safe population basin; this is not permanent finite-batch safety. Full sufficient conditions and proofs are retained in the supplement.
+
+Write $p=(1-\rho)/2$. Near balance,
+\begin{equation}
+ v_\rho(x)=\beta\rho+\lambda x+O(x^2+|\rho x|+\rho^2),
+\end{equation}
+with $\beta,\lambda>0$, so $q_\rho=-\beta\rho/\lambda+O(\rho^2)$. The leading displacement from the peak is $\beta\rho/\lambda-\delta$: feature and prior shifts can reinforce or cancel. For admissible $x_0=\alpha_0\rho$, fixed positive tolerance gives the population law
+\begin{equation}
+ T_\epsilon=\frac{\log(1/\rho)}{\log(1+\eta\lambda)}+O(1).
+\end{equation}
+Tolerance of order $\rho^2$, comparable to the available risk improvement, instead gives bounded crossing times under the stated nondegeneracy conditions. A long horizon need not mean substantial improvement.
+
+\section{Nonlinear Exit and Calibration}
+We now fix a score law $Q$, which may be a weighted empirical pool. All probabilities for such a pool are conditional on it and its source projection.
+
+\paragraph{Exit-domain assumptions.}
+On a fixed compact interval $\mathcal K$, assume a unique repelling root $q$ with $v'(q)=\lambda>0$ and $(x-q)v(x)>0$ away from $q$. Assume $\sigma_g^2=\Var U(q,Z)>0$ and fixed $0<\eta<1/L_U$. Exit intervals $[a_n,c_n]$ contain $q$, with uniformly positive peak-to-boundary distances; their one-step overshoot domains lie strictly inside $\mathcal K$. Finally, $|x_{0,n}-q|\le K_0/\sqrt n$. These are G1--G4 in the supplement. Local curvature alone does not imply them.
+
+An increasing normalized conjugacy $H$ satisfies
+\begin{equation}
+ H(q)=0,\quad H'(q)=1,\quad H(G(x))=AH(x),\quad A=1+\eta\lambda.
+\end{equation}
+It incorporates the full deterministic transit geometry. Put
+\begin{align}
+ \mu_n&=\sqrt n H(x_{0,n}),\quad s^2=\frac{\eta^2\sigma_g^2}{A^2-1},\\
+ B_n^+&=H(c_n),\qquad B_n^-=-H(a_n).
+\end{align}
+For interval exit time $\tau_n$ and side $J_n\in\{-1,+1\}$, define
+\begin{equation}
+ \Psi_n^\pm(t)=\Phi\left(\frac{\pm\mu_n-\sqrt n A^{-t}B_n^\pm}{s}\right).
+ \label{eq:joint}
+\end{equation}
+\begin{theorem}[Actual-SGD interval exit]
+Under G1--G4, a constant $C$ independent of $n,t$ gives
+\begin{equation}
+ \sup_{t\in\mathbb Z_{\ge0}}\max_\pm
+ |\Prob(\tau_n\le t,J_n=\pm1)-\Psi_n^\pm(t)|\le Ce_n,
+\end{equation}
+where $e_n=n^{-1/2}+((1+\log n)/n)^{1/3}$.
+\end{theorem}
+This is Theorem E.3 of the supplement. The proof uses inverse-iteration conjugacy, a stopped weighted-noise expansion, Gaussian approximation, and separate early-time tail control. Constants depend on the entire exit domain, including drift bottlenecks; they are not calibrated numerically. The theorem becomes a risk-exit statement when the safe set is the interval, or when component-skipping error is separately controlled.
+
+Under critical initialization and fixed positive tolerance in the Gaussian family,
+\begin{equation}
+ T_\epsilon=\frac{\log n}{2\log A}+O_{\Prob}(1).
+\end{equation}
+The fluctuation is a rounded negative logarithm of a Gaussian magnitude, retaining an integer lattice phase. This law does not apply to arbitrary fixed off-peak initializations. For $\rho=c/\sqrt n$, $x_0=u/\sqrt n$, and $n\epsilon_n\to e$, the limit instead is finite-step first exit of
+\begin{equation}
+ X_{t+1}=AX_t+\eta\beta c+\eta s_0 Z_t,\quad X_0=u,
+\end{equation}
+from the corresponding quadratic-risk interval, where $s_0^2=\Var_0 U(0,Z)$ and $Z_t$ are iid standard normals. These limits fix $\eta>0$.
+
+\subsection{Independent field calibration}
+An independent iid sample of $M$ scores estimates the field and its root $\widehat q$. It changes the predictor, while leaving the actual initialization and SGD unchanged. The local root CLT gives
+\begin{equation}
+ \sqrt M(\widehat q-q)\Rightarrow N(0,\sigma_g^2/\lambda^2).
+\end{equation}
+Relative to the SGD threshold scale $s/\sqrt n$, its squared uncertainty is
+\begin{equation}
+ \mathcal R_{M,n}^2=\frac nM\frac{2+\eta\lambda}{\eta\lambda}.
+ \label{eq:ratio}
+\end{equation}
+Small absolute root error can therefore dominate a large-batch experiment. This is uncertainty in a forecast, not extra variance of the unchanged SGD process.
+
+More generally, Theorem E.6 bounds the conditional plug-in forecast error on its good-calibration and endpoint event by
+\begin{align}
+ C\big[ e_n+\sqrt n|d_q|+\sqrt n d_q^2
+ +(1+\log n)d_v+d_\sigma+d_b\big],\label{eq:plugin}
+\end{align}
+where $d_q=\widehat q-q$, $d_v$ is the $C^3$ field error, $d_\sigma$ the root-noise variance error, and $d_b$ the endpoint error. These terms distinguish peak sensitivity, accumulated growth error, and risk-boundary uncertainty.
+
+\begin{proposition}[Random direction forecast]
+If $\sqrt n(x_{0,n}-q)/s\to z$ and $\mathcal R_{M,n}\to r<\infty$, then
+\begin{equation}
+ \Prob(J_n=+1)\to\Phi(z),\qquad
+ \widehat\pi_{M,n}\Rightarrow\Phi(z-rZ),
+\end{equation}
+where $Z\sim N(0,1)$ describes calibration randomness. At $z=0$, the limiting mean absolute forecast error is $\arctan(r)/\pi$.
+\end{proposition}
+This restates E.7--E.8. The present grid supports calibration sensitivity, but is not an exact test of this centered limit. Consistent endpoints and $M/n\to\infty$ suffice for plug-in consistency for fixed geometry; no universal sample-complexity lower bound is asserted.
+
+\paragraph{Risk information remains separate.}
+The field depends only on score marginals, while risk boundaries depend on labels. Arbitrary unlabeled marginals do not identify those boundaries. Smooth transversality-based endpoint perturbations also do not directly apply to an empirical step-function risk. These distinctions prevent interpreting field calibration as a completed stopping certificate.

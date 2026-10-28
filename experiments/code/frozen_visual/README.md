@@ -112,22 +112,22 @@ python experiments/code/frozen_visual/calibration_plot.py --input experiments/re
 均值漂移采用8193点PCHIP插值，根显式入网格；记录全部中点的最大漂移误差。真实SGD直接使用样本梯度，不依赖漂移插值。输入、输出、设置选择、预算均可通过参数指定。先验证offset=-2的单侧主导设置，用两个半径检验分区敏感性；不把多分支设置的一阶时间标准差解释成完整分布保证。
 
 ```shell
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.5 --workers 3 --output experiments/results/tail_noise
+python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.5 --workers 3 --output experiments/results/tail_noise
 python experiments/code/frozen_visual/noise_plot.py --input experiments/results/tail_noise
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.25 --workers 3 --output experiments/results/tail_inner
+python experiments/code/frozen_visual/tail_noise.py --offsets -2 --batches 32 128 512 --paths 600 --max-steps 4000 --radius 0.25 --workers 3 --output experiments/results/tail_inner
 python experiments/code/frozen_visual/noise_plot.py --input experiments/results/tail_inner
 ```
 
 中断后原计算命令加 `--resume`。保存单元为一个设置的全部四种模式；未保存设置会重算。参数与输入路径保持不变，workers允许调整。每个设置的NPZ先写临时文件，JSON最后原子写入，作为完成标记；最终汇总为results.json。若实际漂移插值误差或分区敏感性较大，应在新输出目录调整 `--grid-points` 复核，再解释噪声消融。几何不适用或数值错误会直接报错，已完成设置仍可续跑。绘图独立生成noise_ablation.png。
 
-校准支持 `--workers` 多进程（默认1），每个任务是一个类别对、先验和校准重复，内部预算保持嵌套前缀。网格漂移和共轭逆迭代已批量计算；节点数、网格密度、截止半径及实验预算不变。建议先用4个worker；Linux运行前可设 `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1`，避免每个进程再启动大量数值库线程，按CPU与内存情况调整worker数，不承诺线性加速。
+校准支持 `--workers` 多进程（默认1），每个任务是一个类别对、先验和校准重复，内部预算保持嵌套前缀。网格漂移和共轭逆迭代已批量计算；节点数、网格密度、截止半径及实验预算不变。建议先用4个worker；服务器不默认设置OMP/MKL/OpenBLAS线程限制；本地运行前将这三个库的线程数设为1，按CPU与内存情况调整worker数，不承诺线性加速。
 
 每个重复完成后保存到输出目录的 `repeats/`；JSON最后以原子替换写入，表示该重复已经完整保存。中断后用同一命令、同一输出目录加 `--resume`，仅重算尚未保存的重复，worker数可改变。续跑直接比较输入路径与实验参数，不计算文件哈希；不要在原路径替换输入内容。未保存的正在计算的重复需要重算。Ctrl+C会取消尚未启动的任务并等待正在运行的worker结束；必要时终止进程后，已写出的重复仍可复用。全部重复保存后按固定顺序汇总，进程调度及续跑不改变校准编号与汇总顺序。旧版本只在结尾写结果，没有这些重复文件，不能恢复其打印过的进度。
 
 ```shell
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4
+python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4
 # 中断后：其余参数保持一致
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4 --resume
+python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4 --resume
 python experiments/code/frozen_visual/calibration_plot.py --input experiments/results/calibration_parallel
 ```
 
@@ -153,4 +153,4 @@ python experiments/code/frozen_visual/exit_plot.py --input experiments/results/e
 
 共同路径上的总CDF和左右联合CDF差异应不超过预算内跳跃比例，代码直接检查这一关系；跳跃比例的标准误只描述有限池的路径抽样。全输出为 `results.json` 和 `samples.npz`，绘图独立生成 `exit_probe.png`。只检查几何的输出不运行退出CDF绘图。
 
-上述入口均可用 `--features`、`--results`、`--output` 指定位置；校准入口还需要 `--samples` 和 `--diagnosis`，默认沿用本README已有路径。新入口的 `--grid-points` 默认1025、`--seed` 默认20261029；`--paths` 默认600、`--max-steps` 默认4000。不覆盖已有目录；新批次更换输出目录，不修改历史结果。完整运行在服务器执行。
+上述入口均可用 `--features`、`--results`、`--output` 指定位置；校准入口还需要 `--samples` 和 `--diagnosis`，默认沿用本README已有路径。新入口的 `--grid-points` 默认1025、`--seed` 默认20261029；`--paths` 默认600、`--max-steps` 默认4000。不覆盖已有目录；新批次更换输出目录，不修改历史结果。不需要GPU且耗时可接受的数值实验可直接在本地执行；本地解释器与线程设置见根目录AGENTS.md。

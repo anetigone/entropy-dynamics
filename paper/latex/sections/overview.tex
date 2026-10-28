@@ -1,0 +1,26 @@
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=3 by 1,horizontal sep=1.25cm},width=.29\textwidth,height=4.6cm,tick label style={font=\scriptsize},label style={font=\small},title style={font=\small},legend style={font=\scriptsize,draw=none},grid=major,grid style={gray!15}]
+\nextgroupplot[title={(a) Mixed-shift direction},xlabel={Translation offset},ylabel={Right-exit probability},ymin=0,ymax=1,xtick={-2,-1,0,1,2},legend pos=north east]
+\addplot[blue,thick,mark=*] coordinates {(-2,.971)(-1,.845)(0,.472)(1,.169)(2,.025)};
+\addlegendentry{Observed}
+\addplot[orange,dashed,thick,mark=square*] coordinates {(-2,.977)(-1,.841)(0,.499)(1,.158)(2,.023)};
+\addlegendentry{Predicted}
+\nextgroupplot[title={(b) Independent calibration},xlabel={Calibration observations $M$},ylabel={Mean CDF error},xmode=log,log basis x=2,xtick={2048,16384,131072,1048576},xticklabels={$2^{11}$,$2^{14}$,$2^{17}$,$2^{20}$},ymin=0,ymax=.65,legend pos=north east]
+\addplot[blue,thick,mark=*] coordinates {(2048,.5902)(16384,.3686)(131072,.2354)(1048576,.1935)};
+\addlegendentry{Source endpoints}
+\addplot[orange,thick,mark=square*] coordinates {(2048,.5709)(16384,.3349)(131072,.1668)(1048576,.0899)};
+\addlegendentry{Oracle endpoints}
+\nextgroupplot[title={(c) Time dispersion},xlabel={Batch size},ylabel={10--90\% width (steps)},xmode=log,log basis x=2,xtick={32,128,512},xticklabels={32,128,512},ymin=0,ymax=650,legend pos=north east]
+\addplot[black,thick,mark=*] coordinates {(32,590)(128,333)(512,170)};
+\addlegendentry{Actual SGD}
+\addplot[blue,thick,mark=triangle*] coordinates {(32,245)(128,171)(512,116)};
+\addlegendentry{Near only}
+\addplot[orange,thick,mark=square*] coordinates {(32,535)(128,266)(512,131)};
+\addlegendentry{Far only}
+\end{groupplot}
+\end{tikzpicture}
+\caption{Three evidence levels. (a) Gaussian cancellation at $n=128$, $\kappa=2$. (b) Independent field calibration on the common 1822 case--repetition records; oracle risk endpoints still improve results. (c) Noise interventions on automobile/truck, $p=.5$, offset $-2$, radius .5. Lines connect measured settings and are not additional predictions.}
+\label{fig:overview}
+\end{figure*}

@@ -1,0 +1,30 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[review]{cvpr}
+\usepackage{longtable,array,calc}
+\usepackage{microtype}
+\usepackage[breaklinks,colorlinks,allcolors=blue]{hyperref}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+\def\confName{CVPR}
+\def\confYear{2027}
+\title{When Does Entropy Adaptation Stop Helping?\\Supplementary Theory and Experimental Details}
+\author{Anonymous authors}
+\begin{document}
+\onecolumn
+\maketitle
+\noindent This supplement retains the detailed model statements, supplied proofs, and numerical protocols underlying the condensed main paper. Original proposition numbers 1--12, extension labels E.1--E.13, and original section references are retained inside the text; they refer to the source mathematical exposition, not the main paper's new numbering. The displayed claims are conditional on their stated assumptions. This assembly is not an independent proof verification. Current empirical conclusions are stated in the main paper; earlier experiments retain their individual scope.
+\tableofcontents
+\clearpage
+\section{Gaussian model and result statements}
+\input{supplement/draft}
+\clearpage
+\input{supplement/scalar_exit}
+\clearpage
+\input{supplement/calibration}
+\clearpage
+\input{supplement/risk_boundaries}
+\clearpage
+\input{supplement/gaussian_proofs}
+\clearpage
+\input{supplement/experiments}
+\end{document}

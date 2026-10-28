@@ -1,0 +1,114 @@
+\section{Experiments}
+\label{sec:experiments}
+\input{sections/overview}
+We test mechanisms, conditional explanation, and independent prediction separately. All numerical results were obtained before this manuscript assembly. No new training or stochastic experiment is introduced here. Predictions do not fit exit curves, time offsets, or empirical quantiles, except for an explicitly labeled historical population-slope illustration in the supplement.
+
+We report maximum absolute CDF error over the available integer-time budget, averaged equally over the declared applicable cells. Joint error compares the left/right exit subdistributions. Censored paths stay in denominators and unavailable medians are not replaced by medians of exited paths. A single-cell Monte Carlo band describes sampling variation; it is not a theory guarantee, simultaneous coverage, or a population-risk bound.
+
+\subsection{Gaussian checks and mixed-shift cancellation}
+For $m=\sigma=1$, $w=2$, $\eta=.1$, $\epsilon=.005$, and $p=.35$, population adaptation at translations $\delta=-.1,0,.1$ first improves risk and then crosses the frozen comparator at steps 67, 94, and 124. At $\delta=0$, the risk minimum is at step 47. For critically rescaled priors, fixed-tolerance exit medians increase with batch, whereas inverse-batch tolerance gives medians 45/47/45 for $n=32/128/512$, close to the separately simulated AR reference median 45. Detailed constants, all critical cells, and numerical checks are in the supplement.
+
+The mixed-shift scan has 45 cells: three batches, three prior strengths, and five translation offsets around cancellation. Each uses 1000 fresh-batch paths and a 2500-step budget; all 45000 paths exit. Table~\ref{tab:cancellation} shows direction reversal and delayed exit near cancellation. At cancellation the observed medians across batches are 241/325/414, against predictions 250/327/410.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{rcccc}
+\toprule
+Offset & \multicolumn{2}{c}{Right-exit probability} & \multicolumn{2}{c}{Median time}\\
+ & Observed & Predicted & Observed & Predicted\\
+\midrule
+$-2$ & .971 & .977 & 227 & 225\\
+$-1$ & .845 & .841 & 291 & 296\\
+$0$ & .472 & .499 & 325 & 327\\
+$1$ & .169 & .158 & 244 & 244\\
+$2$ & .025 & .023 & 169 & 168\\
+\bottomrule
+\end{tabular}
+\caption{Mixed-shift cancellation at prior strength $\kappa=2$ and $n=128$. Offsets are in seed-standard-deviation units. A positive offset moves the centered initialization left. Unequal risk endpoints permit asymmetric times.}
+\label{tab:cancellation}
+\end{table}
+
+Across all 45 cells, mean total-CDF errors are .0574 for the balanced limit, .0336 for actual-parameter local linearization, and .0339 for full conjugacy. Removing actual risk endpoints from local linearization raises its error to .0580; removing peak, curvature, or noise corrections individually leaves it near .034. Thus this Gaussian scan supports the risk-boundary correction, without showing an overall numerical advantage for conjugacy. The visual experiment below yields a different conclusion about nonlinear geometry.
+
+\subsection{Frozen visual protocol and calibration failure}
+We use frozen ImageNet-pretrained ResNet-18 features on official CIFAR-10 train/test splits~\cite{he2016,krizhevsky2009}. Features are 512 dimensional, extracted in evaluation mode using the paired processor recorded in the extraction protocol. For each of four prespecified class pairs (cat/dog, automobile/truck, deer/horse, airplane/ship), the normalized training-class mean difference defines the projection. Scores are centered at the training mean midpoint and normalized by pooled training-class variance. This is controlled projected shift with fixed features, not image corruption or full normalization adaptation.
+
+Training features supply source geometry and labeled offline risk calibration. Test features define the fixed target empirical mixture and risk. We use priors $.5/.4/.3$, batches $32/128/512$, and five offsets: 180 cells, each with 600 paths, $\eta=.1,w=2,\epsilon=.02$, and a 2000-step budget. Updates sample with replacement independently from this pool and read no labels. Labels construct controlled mixtures and evaluate risk. There is no additional official split. Only threshold results are available; scale and logit-adjusted adaptation have not been validated.
+
+All 108000 paths run without recorded numerical failure; 13102 are censored at the cap. Source calibration permits two-sided predictions in 141/180 cells. The remaining 39 have an unbounded calibrated safe component. Mean total-CDF errors on applicable cells are .5411 for local linearization and .4479 for conjugacy. At source cancellation, cat/dog with $p=.5$ has observed right-exit rates .2933/.1383/.0117 as batch increases; all original predictions are .5. The source peak .509827 differs from the target peak .527601, a displacement of $-2.246$ target seed standard deviations at $n=512$. Target conjugacy predicts .01186, against .01167 observed. Peak migration explains this direction failure, but is not the full time explanation.
+
+\subsection{What correct empirical geometry explains}
+We recompute the field and risk endpoints from the target pool, then score the existing paths. This is a conditional oracle diagnosis using target labels for endpoints, with no fit to exits. Table~\ref{tab:geometry} uses the same 133 cells for every row.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{p{.66\columnwidth}rr}
+\toprule
+Predictor & Total & Joint\\
+\midrule
+Source local linearization & .5255 & .5094\\
+Source conjugacy & .4315 & .4940\\
+Target peak only, local linearization & .5517 & .5485\\
+Target field conjugacy, source endpoints & .1899 & .1858\\
+Target field and endpoints, local linearization & .4804 & .4821\\
+Target field and endpoints, conjugacy & .0590 & .0578\\
+\bottomrule
+\end{tabular}
+\caption{Mean maximum CDF errors on a common 133-cell subset. Correcting the field and correcting label-dependent risk endpoints provide distinct gains. Full nonlinear geometry matters for these visual score laws.}
+\label{tab:geometry}
+\end{table}
+
+Unlike the Gaussian scan, local linearization with full target geometry remains inaccurate, while conjugacy substantially improves prediction. Field replacement alone leaves mean error .1899; correct endpoints reduce it further. It would therefore be misleading either to attribute all gains to the peak or to claim that conjugacy has no numerical value.
+
+Target conjugacy applies in 148/180 cells: 21 have a one-sided unbounded safe component and 11 have the target peak outside it. The applicable-cell maximum error is still about .36, particularly for automobile/truck tails. A 1026-point-per-cell geometry scan supports outward drift in finite components, but cannot establish between-node root uniqueness or uniform constants. The largest standardized initialization is about 10.07. These fixed-source scans are not automatically one target-critical asymptotic sequence.
+
+\subsection{Independent unlabeled field calibration}
+We independently sample unlabeled scores with replacement from the same fixed target pool, estimate the entropy field, and score the original unchanged SGD paths. The estimator does not receive labels or exit outcomes. Risk endpoints are supplied either by original training calibration or by the target oracle. Independence is conditional on the pool; this is not a test on a newly drawn image population.
+
+The expanded grid has four pairs, three priors, three batches, and offsets $-2/-1/0/1$: 144 cells, excluding offset $+2$. Each budget has 20 calibration repetitions per pair/prior. A repetition is shared across batches and offsets, so case-level scores are not independent calibration samples. Table~\ref{tab:calibration} reports the common subset where all budgets and both endpoint choices succeed.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{rrr}
+\toprule
+$M$ & Source endpoints & Oracle endpoints\\
+\midrule
+2048 & .5902 & .5709\\
+16384 & .3686 & .3349\\
+131072 & .2354 & .1668\\
+1048576 & .1935 & .0899\\
+\bottomrule
+\end{tabular}
+\caption{Mean CDF errors on 1822 common case--repetition records covering 106 cells. Improvement persists without changing the applicable subset. Observations are repeated draws from a fixed pool, not distinct new images.}
+\label{tab:calibration}
+\end{table}
+
+Across all attempts at the largest budget, oracle-endpoint predictions succeed in 2364/2880 records and training-endpoint predictions in 2136/2880. Successful-only means are .0949 and .2064, respectively. Applicability cannot be hidden behind a small average error. The results strengthen independent field-calibration evidence but leave endpoint migration and long-tail residuals. The original offset zero is a source peak, not the target peak; this experiment therefore does not precisely validate the centered $\arctan(r)/\pi$ limit.
+
+\subsection{Continuing noise explains a tail failure}
+Nine new automobile/truck cells extend the budget to 4000 steps, with 600 independent paths each. Only one of 5400 paths remains censored. At $n=128$, offset $-2$, 116/600 paths skip a safe-component gap, yet the component-exit and risk-exit CDFs differ by only .00667. At $n=32$ with the same offset there is no observed skipping, but the original oracle CDF error remains .3486. Skipping alone cannot explain the tail.
+
+We then compare four coupled recursions at $p=.5$, offset $-2$, for three batches: actual SGD; mean drift with centered noise sampled at the root throughout; state-dependent noise only near the root; and noise only far from it. Mean drift is preserved. These are diagnostic interventions, not proposed algorithms. Each mode uses 600 paths and 4000 steps; all exit. Table~\ref{tab:noise} gives the 10--90\% widths with a near/far cutoff radius .5.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{rrrrr}
+\toprule
+Batch & Actual & Root throughout & Near only & Far only\\
+\midrule
+32 & 590 & 590 & 245 & 535\\
+128 & 333 & 310 & 171 & 266\\
+512 & 170 & 172 & 116 & 131\\
+\bottomrule
+\end{tabular}
+\caption{Exit-time widths under noise interventions, radius .5. Far-only noise restores much of the dispersion; near-only noise is markedly too narrow. Root noise is injected throughout passage, unlike an early-seed-only approximation.}
+\label{tab:noise}
+\end{table}
+
+Radius .25 gives near-only widths 185/148/102 and far-only widths 553/277/134, supporting the same interpretation. The actual and root-throughout paths are identical across the two radius runs and do not count as extra independent replicates. Root-throughout CDF distances from actual SGD are .0667/.0500/.0483. Thus strong state dependence of noise is not required to reproduce the broad time distribution: continuing noise during slow remote passage is important.
+
+An unfitted first-order diagnostic propagates variance along the population orbit:
+\begin{equation}
+ V_0=0,\qquad V_{t+1}=G'(\bar x_t)^2V_t+\frac{\eta^2}{n}\Var U(\bar x_t,Z).
+\end{equation}
+The terminal standard deviation divided by crossing velocity gives time scales about 230/124/67 steps. On the new actual paths, this yields CDF errors .0527/.0388/.0569, compared with .3740/.2903/.2086 for the original oracle. An earlier independent path batch also shows improvement. This is a single-branch finite-parameter diagnostic; it is not yet a proved joint law for mixed exit directions. The ablations use a drift interpolation whose midpoint discrepancy is about $2.04\times10^{-8}$; full grid-refinement convergence has not been checked. Coupled empirical-CDF distances are descriptive, not independent two-sample significance tests.

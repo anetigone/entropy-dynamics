@@ -1,0 +1,27 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[review]{cvpr}
+\usepackage{amsthm}
+\usepackage{microtype}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
+\usepackage[pagebackref,breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
+\def\confName{CVPR}
+\def\confYear{2027}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}
+\title{When Does Entropy Adaptation Stop Helping?\\Risk Exit, Calibration, and Noise under Mixed Shifts}
+\author{Anonymous authors}
+\begin{document}
+\maketitle
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/theory}
+\input{sections/experiments}
+\input{sections/discussion}
+{\small\bibliographystyle{ieeenat_fullname}\bibliography{references}}
+\end{document}

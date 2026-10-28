@@ -1,0 +1,547 @@
+\section{Independent calibration and prediction
+error}\label{calibration-independent-calibration-and-prediction-error}
+
+Part of \href{DRAFT.md}{the manuscript}. E-numbering and section numbers
+are continuous across \href{scalar_exit.md}{scalar exit},
+\href{calibration.md}{calibration}, and \href{risk_boundaries.md}{risk
+boundaries}. Full statements and proofs are retained. Constants are not
+numerically calibrated; integration is not a completed independent proof
+audit. Use \(B_U=w/4\) for the update bound and \(M\) for calibration
+sample size; the original Gaussian sections use \(M=w/4\) locally.
+
+\subsection{3. Quantitative stability of the
+geometry}\label{calibration-quantitative-stability-of-the-geometry}
+
+Let \(\widetilde v\) be another entropy field, or a smooth perturbation
+whose map \(\widetilde G=x+\eta\widetilde v\) is an increasing
+bijection. Compare it with the fixed field \(v\) on \(\mathcal K\). All
+derivatives through order three are assumed uniformly bounded in the
+neighborhood of fields under consideration.
+
+\subsubsection{Lemma E.4. Stability of the root and normalized
+conjugacy}\label{calibration-lemma-e.4.-stability-of-the-root-and-normalized-conjugacy}
+
+There are constants \(d_*,C>0\) such that, if \[
+d_v:=\|\widetilde v-v\|_{C^3(\mathcal K)}\le d_*,
+\tag{E.33}
+\] then \(\widetilde v\) has a unique zero \(\widetilde q\) on
+\(\mathcal K\), has the same outward sign pattern relative to
+\(\widetilde q\), and \[
+|\widetilde q-q|\le C d_v,\qquad
+|\widetilde\lambda-\lambda|+|\widetilde A-A|\le C d_v.
+\tag{E.34}
+\] Here \(\widetilde\lambda=\widetilde v'(\widetilde q)\) and
+\(\widetilde A=1+\eta\widetilde\lambda\).
+
+The normalized conjugacies satisfy \[
+\|\widetilde H-H\|_{C^1(\mathcal K)}\le C d_v,
+\qquad
+\|\widetilde H\|_{C^2(\mathcal K)}\le C.
+\tag{E.35}
+\] For the critical initialization in G4, writing
+\(d_q=\widetilde q-q\), \[
+\sqrt n\{\widetilde H(x_{0,n})-H(x_{0,n})\}
+=-\sqrt n\,d_q+
+O\!\left(d_v+\sqrt n\,d_q^2\right).
+\tag{E.36}
+\]
+
+\textbf{Proof.} Choose a local interval about \(q\) on which
+\(v'\ge\lambda/2\). A sufficiently small \(C^1\) perturbation has
+positive derivative there and opposite signs at its endpoints. It
+therefore has exactly one local zero. Away from this interval,
+compactness and G1 give a strictly positive lower bound on \(|v|\), so
+no additional zeros appear under a sufficiently small perturbation. The
+mean-value theorem gives the root bound; differentiation and bounded
+\(v''\) give the curvature and multiplier bounds.
+
+For completeness, the quantitative dependence of \(H\) can be proved
+directly from the inverse construction. Center the inverse maps at their
+own roots, writing them as \(g,\widetilde g\). On a common sufficiently
+small local interval, \[
+\|g-\widetilde g\|_{C^2}\le C d_v,\qquad
+|g'|,|\widetilde g'|\le b<1,\qquad
+\overline A b^2<1,
+\tag{E.37}
+\] where \(\overline A\) bounds both multipliers. The inverse-function
+formulas and the common lower bound on the forward derivatives justify
+the first inequality. Centering introduces only \(O(d_v)\) changes,
+including in the second derivatives, by the \(C^3\) hypothesis.
+
+Both inverse maps fix zero. Iterating the difference recursion and its
+first derivative yields \[
+|\widetilde g^j(y)-g^j(y)|
+\le C d_v(j+1)b^{j-1}|y|,
+\] \[
+|(\widetilde g^j)'(y)-(g^j)'(y)|
+\le C d_v(j+1)^2b^{j-1}.
+\tag{E.38}
+\] For the derivative estimate, use the product rule, the common
+second-derivative bound, and the first estimate. The harmless cases
+\(j=0,1\) are absorbed in \(C\).
+
+Let \(R_g(y)=g(y)-A^{-1}y\), with the analogous definition for
+\(\widetilde g\). Their difference has value and derivative zero at zero
+and \(C^2\) norm at most \(C d_v\). Thus \[
+|R_{\widetilde g}(y)-R_g(y)|\le C d_v y^2,\qquad
+|R_{\widetilde g}'(y)-R_g'(y)|\le C d_v|y|.
+\] Use the convergent series \[
+h(y)=y+\sum_{j\ge0}A^{j+1}R_g(g^j(y)),
+\tag{E.39}
+\] and its perturbed version. Equations (E.38), the quadratic vanishing
+of the residuals, and \[
+|\widetilde A^{j+1}-A^{j+1}|
+\le C d_v(j+1)\overline A^j
+\] bound the \(C^1\) difference of the \(j\)-th terms by \[
+C d_v(j+1)^3(\overline A b^2)^j.
+\] Summation proves local \(C^1\) Lipschitz dependence. The unperturbed
+construction of Lemma E.2, with uniform bounds, also proves a common
+\(C^2\) bound for all the local conjugacies.
+
+A common finite number of inverse steps maps \(\mathcal K\) into the
+local domain for every sufficiently close field. To see uniformity,
+outside the local domain the outward drift is bounded away from zero,
+while inside it the inverse is uniformly contracting. The extension
+formula (E.13), finite composition, and the inverse derivative bounds
+give (E.35) on \(\mathcal K\).
+
+Finally, since \(\widetilde H(\widetilde q)=0\) and
+\(\widetilde H'(\widetilde q)=1\), \[
+\widetilde H(q)=-d_q+O(d_q^2).
+\] The integral of \(\widetilde H'-H'\) between \(q\) and \(x_{0,n}\) is
+at most \(C d_v/\sqrt n\). Multiplication by \(\sqrt n\) proves (E.36).
+\(\square\)
+
+This lemma is local in the space of fields. Its constants can be large
+if the inverse orbit spends a long time away from the root, if a
+boundary approaches another equilibrium, or if \(\lambda\) is small. It
+does not assert stable prediction across a change in the number or type
+of equilibria.
+
+\subsection{4. Independent unlabeled field
+estimation}\label{calibration-independent-unlabeled-field-estimation}
+
+Use the sample (E.3) to define \[
+\widehat v_M(x)=\frac1M\sum_{i=1}^M U(x,\widetilde Z_i).
+\tag{E.40}
+\] On the event that it has the corresponding root \(\widehat q_M\) on
+\(\mathcal K\), set \[
+\widehat\lambda_M=\widehat v_M'(\widehat q_M),\qquad
+\widehat A_M=1+\eta\widehat\lambda_M,
+\] \[
+\widehat\sigma_{g,M}^2
+=\frac1M\sum_{i=1}^M U(\widehat q_M,\widetilde Z_i)^2,
+\qquad
+\widehat s_M^2
+=\frac{\eta^2\widehat\sigma_{g,M}^2}{\widehat A_M^2-1}.
+\tag{E.41}
+\] The sample mean at an exact root is zero, so the variance expression
+in (E.41) is the centered empirical variance. Let \(\widehat H_M\) be
+the normalized conjugacy of the estimated field. Root-selection failures
+and violations of the required geometry must be reported as inapplicable
+predictions, rather than removed from a success denominator.
+
+For unconditional weak-convergence and expectation statements, complete
+otherwise undefined forecasts on the failure event by an arbitrary fixed
+valid joint exit law, for example exit at time one with equiprobable
+directions. This mathematical convention makes the random forecasts
+defined everywhere. Since the failure probability tends to zero, it does
+not change the limits below; it does not reclassify failed calibrations
+as successful predictions. Finite-sample bounds remain restricted to
+their stated good-calibration event.
+
+\subsubsection{Proposition E.5. Field concentration, root concentration,
+and root
+CLT}\label{calibration-proposition-e.5.-field-concentration-root-concentration-and-root-clt}
+
+For \(M\ge2\), \(0<\alpha<1/2\), write \[
+d_M(\alpha)=\sqrt{\frac{\log(C_0M/\alpha)}{M}},
+\qquad
+r_M(\alpha)=\sqrt{\frac{\log(C_0/\alpha)}{M}},
+\tag{E.42}
+\] where \(C_0\) is a sufficiently large fixed constant.
+
+With probability at least \(1-\alpha\), \[
+\|\widehat v_M-v\|_{C^3(\mathcal K)}
+\le C d_M(\alpha).
+\tag{E.43}
+\] For \(M\) sufficiently large that the right-hand side is below the
+perturbation threshold of Lemma E.4, the same event can be chosen so
+that \[
+|\widehat q_M-q|\le C r_M(\alpha),
+\qquad
+|\widehat\sigma_{g,M}^2-\sigma_g^2|\le C r_M(\alpha),
+\tag{E.44}
+\] \[
+|\widehat s_M-s|+|\log\widehat A_M-\log A|
+\le C d_M(\alpha).
+\tag{E.45}
+\] Also, \[
+\sqrt M(\widehat q_M-q)
+=-\frac1{\lambda\sqrt M}\sum_{i=1}^M U(q,\widetilde Z_i)
++o_{\mathbb P}(1)
+\Rightarrow N(0,\sigma_g^2/\lambda^2).
+\tag{E.46}
+\] Statements about \(\widehat q_M\) are unaffected by assigning
+arbitrary values on the root-selection failure event, whose probability
+tends to zero.
+
+\textbf{Proof.} For derivative orders \(j=0,1,2,3\), the variables
+\(\partial_x^j U(x,\widetilde Z_i)\) are uniformly bounded. Their sample
+averages and expectations are uniformly Lipschitz in \(x\), using the
+bounded derivative of order \(j+1\). Take a deterministic grid on
+\(\mathcal K\) with mesh at most \(1/M\); it contains at most
+\(C_{\mathcal K}M\) points. Hoeffding's inequality, a union bound over
+these points and four derivative orders, and an \(O(1/M)\) interpolation
+error prove (E.43).
+
+On this event, Lemma E.4 selects a unique root near \(q\), and the
+sample derivative on the segment joining the roots is at least a fixed
+positive fraction of \(\lambda\). The exact root equation gives \[
+\widehat q_M-q
+=-\frac{\widehat v_M(q)}
+{\int_0^1\widehat v_M'(q+u(\widehat q_M-q))\,du}.
+\tag{E.47}
+\] A separate Hoeffding bound at the single point \(q\) gives the first
+inequality in (E.44), without the grid logarithm. A pointwise bound for
+the average of \(U(q,\widetilde Z_i)^2\), together with \[
+|U(x,z)^2-U(q,z)^2|\le2B_UL_U|x-q|,
+\] gives the variance bound. Lemma E.4 and smoothness of the expression
+in (E.41), with \(\lambda,\sigma_g^2\) bounded away from zero in the
+fixed neighborhood, give (E.45). Split the confidence budget among these
+events to obtain the stated probability.
+
+For the CLT, the denominator in (E.47) converges in probability to
+\(\lambda\). The numerator, multiplied by \(\sqrt M\), converges to
+\(N(0,\sigma_g^2)\). This proves (E.46). It is the usual
+estimating-equation expansion {[}E-R1{]}, applied here to the entropy
+velocity. \(\square\)
+
+\subsubsection{Theorem E.6. Prediction error for real SGD with
+independently estimated
+geometry}\label{calibration-theorem-e.6.-prediction-error-for-real-sgd-with-independently-estimated-geometry}
+
+Assume G1--G4. All estimated quantities below are measurable with
+respect to a calibration sigma-field \(\mathcal C_M\) independent of the
+actual adaptation sample array. The initialization \(x_{0,n}\) remains
+the original deterministic initialization.
+
+Let \(\widehat a_n,\widehat c_n\) be calibrated risk or interval
+endpoints. On a calibration event \(\mathcal E\), assume that the
+estimated field satisfies Lemma E.4, that \[
+d_b=\max(|\widehat a_n-a_n|,|\widehat c_n-c_n|)
+\] is sufficiently small, and that \(\widehat\sigma_g^2>0\) is
+sufficiently close to \(\sigma_g^2\). Then the estimated root is inside
+the estimated interval with positive boundary distances. Define \[
+\widehat\mu_n=\sqrt n\,\widehat H(x_{0,n}),\qquad
+\widehat B_n^+=\widehat H(\widehat c_n),\qquad
+\widehat B_n^-=-\widehat H(\widehat a_n),
+\] \[
+\widehat\Psi_n^\pm(t)
+=\Phi\!\left(
+\frac{\pm\widehat\mu_n-\sqrt n\,\widehat A^{-t}
+\widehat B_n^\pm}{\widehat s}
+\right).
+\tag{E.48}
+\] These formulas predict the true exit from \(I_n\); they do not
+replace the true process by SGD driven by the estimated field.
+
+On \(\mathcal E\), uniformly over integer \(t\ge0\), \[
+\max_\pm\left|
+\Pr(\tau_n\le t,J_n=\pm1\mid\mathcal C_M)
+-\widehat\Psi_n^\pm(t)
+\right|
+\le Ce_n+C\mathcal D_{M,n},
+\tag{E.49}
+\] where \[
+\mathcal D_{M,n}
+=|\widehat\mu_n-\mu_n|
++|\widehat s-s|
++\max_\pm|\log\widehat B_n^\pm-\log B_n^\pm|
++(1+\log n)|\log\widehat A-\log A|.
+\tag{E.50}
+\] Let \(d_q=\widehat q-q\), \(d_v=\|\widehat v-v\|_{C^3(\mathcal K)}\),
+and \(d_\sigma=|\widehat\sigma_g^2-\sigma_g^2|\). A bound in terms of
+the estimated inputs is \[
+\sup_{t\ge0}\max_\pm\left|
+\Pr(\tau_n\le t,J_n=\pm1\mid\mathcal C_M)
+-\widehat\Psi_n^\pm(t)
+\right|
+\le
+C\left[
+e_n+\sqrt n|d_q|+\sqrt n d_q^2
++(1+\log n)d_v+d_\sigma+d_b
+\right].
+\tag{E.51}
+\] The right sides may be truncated at one.
+
+For the empirical calibration estimator of Proposition E.5, this yields,
+on its probability-\((1-\alpha)\) event and any simultaneous endpoint
+event, \[
+\sup_{t\ge0}\max_\pm\left|
+\Pr(\tau_n\le t,J_n=\pm1\mid\mathcal C_M)
+-\widehat\Psi_n^\pm(t)
+\right|
+\le C\left[
+e_n+\sqrt n\,r_M(\alpha)
++\sqrt n\,r_M(\alpha)^2
++(1+\log n)d_M(\alpha)+d_b
+\right].
+\tag{E.52}
+\] An endpoint-event failure probability must be added separately;
+Proposition E.5 does not estimate risk endpoints.
+
+\textbf{Proof.} Independence and the fixed initialization imply \[
+\Pr(\tau_n\le t,J_n=\pm1\mid\mathcal C_M)
+=\Pr(\tau_n\le t,J_n=\pm1).
+\tag{E.53}
+\] Apply Theorem E.3 to the right side. It remains to compare two
+deterministic Gaussian formulas, treating a realized calibration sample
+as fixed.
+
+For \(B>0,a>0,s>0\), put \[
+f_t(\mu,s,B,a)
+=\Phi\!\left(\frac{\mu-\sqrt n B e^{-at}}s\right).
+\] On the stated neighborhood, \(s,B,a\) are bounded above and away from
+zero. The true \(\mu_n\) is bounded. Changing \(\mu\) first costs at
+most \(C|\widehat\mu-\mu|\), with no bound needed on \(\widehat\mu\).
+With \(\mu\) thereafter fixed at its true value, the derivatives with
+respect to \(s\) and \(\log B\) are bounded uniformly in \(t,n\). The
+latter uses \[
+\sup_{y\ge0} y\,\varphi((\mu-y)/s)<\infty.
+\] For \(a=\log A\), the derivative has magnitude \[
+\frac{t y}{s}\varphi((\mu-y)/s),
+\qquad y=\sqrt n B e^{-at}.
+\] Since \[
+t=\frac{\log(\sqrt n B)-\log y}{a},
+\] and both \(y\varphi((\mu-y)/s)\) and \(y|\log y|\varphi((\mu-y)/s)\)
+are uniformly bounded, this derivative is at most \(C(1+\log n)\). The
+same estimates hold for the negative branch and along the parameter
+interpolation. The mean-value bound proves (E.49).
+
+Lemma E.4 gives \[
+|\widehat\mu_n-\mu_n|
+\le\sqrt n|d_q|+C(d_v+\sqrt n d_q^2),
+\] \[
+\max_\pm|\widehat B_n^\pm-B_n^\pm|\le C(d_v+d_b),
+\qquad |\log\widehat A-\log A|\le Cd_v.
+\] The boundary coordinates are bounded away from zero, so their
+logarithms satisfy the same local bound. Finally, \[
+|\widehat s-s|\le C(d_v+d_\sigma).
+\] This proves (E.51), and substitution of Proposition E.5 proves
+(E.52). \(\square\)
+
+\textbf{Interpretation.} Peak estimation shifts a seed multiplied by
+\(\sqrt n\). Growth-rate error accumulates over a logarithmic number of
+updates. Field-shape and risk-endpoint errors change the transformed
+distance to the boundary. Equation (E.49) is a bound for the prediction
+of the actual nonlinear SGD, not a bound comparing two artificial
+Gaussian processes.
+
+\textbf{Consistency consequence.} With exact endpoints, or with
+\(d_b\to_{\mathbb P}0\), empirical field calibration from the true \(Q\)
+gives \[
+\sup_{t\ge0}\max_\pm
+\left|\Pr(\tau_n\le t,J_n=\pm1)-\widehat\Psi_n^\pm(t)\right|
+\to_{\mathbb P}0
+\quad\text{if }M/n\to\infty.
+\tag{E.54}
+\] Indeed, (E.46) gives \(d_q=O_{\mathbb P}(M^{-1/2})\), while
+\(d_v=O_{\mathbb P}(\sqrt{\log M/M})\). Under \(M/n\to\infty\), every
+term in (E.51) vanishes. The grid logarithm in (E.52) is not a claimed
+necessary sample-complexity factor.
+
+This conclusion is for the stated empirical-root plug-in predictor under
+fixed positive \(\eta,\lambda\). It is not a minimax lower bound for all
+possible predictors.
+
+\subsection{5. A calibration limit law: consistent peaks can give
+inconsistent
+predictions}\label{calibration-a-calibration-limit-law-consistent-peaks-can-give-inconsistent-predictions}
+
+The threshold scale of the frozen SGD seed is \(s/\sqrt n\). The root
+CLT gives the corresponding calibration scale
+\(\sigma_g/(\lambda\sqrt M)\). Their squared ratio is \[
+\mathcal R_{M,n}^2
+=\frac{n\sigma_g^2}{M\lambda^2s^2}
+=\frac nM\frac{2+\eta\lambda}{\eta\lambda}.
+\tag{E.55}
+\] The cancellation of \(\sigma_g^2\) follows from comparing two
+uncertainties generated by the same score law and the same update \(U\).
+It need not hold for calibration from a different distribution.
+
+\subsubsection{Theorem E.7. Random limits of independently calibrated
+direction and time
+predictions}\label{calibration-theorem-e.7.-random-limits-of-independently-calibrated-direction-and-time-predictions}
+
+Assume G1--G4 and empirical calibration from the true \(Q\), with
+\(M=M_n\to\infty\). Suppose \[
+\frac{\sqrt n(x_{0,n}-q)}s\to z\in\mathbb R,\qquad
+\mathcal R_{M,n}\to r\in[0,\infty).
+\tag{E.56}
+\] Let \(\pi_n=\Pr(J_n=+1)\), and define the calibrated direction
+predictor \[
+\widehat\pi_{M,n}=\Phi(\widehat\mu_n/\widehat s_M).
+\tag{E.57}
+\] Then \[
+\pi_n\to\Phi(z),\qquad
+\widehat\pi_{M,n}\Rightarrow\Phi(z-rZ),
+\quad Z\sim N(0,1).
+\tag{E.58}
+\] The weak convergence in the second statement is over calibration
+samples, not over additional noise inserted into the adaptation
+recursion. For \(r>0\), this predictor is not consistent for \(\pi_n\).
+
+For a time statement, suppose also \[
+a_n\to a,\qquad c_n\to c,\qquad a<q<c,\qquad
+\max(|\widehat a_n-a_n|,|\widehat c_n-c_n|)
+\to_{\mathbb P}0.
+\tag{E.59}
+\] Write \(B^+=H(c)\), \(B^-=-H(a)\). Along any subsequence of batch
+sizes, still indexed by \(n\), and integer times \(t_n\) satisfying \[
+\sqrt n A^{-t_n}\to\zeta\in(0,\infty),
+\tag{E.60}
+\] the true joint CDFs satisfy \[
+\Pr(\tau_n\le t_n,J_n=+1)\to\Phi(z-\zeta B^+/s),
+\] \[
+\Pr(\tau_n\le t_n,J_n=-1)\to\Phi(-z-\zeta B^-/s).
+\tag{E.61}
+\] The corresponding calibrated predictions converge jointly in
+distribution to \[
+\left(
+\Phi(z-rZ-\zeta B^+/s),
+\ \Phi(-z+rZ-\zeta B^-/s)
+\right).
+\tag{E.62}
+\] The same calibration normal \(Z\) appears with opposite signs in the
+two branches. The integer sequence condition (E.60) retains the
+discrete-time phase.
+
+\textbf{Proof.} Equation (E.46) and (E.55) give \[
+\frac{\sqrt n(\widehat q_M-q)}s\Rightarrow rZ.
+\tag{E.63}
+\] Finite \(r\) implies \(M\) is at least of order \(n\) eventually.
+Thus \(d_v\to_{\mathbb P}0\), \(\sqrt n d_q^2\to_{\mathbb P}0\), and
+Lemma E.4 implies \[
+\frac{\widehat\mu_n-\mu_n}s
+=-\frac{\sqrt n(\widehat q_M-q)}s+o_{\mathbb P}(1).
+\tag{E.64}
+\] Also \(\mu_n/s\to z\) and \(\widehat s_M/s\to_{\mathbb P}1\). Theorem
+E.3 and Slutsky's theorem prove (E.58).
+
+For the time statement, \(t_n=O(\log n)\), and Proposition E.5 implies
+\[
+t_n|\log\widehat A_M-\log A|\to_{\mathbb P}0.
+\] Hence \(\widehat A_M^{-t_n}/A^{-t_n}\to_{\mathbb P}1\). Lemma E.4 and
+(E.59) give \(\widehat B_n^\pm\to_{\mathbb P}B^\pm\). Substitute these
+facts, (E.63), and (E.64) into the true and calibrated formulas. Joint
+convergence follows because both calibrated branches use the same
+estimated root. \(\square\)
+
+\textbf{Local bias variant.} The same proof applies if a different
+calibration scheme satisfies \[
+\frac{\sqrt n(\widehat q-q)}s\Rightarrow b+rZ,
+\tag{E.65}
+\] while its other geometry estimates have the convergence and
+growth-rate control used above. Replace \(z-rZ\) by \(z-b-rZ\) in the
+positive branch and \(-z+rZ\) by \(-z+b+rZ\) in the negative branch. A
+fixed nonzero source-to-target peak bias does not satisfy this
+finite-\(b\) assumption; \href{risk_boundaries.md}{Section 6} treats
+that distinct regime.
+
+\subsubsection{Corollary E.8. Explicit direction-prediction error at
+critical
+centering}\label{calibration-corollary-e.8.-explicit-direction-prediction-error-at-critical-centering}
+
+Under Theorem E.7, \[
+\mathbb E_{\rm cal}\widehat\pi_{M,n}
+\longrightarrow
+\Phi\!\left(\frac z{\sqrt{1+r^2}}\right).
+\tag{E.66}
+\] At \(z=0\), \[
+\mathbb E_{\rm cal}|\widehat\pi_{M,n}-\pi_n|
+\longrightarrow\frac{\arctan r}{\pi}.
+\tag{E.67}
+\] In particular, \(r=1\) gives limiting mean absolute probability error
+\(1/4\), even though \(\widehat q_M\to q\). At this value the limiting
+predictor is uniform on \((0,1)\).
+
+\textbf{Proof.} All predictors lie in \([0,1]\), so weak convergence in
+(E.58) also gives convergence of their bounded continuous moments. For
+an independent standard normal \(Z_0\), \[
+\mathbb E\Phi(z-rZ)
+=\Pr(Z_0+rZ\le z)
+=\Phi(z/\sqrt{1+r^2}).
+\] At \(z=0\), symmetry gives \[
+f(r):=\mathbb E|\Phi(rZ)-1/2|
+=2\int_0^\infty\{\Phi(ru)-1/2\}\varphi(u)\,du.
+\] Differentiation under the integral yields \[
+f'(r)=2\int_0^\infty u\varphi(ru)\varphi(u)\,du
+=\frac1{\pi(1+r^2)}.
+\] Since \(f(0)=0\), (E.67) follows. For \(r=1\), \(\Phi(-Z)\) is
+uniform. \(\square\)
+
+Equation (E.66) has the algebraic appearance of an inflated seed
+variance, but it is an average of random forecasts. The actual direction
+probability remains \(\Phi(z)\). Replacing the actual seed variance by
+\(s^2(1+r^2)\) would therefore answer a different question.
+
+If \(M\to\infty\) but \(M/n\to0\), the same empirical-root predictor
+instead converges in distribution to a variable taking the values zero
+and one with probabilities \(1/2,1/2\), for every fixed finite \(z\). To
+verify this, apply (E.46) on the calibration scale:
+\(\sqrt M(x_{0,n}-q)\to0\), so the sign of \(x_{0,n}-\widehat q_M\) is
+asymptotically balanced. Its magnitude multiplied by \(\sqrt n\)
+diverges in probability away from an arbitrarily small neighborhood of
+zero. Monotonicity and the local derivative normalization of
+\(\widehat H_M\) preserve this sign and growth. The predictor becomes
+extreme across calibration repetitions; it does not become accurate.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Relative calibration scale
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Direction prediction in the critical regime
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(\mathcal R_{M,n}\to0\) & Consistent for the actual direction
+probability \\
+\(\mathcal R_{M,n}\to r\in(0,\infty)\) & Nonvanishing random prediction
+error \\
+\(\mathcal R_{M,n}\to\infty\), with \(M\to\infty\) & Random extreme
+predictions for the empirical-root estimator \\
+\end{longtable}
+}
+
+These statements fix \(Q,w,\eta,\lambda\). The factor in (E.55) can be
+large when \(\eta\lambda\) is small, but the results do not establish a
+joint limit with \(\eta\to0\) or \(\lambda\to0\).
+
+\subsection{References}\label{calibration-references}
+
+{[}E-R1{]} A. W. van der Vaart. \emph{Asymptotic Statistics}. Cambridge
+University Press, 1998. Chapter 5, ``M- and Z-Estimators.''
+\href{https://doi.org/10.1017/CBO9780511802256.006}{Publisher chapter}.
+
+{[}E-R2{]} Y. Bakhtin. \emph{Exit asymptotics for small diffusion about
+an unstable equilibrium}. arXiv:math/0701569, 2007.
+\href{https://arxiv.org/abs/math/0701569}{Preprint}. Journal DOI:
+\href{https://doi.org/10.1016/j.spa.2007.06.003}{10.1016/j.spa.2007.06.003}.
+
+{[}E-R3{]} Y. Bakhtin and A. Gaál. \emph{Exit time asymptotics for
+dynamical systems with fast random switching near an unstable
+equilibrium}. arXiv:1901.05513, 2019.
+\href{https://arxiv.org/abs/1901.05513}{Preprint}. Journal DOI:
+\href{https://doi.org/10.1142/S0219493720500264}{10.1142/S0219493720500264}.
+
+{[}E-R4{]} P. Massart. \emph{The Tight Constant in the
+Dvoretzky--Kiefer--Wolfowitz Inequality}. The Annals of Probability
+18(3):1269--1283, 1990.
+\href{https://doi.org/10.1214/aop/1176990746}{DOI}.

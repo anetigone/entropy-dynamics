@@ -11,3 +11,5 @@ __pycache__/
 *.pdf
 *.svg
 /experiments/pilot_summary.json
+author-kit-CVPR2027-v1-latex/
+/paper/latex/build/
