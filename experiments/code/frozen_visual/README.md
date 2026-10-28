@@ -105,6 +105,17 @@ python experiments/code/frozen_visual/calibration_plot.py --input experiments/re
 
 ## 扩展理论对应的验证
 
+校准支持 `--workers` 多进程（默认1），每个任务是一个类别对、先验和校准重复，内部预算保持嵌套前缀。网格漂移和共轭逆迭代已批量计算；节点数、网格密度、截止半径及实验预算不变。建议先用4个worker；Linux运行前可设 `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1`，避免每个进程再启动大量数值库线程，按CPU与内存情况调整worker数，不承诺线性加速。
+
+每个重复完成后保存到输出目录的 `repeats/`；JSON最后以原子替换写入，表示该重复已经完整保存。中断后用同一命令、同一输出目录加 `--resume`，仅重算尚未保存的重复，worker数可改变。续跑直接比较输入路径与实验参数，不计算文件哈希；不要在原路径替换输入内容。未保存的正在计算的重复需要重算。Ctrl+C会取消尚未启动的任务并等待正在运行的worker结束；必要时终止进程后，已写出的重复仍可复用。全部重复保存后按固定顺序汇总，进程调度及续跑不改变校准编号与汇总顺序。旧版本只在结尾写结果，没有这些重复文件，不能恢复其打印过的进度。
+
+```shell
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4
+# 中断后：其余参数保持一致
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 python experiments/code/frozen_visual/visual_calibration.py --output experiments/results/calibration_parallel --repeats 20 --priors 0.5 0.4 0.3 --offsets -2 -1 0 1 2 --workers 4 --resume
+python experiments/code/frozen_visual/calibration_plot.py --input experiments/results/calibration_parallel
+```
+
 校准入口支持全部已有先验与offset；新一批参数应使用新目录。每次拟合增加 `theoretical_ratio`（目标经验场下的 R）、`target_standardized_initialization` 和匹配的局部方向参考。汇总保留跨校准重复的方向预测10/50/90%分位和标准差。绘图另生成 `calibration_scale.png`，比较CDF误差与理论尺度；方向图的 arctan(R)/π 曲线仅适用于目标临界居中，原训练峰 offset=0 不代表目标临界居中，不能将所有点都视为该极限的验证。逐重复预测在 `fits` 中保存；校准根失败在 `calibrations` 中保留，报告成功率时包含这些失败。
 
 ```shell
