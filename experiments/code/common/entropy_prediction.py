@@ -38,12 +38,15 @@ def summarize(times, directions, grid, left, right):
         return int(grid[ids[0]]) if len(ids) else None
     exited = times >= 0
     count = len(times)
+    # Count all exits directly. Adding left/right floating CDFs can put an
+    # exact empirical quantile just below its level and shift it by a step.
+    total = np.searchsorted(np.sort(times[exited]), grid, side='right')/count
     return dict(paths=count, censored=int(np.sum(~exited)),
-                observed_quantiles=[quantile(el+er, q) for q in [.1,.5,.9]],
+                observed_quantiles=[quantile(total, q) for q in [.1,.5,.9]],
                 predicted_quantiles=[quantile(left+right, q) for q in [.1,.5,.9]],
                 observed_right_by_horizon=float(er[-1]),
                 right_probability_bounds=[float(er[-1]), float(er[-1]+np.mean(~exited))],
                 predicted_right_by_horizon=float(right[-1]),
-                cdf_error=float(np.max(np.abs(el+er-left-right))),
+                cdf_error=float(np.max(np.abs(total-left-right))),
                 joint_cdf_error=float(max(np.max(abs(el-left)), np.max(abs(er-right)))),
                 cdf_sampling_band_95=float(np.sqrt(np.log(40)/(2*count))))

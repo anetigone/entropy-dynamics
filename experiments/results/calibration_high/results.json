@@ -1,0 +1,5839 @@
+{
+  "protocol": {
+    "features": "G:\\Documents\\papers\\cvpr28\\tta_entropy_dynamics\\experiments\\results\\visual_features\\features.npz",
+    "results": "G:\\Documents\\papers\\cvpr28\\tta_entropy_dynamics\\experiments\\results\\visual_shift\\results.json",
+    "samples": "G:\\Documents\\papers\\cvpr28\\tta_entropy_dynamics\\experiments\\results\\visual_shift\\samples.npz",
+    "diagnosis": "G:\\Documents\\papers\\cvpr28\\tta_entropy_dynamics\\experiments\\results\\visual_shift\\diagnosis\\results.json",
+    "budgets": [
+      1048576
+    ],
+    "repeats": 4,
+    "seed": 20261028,
+    "pairs": null,
+    "priors": [
+      0.5
+    ],
+    "batches": [
+      32,
+      128,
+      512
+    ],
+    "offsets": [
+      0.0
+    ],
+    "calibration": "Independent iid with-replacement prefixes from the fixed target empirical mixture; estimator receives scores and counts only",
+    "independence": "New calibration RNG, independent of saved adaptation RNG conditional on the fixed feature pool; no new official split",
+    "initialization": "Original saved initialization; it is never recentered using the new calibration",
+    "source_risk": "Training-label risk endpoints retained: target labels not used for field fitting or these endpoints",
+    "oracle_risk": "Target-label endpoints retained solely to isolate field calibration: not an unlabeled risk predictor",
+    "uncertainty": "Root Wald interval is asymptotic, estimated curvature/noise are plug-in; direction interval varies root only",
+    "variance": "Do not inflate actual SGD seed variance: calibration affects the predictor, not the saved initialization",
+    "aggregation": "Scores average each successful calibration separately; curves average successful calibrations only, availability reported; all reuse the same saved SGD paths",
+    "no_new_sgd": true,
+    "no_fit_to_exits": true
+  },
+  "cases": [
+    {
+      "key": "case_2",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "n": 32,
+      "offset": 0.0,
+      "x0": 0.5098274536732395,
+      "evaluation": {
+        "frozen_risk": 0.194,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.194
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            91,
+            225,
+            351
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.4999999999998072,
+          "cdf_error": 0.24402514668466158,
+          "joint_cdf_error": 0.2077068842593664,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5098274536732395,
+            "lambda_": 0.15093359713051763,
+            "A": 1.0150933597130518,
+            "seed_sd": 0.1760467841779658,
+            "seed_mean": 0.0,
+            "left_H": 1.3382741168562962,
+            "right_H": 0.15461438695556443
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.20666666666666667
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            136,
+            277,
+            386
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.2859089753202883,
+          "cdf_error": 0.0338926638673982,
+          "joint_cdf_error": 0.024630271843899876,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5276011797353996,
+            "lambda_": 0.14631406503466404,
+            "A": 1.0146314065034665,
+            "seed_sd": 0.1790294609254257,
+            "seed_mean": -0.10121898539817711,
+            "left_H": 2.196287806414353,
+            "right_H": 0.16311716651996405
+          },
+          "eventual_right": 0.285908975320712,
+          "direction_bound_distance": 0.007424358012621313
+        }
+      }
+    },
+    {
+      "key": "case_7",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "n": 128,
+      "offset": 0.0,
+      "x0": 0.5098274536732395,
+      "evaluation": {
+        "frozen_risk": 0.194,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.194
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            137,
+            271,
+            397
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.49999999999961436,
+          "cdf_error": 0.34658141629264666,
+          "joint_cdf_error": 0.3635326163068638,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5098274536732395,
+            "lambda_": 0.15093359713051763,
+            "A": 1.0150933597130518,
+            "seed_sd": 0.1760467841779658,
+            "seed_mean": 0.0,
+            "left_H": 1.3382741168562962,
+            "right_H": 0.15461438695556443
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.3616666666666667
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            258,
+            317,
+            409
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.1290796854653733,
+          "cdf_error": 0.04491079580577695,
+          "joint_cdf_error": 0.039620151609518206,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5276011797353996,
+            "lambda_": 0.14631406503466404,
+            "A": 1.0146314065034665,
+            "seed_sd": 0.1790294609254257,
+            "seed_mean": -0.20243797079635423,
+            "left_H": 2.196287806414353,
+            "right_H": 0.16311716651996405
+          },
+          "eventual_right": 0.12907968546589804,
+          "direction_bound_distance": 0.009253647867435294
+        }
+      }
+    },
+    {
+      "key": "case_12",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "n": 512,
+      "offset": 0.0,
+      "x0": 0.5098274536732395,
+      "evaluation": {
+        "frozen_risk": 0.194,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.194
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            183,
+            318,
+            443
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.49999999999922873,
+          "cdf_error": 0.3659673175961211,
+          "joint_cdf_error": 0.5830297400802944,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5098274536732395,
+            "lambda_": 0.15093359713051763,
+            "A": 1.0150933597130518,
+            "seed_sd": 0.1760467841779658,
+            "seed_mean": 0.0,
+            "left_H": 1.3382741168562962,
+            "right_H": 0.15461438695556443
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.48833333333333334
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            300,
+            331,
+            386
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.011864015436042584,
+          "cdf_error": 0.03615830157729666,
+          "joint_cdf_error": 0.03861419617417183,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5276011797353996,
+            "lambda_": 0.14631406503466404,
+            "A": 1.0146314065034665,
+            "seed_sd": 0.1790294609254257,
+            "seed_mean": -0.40487594159270845,
+            "left_H": 2.196287806414353,
+            "right_H": 0.16311716651996405
+          },
+          "eventual_right": 0.011864015436196742,
+          "direction_bound_distance": 0.00019734876953007505
+        }
+      }
+    },
+    {
+      "key": "case_47",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "n": 32,
+      "offset": 0.0,
+      "x0": -0.9053105993746824,
+      "evaluation": {
+        "frozen_risk": 0.14400000000000002,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 280,
+        "initial_inference_risk": 0.14400000000000002
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            99,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.0,
+          "cdf_error": 0.3173452057955812,
+          "joint_cdf_error": 0.34833333333333333,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9053105993746824,
+            "lambda_": 0.04783014369647649,
+            "A": 1.0047830143696477,
+            "seed_sd": 0.2736148374885316,
+            "seed_mean": 0.0,
+            "left_H": 0.09919795208885307,
+            "right_H": 520881377733.007
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.0
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            337,
+            1999,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.34592789819563674,
+          "cdf_error": 0.19804917805697925,
+          "joint_cdf_error": 0.16987619878798402,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9499437408099954,
+            "lambda_": 0.05286132112324199,
+            "A": 1.005286132112324,
+            "seed_sd": 0.26378902511850433,
+            "seed_mean": 0.2657676335196548,
+            "left_H": 0.07539986283524297,
+            "right_H": 2485.3178987669417
+          },
+          "eventual_right": 0.8431528947661202,
+          "direction_bound_distance": 0.028152894766120262
+        }
+      }
+    },
+    {
+      "key": "case_52",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "n": 128,
+      "offset": 0.0,
+      "x0": -0.9053105993746824,
+      "evaluation": {
+        "frozen_risk": 0.14400000000000002,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 390,
+        "initial_inference_risk": 0.14400000000000002
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            244,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.0,
+          "cdf_error": 0.47285400575638975,
+          "joint_cdf_error": 0.4732160305015152,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9053105993746824,
+            "lambda_": 0.04783014369647649,
+            "A": 1.0047830143696477,
+            "seed_sd": 0.2736148374885316,
+            "seed_mean": 0.0,
+            "left_H": 0.09919795208885307,
+            "right_H": 520881377733.007
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.0
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1962,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.21398338636681036,
+          "cdf_error": 0.16478115798607265,
+          "joint_cdf_error": 0.16006123051118207,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9499437408099954,
+            "lambda_": 0.05286132112324199,
+            "A": 1.005286132112324,
+            "seed_sd": 0.26378902511850433,
+            "seed_mean": 0.5315352670393096,
+            "left_H": 0.07539986283524297,
+            "right_H": 2485.3178987669417
+          },
+          "eventual_right": 0.9780477512146385,
+          "direction_bound_distance": 0.004714417881305111
+        }
+      }
+    },
+    {
+      "key": "case_57",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "n": 512,
+      "offset": 0.0,
+      "x0": -0.9053105993746824,
+      "evaluation": {
+        "frozen_risk": 0.14400000000000002,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 492,
+        "initial_inference_risk": 0.14400000000000002
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            390,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.0,
+          "cdf_error": 0.49948935297849256,
+          "joint_cdf_error": 0.4997653943465053,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9053105993746824,
+            "lambda_": 0.04783014369647649,
+            "A": 1.0047830143696477,
+            "seed_sd": 0.2736148374885316,
+            "seed_mean": 0.0,
+            "left_H": 0.09919795208885307,
+            "right_H": 520881377733.007
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.0
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.056443251052242335,
+          "cdf_error": 0.1268205711262289,
+          "joint_cdf_error": 0.12684843889797404,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9499437408099954,
+            "lambda_": 0.05286132112324199,
+            "A": 1.005286132112324,
+            "seed_sd": 0.26378902511850433,
+            "seed_mean": 1.0630705340786193,
+            "left_H": 0.07539986283524297,
+            "right_H": 2485.3178987669417
+          },
+          "eventual_right": 0.999972111916662,
+          "direction_bound_distance": 0.0
+        }
+      }
+    },
+    {
+      "key": "case_92",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "n": 32,
+      "offset": 0.0,
+      "x0": -0.24020933096117214,
+      "evaluation": {
+        "frozen_risk": 0.1375,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.1375
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            239,
+            424,
+            693
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.4999834898379185,
+          "cdf_error": 0.10826654624890941,
+          "joint_cdf_error": 0.1955065465893182,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.24020933096117214,
+            "lambda_": 0.06440332740916041,
+            "A": 1.006440332740916,
+            "seed_sd": 0.26306825390480926,
+            "seed_mean": 0.0,
+            "left_H": 0.27587930365842933,
+            "right_H": 0.7251035310063461
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.12
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            247,
+            390,
+            634
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6458521539369384,
+          "cdf_error": 0.017573028676158897,
+          "joint_cdf_error": 0.028130721428194394,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25664534917644677,
+            "lambda_": 0.06714602060040822,
+            "A": 1.0067146020600408,
+            "seed_sd": 0.2497605386032726,
+            "seed_mean": 0.09345193939041647,
+            "left_H": 0.23123720595653033,
+            "right_H": 0.5778902312852706
+          },
+          "eventual_right": 0.6458596472112959,
+          "direction_bound_distance": 0.025859647211295855
+        }
+      }
+    },
+    {
+      "key": "case_97",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "n": 128,
+      "offset": 0.0,
+      "x0": -0.24020933096117214,
+      "evaluation": {
+        "frozen_risk": 0.1375,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.1375
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            347,
+            532,
+            801
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.49996697967586534,
+          "cdf_error": 0.1919287919009487,
+          "joint_cdf_error": 0.362864682032292,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.24020933096117214,
+            "lambda_": 0.06440332740916041,
+            "A": 1.006440332740916,
+            "seed_sd": 0.26306825390480926,
+            "seed_mean": 0.0,
+            "left_H": 0.27587930365842933,
+            "right_H": 0.7251035310063461
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.2516666666666667
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            361,
+            480,
+            710
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.7728579793414039,
+          "cdf_error": 0.04571574946250223,
+          "joint_cdf_error": 0.039886379965573815,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25664534917644677,
+            "lambda_": 0.06714602060040822,
+            "A": 1.0067146020600408,
+            "seed_sd": 0.2497605386032726,
+            "seed_mean": 0.18690387878083295,
+            "left_H": 0.23123720595653033,
+            "right_H": 0.5778902312852706
+          },
+          "eventual_right": 0.7728701273334164,
+          "direction_bound_distance": 0.02120346066674972
+        }
+      }
+    },
+    {
+      "key": "case_102",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "n": 512,
+      "offset": 0.0,
+      "x0": -0.24020933096117214,
+      "evaluation": {
+        "frozen_risk": 0.1375,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.1375
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            455,
+            640,
+            909
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.4999339593519569,
+          "cdf_error": 0.3273531826160674,
+          "joint_cdf_error": 0.6302861550316637,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.24020933096117214,
+            "lambda_": 0.06440332740916041,
+            "A": 1.006440332740916,
+            "seed_sd": 0.26306825390480926,
+            "seed_mean": 0.0,
+            "left_H": 0.27587930365842933,
+            "right_H": 0.7251035310063461
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.43500000000000005
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            438,
+            527,
+            712
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.9327492353019671,
+          "cdf_error": 0.038544778504711164,
+          "joint_cdf_error": 0.034487928123045686,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25664534917644677,
+            "lambda_": 0.06714602060040822,
+            "A": 1.0067146020600408,
+            "seed_sd": 0.2497605386032726,
+            "seed_mean": 0.3738077575616659,
+            "left_H": 0.23123720595653033,
+            "right_H": 0.5778902312852706
+          },
+          "eventual_right": 0.9327597245888938,
+          "direction_bound_distance": 0.002240275411106274
+        }
+      }
+    },
+    {
+      "key": "case_137",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "n": 32,
+      "offset": 0.0,
+      "x0": -0.7693620199302021,
+      "evaluation": {
+        "frozen_risk": 0.133,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.133
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            74,
+            303,
+            461
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.4999999998460756,
+          "cdf_error": 0.3921906047095213,
+          "joint_cdf_error": 0.521149240652287,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.7693620199302021,
+            "lambda_": 0.13252597619473022,
+            "A": 1.013252597619473,
+            "seed_sd": 0.18078652267879478,
+            "seed_mean": 0.0,
+            "left_H": 0.10808552630800497,
+            "right_H": 3.360778556500116
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.44166666666666665
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            282,
+            326,
+            405
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9645462326504158,
+          "cdf_error": 0.06451914900850428,
+          "joint_cdf_error": 0.06512470145836147,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8262986248486447,
+            "lambda_": 0.12745749343663026,
+            "A": 1.0127457493436631,
+            "seed_sd": 0.1845034730956553,
+            "seed_mean": 0.33322603602511325,
+            "left_H": 0.0539291576660689,
+            "right_H": 3.819283025273431
+          },
+          "eventual_right": 0.9645462327416787,
+          "direction_bound_distance": 0.02287956607501207
+        }
+      }
+    },
+    {
+      "key": "case_142",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "n": 128,
+      "offset": 0.0,
+      "x0": -0.7693620199302021,
+      "evaluation": {
+        "frozen_risk": 0.133,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.133
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            127,
+            356,
+            514
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.4999999996921513,
+          "cdf_error": 0.4281587170160157,
+          "joint_cdf_error": 0.8692094387268364,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.7693620199302021,
+            "lambda_": 0.13252597619473022,
+            "A": 1.013252597619473,
+            "seed_sd": 0.18078652267879478,
+            "seed_mean": 0.0,
+            "left_H": 0.10808552630800497,
+            "right_H": 3.360778556500116
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.4983333333333333
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            306,
+            330,
+            364
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9998481587704684,
+          "cdf_error": 0.02990603538328851,
+          "joint_cdf_error": 0.02977441240233447,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8262986248486447,
+            "lambda_": 0.12745749343663026,
+            "A": 1.0127457493436631,
+            "seed_sd": 0.1845034730956553,
+            "seed_mean": 0.6664520720502265,
+            "left_H": 0.0539291576660689,
+            "right_H": 3.819283025273431
+          },
+          "eventual_right": 0.9998481587718373,
+          "direction_bound_distance": 0.0015148254385040083
+        }
+      }
+    },
+    {
+      "key": "case_147",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "n": 512,
+      "offset": 0.0,
+      "x0": -0.7693620199302021,
+      "evaluation": {
+        "frozen_risk": 0.133,
+        "risk_band_95": 0.04680826120821986,
+        "epsilon_below_risk_uncertainty": true,
+        "classwise_risk_jumps": [
+          0.0005,
+          0.0005
+        ],
+        "invalid_paths": 0,
+        "censored": 0,
+        "initial_inference_risk": 0.133
+      },
+      "baseline": {
+        "source_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            180,
+            408,
+            566
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.4999999993843026,
+          "cdf_error": 0.5400521458714161,
+          "joint_cdf_error": 0.9988869985285201,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.7693620199302021,
+            "lambda_": 0.13252597619473022,
+            "A": 1.013252597619473,
+            "seed_sd": 0.18078652267879478,
+            "seed_mean": 0.0,
+            "left_H": 0.10808552630800497,
+            "right_H": 3.360778556500116
+          },
+          "eventual_right": 0.5,
+          "direction_bound_distance": 0.5
+        },
+        "target_conjugate": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            317,
+            330,
+            345
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999997481,
+          "cdf_error": 0.03709045727357252,
+          "joint_cdf_error": 0.03709045727343796,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8262986248486447,
+            "lambda_": 0.12745749343663026,
+            "A": 1.0127457493436631,
+            "seed_sd": 0.1845034730956553,
+            "seed_mean": 1.332904144100453,
+            "left_H": 0.0539291576660689,
+            "right_H": 3.819283025273431
+          },
+          "eventual_right": 0.9999999999997481,
+          "direction_bound_distance": 2.51909604287448e-13
+        }
+      }
+    }
+  ],
+  "calibrations": [
+    {
+      "key": "calibration_0",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 0,
+      "geometry": {
+        "q": 0.5303680182619802,
+        "lambda_": 0.14667138708042027,
+        "A": 1.014667138708042,
+        "seed_sd": 0.17886223750375338
+      },
+      "root_se": 0.0020471405194881953,
+      "root_interval": [
+        0.5263556965724907,
+        0.5343803399514697
+      ],
+      "target_q": 0.5276011797353996,
+      "root_error": 0.0027668385265806617,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_1",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 1,
+      "geometry": {
+        "q": 0.5264563480232279,
+        "lambda_": 0.14646089274195528,
+        "A": 1.0146460892741955,
+        "seed_sd": 0.1788996635980814
+      },
+      "root_se": 0.0020490290297437265,
+      "root_interval": [
+        0.5224403249216532,
+        0.5304723711248027
+      ],
+      "target_q": 0.5276011797353996,
+      "root_error": -0.0011448317121716123,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_2",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 2,
+      "geometry": {
+        "q": 0.5297353949221745,
+        "lambda_": 0.14596695185806108,
+        "A": 1.014596695185806,
+        "seed_sd": 0.17918967052809281
+      },
+      "root_se": 0.0020557949902293214,
+      "root_interval": [
+        0.5257061107817271,
+        0.5337646790626218
+      ],
+      "target_q": 0.5276011797353996,
+      "root_error": 0.0021342151867749237,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_3",
+      "pair": [
+        3,
+        5
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 3,
+      "geometry": {
+        "q": 0.5288901349936344,
+        "lambda_": 0.14663907405119397,
+        "A": 1.0146639074051194,
+        "seed_sd": 0.17884863359336703
+      },
+      "root_se": 0.0020472086981236,
+      "root_interval": [
+        0.5248776796764749,
+        0.5329025903107938
+      ],
+      "target_q": 0.5276011797353996,
+      "root_error": 0.001288955258234803,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_4",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 0,
+      "geometry": {
+        "q": -0.9471303766562628,
+        "lambda_": 0.05262092018867456,
+        "A": 1.0052620920188675,
+        "seed_sd": 0.2643889469042832
+      },
+      "root_se": 0.005040222295262083,
+      "root_interval": [
+        -0.9570090308290522,
+        -0.9372517224834733
+      ],
+      "target_q": -0.9499437408099954,
+      "root_error": 0.002813364153732678,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_5",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 1,
+      "geometry": {
+        "q": -0.9431052065750323,
+        "lambda_": 0.051802555073588115,
+        "A": 1.0051802555073588,
+        "seed_sd": 0.2666615798010348
+      },
+      "root_se": 0.005123439477285288,
+      "root_interval": [
+        -0.9531469634274822,
+        -0.9330634497225824
+      ],
+      "target_q": -0.9499437408099954,
+      "root_error": 0.006838534234963167,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_6",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 2,
+      "geometry": {
+        "q": -0.9410442727466737,
+        "lambda_": 0.05172729345549676,
+        "A": 1.0051727293455497,
+        "seed_sd": 0.26691878999530827
+      },
+      "root_se": 0.005132101155788004,
+      "root_interval": [
+        -0.9511030061770346,
+        -0.9309855393163128
+      ],
+      "target_q": -0.9499437408099954,
+      "root_error": 0.008899468063321758,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_7",
+      "pair": [
+        1,
+        9
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 3,
+      "geometry": {
+        "q": -0.9559446813470012,
+        "lambda_": 0.053120726600828116,
+        "A": 1.0053120726600828,
+        "seed_sd": 0.26308586327731037
+      },
+      "root_se": 0.004991792640168204,
+      "root_interval": [
+        -0.9657284151400229,
+        -0.9461609475539794
+      ],
+      "target_q": -0.9499437408099954,
+      "root_error": -0.006000940537005728,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_8",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 0,
+      "geometry": {
+        "q": -0.2592681048867028,
+        "lambda_": 0.0669992600681486,
+        "A": 1.0066999260068148,
+        "seed_sd": 0.25006457731235
+      },
+      "root_se": 0.004226281628474675,
+      "root_interval": [
+        -0.2675514646670365,
+        -0.25098474510636914
+      ],
+      "target_q": -0.25664534917644677,
+      "root_error": -0.002622755710256053,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_9",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 1,
+      "geometry": {
+        "q": -0.2600823180776112,
+        "lambda_": 0.06718881649963174,
+        "A": 1.0067188816499633,
+        "seed_sd": 0.24973810488369982
+      },
+      "root_se": 0.004214825782895115,
+      "root_interval": [
+        -0.26834322481319645,
+        -0.2518214113420259
+      ],
+      "target_q": -0.25664534917644677,
+      "root_error": -0.0034369689011644056,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_10",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 2,
+      "geometry": {
+        "q": -0.25223179498239096,
+        "lambda_": 0.06681963267839065,
+        "A": 1.006681963267839,
+        "seed_sd": 0.25057751668396755
+      },
+      "root_se": 0.004240620181526237,
+      "root_interval": [
+        -0.2605432578102961,
+        -0.24392033215448583
+      ],
+      "target_q": -0.25664534917644677,
+      "root_error": 0.004413554194055813,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_11",
+      "pair": [
+        4,
+        7
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 3,
+      "geometry": {
+        "q": -0.26534386277372274,
+        "lambda_": 0.06719999709939516,
+        "A": 1.0067199997099394,
+        "seed_sd": 0.24965496235088136
+      },
+      "root_se": 0.004213073236495407,
+      "root_interval": [
+        -0.27360133458148334,
+        -0.25708639096596214
+      ],
+      "target_q": -0.25664534917644677,
+      "root_error": -0.00869851359727597,
+      "target_q_in_interval": false
+    },
+    {
+      "key": "calibration_12",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 0,
+      "geometry": {
+        "q": -0.8285292935039128,
+        "lambda_": 0.1274121503127021,
+        "A": 1.0127412150312702,
+        "seed_sd": 0.18454324521272225
+      },
+      "root_se": 0.002265096682793877,
+      "root_interval": [
+        -0.8329688014236899,
+        -0.8240897855841357
+      ],
+      "target_q": -0.8262986248486447,
+      "root_error": -0.0022306686552681088,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_13",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 1,
+      "geometry": {
+        "q": -0.8267645226703678,
+        "lambda_": 0.12805966592033574,
+        "A": 1.0128059665920335,
+        "seed_sd": 0.1840606922345514
+      },
+      "root_se": 0.0022534912064707934,
+      "root_interval": [
+        -0.8311812842745283,
+        -0.8223477610662073
+      ],
+      "target_q": -0.8262986248486447,
+      "root_error": -0.0004658978217231269,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_14",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 2,
+      "geometry": {
+        "q": -0.8298135467658968,
+        "lambda_": 0.12789350738914734,
+        "A": 1.0127893507389147,
+        "seed_sd": 0.1841915050369753
+      },
+      "root_se": 0.002256547885751256,
+      "root_interval": [
+        -0.8342362993513592,
+        -0.8253907941804344
+      ],
+      "target_q": -0.8262986248486447,
+      "root_error": -0.0035149219172521118,
+      "target_q_in_interval": true
+    },
+    {
+      "key": "calibration_15",
+      "pair": [
+        0,
+        8
+      ],
+      "prior": 0.5,
+      "budget": 1048576,
+      "repeat": 3,
+      "geometry": {
+        "q": -0.8222131529341302,
+        "lambda_": 0.12705557083886104,
+        "A": 1.012705557083886,
+        "seed_sd": 0.18501782456603932
+      },
+      "root_se": 0.0022740859791225265,
+      "root_interval": [
+        -0.8266702795509578,
+        -0.8177560263173026
+      ],
+      "target_q": -0.8262986248486447,
+      "root_error": 0.004085471914514471,
+      "target_q_in_interval": true
+    }
+  ],
+  "fits": [
+    {
+      "calibration": "calibration_0",
+      "case": "case_2",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.06474466443332862,
+      "root_standardized_error": 0.08742472996255454,
+      "local_direction": 0.2579643521064505,
+      "local_direction_interval": [
+        0.21871771774443854,
+        0.30057873726623774
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            132,
+            249,
+            355
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.25634157381083233,
+          "cdf_error": 0.16541014844413587,
+          "joint_cdf_error": 0.20274520500885432,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.1170949346915088,
+            "left_H": 1.4631780815667015,
+            "right_H": 0.13463876770077024
+          },
+          "eventual_right": 0.2563415738111413,
+          "direction_bound_distance": 0.036991759522192025
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            144,
+            276,
+            382
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.25634977192645525,
+          "cdf_error": 0.047076646270435785,
+          "joint_cdf_error": 0.05771300063859086,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.11709038077063184,
+            "left_H": 2.2075330132350626,
+            "right_H": 0.16063750579911115
+          },
+          "eventual_right": 0.2563497719268239,
+          "direction_bound_distance": 0.036983561406509435
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_0",
+      "case": "case_7",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.12948932886665723,
+      "root_standardized_error": 0.17484945992510909,
+      "local_direction": 0.09692600664485873,
+      "local_direction_interval": [
+        0.0602041256895282,
+        0.1479021004700402
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            236,
+            284,
+            370
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.09521112932414277,
+          "cdf_error": 0.27522391412252933,
+          "joint_cdf_error": 0.2946301618881332,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.2341898693830176,
+            "left_H": 1.4631780815667015,
+            "right_H": 0.13463876770077024
+          },
+          "eventual_right": 0.09521112932446774,
+          "direction_bound_distance": 0.0431222040088656
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            262,
+            312,
+            397
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.09521975028157048,
+          "cdf_error": 0.04019205440466944,
+          "joint_cdf_error": 0.07482707397168753,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.2341807615412637,
+            "left_H": 2.2075330132350626,
+            "right_H": 0.16063750579911115
+          },
+          "eventual_right": 0.095219750281958,
+          "direction_bound_distance": 0.04311358305137533
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_0",
+      "case": "case_12",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.25897865773331447,
+      "root_standardized_error": 0.34969891985021817,
+      "local_direction": 0.0046811146457084165,
+      "local_direction_interval": [
+        0.0009477841111569403,
+        0.018266411291601066
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            265,
+            293,
+            338
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.004413768698843154,
+          "cdf_error": 0.52389799624423,
+          "joint_cdf_error": 0.5297819798559312,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.4683797387660352,
+            "left_H": 1.4631780815667015,
+            "right_H": 0.13463876770077024
+          },
+          "eventual_right": 0.004413768698892805,
+          "direction_bound_distance": 0.007252897967773862
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            294,
+            321,
+            366
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.004415086443790214,
+          "cdf_error": 0.1700835990648866,
+          "joint_cdf_error": 0.17580099466549098,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5303680182619802,
+            "lambda_": 0.14667138708042027,
+            "A": 1.014667138708042,
+            "seed_sd": 0.17886223750375338,
+            "seed_mean": -0.4683615230825274,
+            "left_H": 2.2075330132350626,
+            "right_H": 0.16063750579911115
+          },
+          "eventual_right": 0.004415086443849471,
+          "direction_bound_distance": 0.007251580222817196
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_1",
+      "case": "case_2",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.06479083493571955,
+      "root_standardized_error": -0.03617363367166282,
+      "local_direction": 0.2995101137807259,
+      "local_direction_interval": [
+        0.2569433531368974,
+        0.34501207423580876
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            122,
+            249,
+            359
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.2983860039743677,
+          "cdf_error": 0.15753905799956647,
+          "joint_cdf_error": 0.15559847239616972,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.09464654652664062,
+            "left_H": 1.4474382558338714,
+            "right_H": 0.13827600012572747
+          },
+          "eventual_right": 0.29838600397472387,
+          "direction_bound_distance": 0.005052670641390533
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            133,
+            276,
+            386
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.2983899552380222,
+          "cdf_error": 0.025293968196677064,
+          "joint_cdf_error": 0.022977321262184103,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.09464450849020746,
+            "left_H": 2.1838424397839606,
+            "right_H": 0.16424910400820086
+          },
+          "eventual_right": 0.2983899552384453,
+          "direction_bound_distance": 0.005056621905111969
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_1",
+      "case": "case_7",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.1295816698714391,
+      "root_standardized_error": -0.07234726734332564,
+      "local_direction": 0.14648696517551868,
+      "local_direction_interval": [
+        0.09584509257362894,
+        0.2125383839096247
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            230,
+            290,
+            385
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.1450057438845309,
+          "cdf_error": 0.22107497681383947,
+          "joint_cdf_error": 0.1972187993579497,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.18929309305328124,
+            "left_H": 1.4474382558338714,
+            "right_H": 0.13827600012572747
+          },
+          "eventual_right": 0.14500574388499904,
+          "direction_bound_distance": 0.006672410551665703
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            253,
+            318,
+            412
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.1450109371030881,
+          "cdf_error": 0.05418907462569089,
+          "joint_cdf_error": 0.06309335056223642,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.18928901698041492,
+            "left_H": 2.1838424397839606,
+            "right_H": 0.16424910400820086
+          },
+          "eventual_right": 0.14501093710364416,
+          "direction_bound_distance": 0.006677603770310819
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_1",
+      "case": "case_12",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.2591633397428782,
+      "root_standardized_error": -0.14469453468665128,
+      "local_direction": 0.017722398108520138,
+      "local_direction_interval": [
+        0.0045113768819274305,
+        0.05532379225535219
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            274,
+            306,
+            365
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.01716420522149606,
+          "cdf_error": 0.3431595571936755,
+          "joint_cdf_error": 0.3412588628781207,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.3785861861065625,
+            "left_H": 1.4474382558338714,
+            "right_H": 0.13827600012572747
+          },
+          "eventual_right": 0.017164205221670666,
+          "direction_bound_distance": 0.005497538555003999
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            302,
+            335,
+            393
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.01716614230782492,
+          "cdf_error": 0.04221708942253986,
+          "joint_cdf_error": 0.04397149634319453,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5264563480232279,
+            "lambda_": 0.14646089274195528,
+            "A": 1.0146460892741955,
+            "seed_sd": 0.1788996635980814,
+            "seed_mean": -0.37857803396082984,
+            "left_H": 2.1838424397839606,
+            "right_H": 0.16424910400820086
+          },
+          "eventual_right": 0.017166142308032345,
+          "direction_bound_distance": 0.005499475641365678
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_2",
+      "case": "case_2",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.06489957033957865,
+      "root_standardized_error": 0.06743551696035022,
+      "local_direction": 0.26484623790597306,
+      "local_direction_interval": [
+        0.22492163520880065,
+        0.308088902974672
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            131,
+            250,
+            357
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.26329893347266453,
+          "cdf_error": 0.15649537988637924,
+          "joint_cdf_error": 0.18767086080817394,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.11346432061115107,
+            "left_H": 1.4677146586068703,
+            "right_H": 0.13515051827987085
+          },
+          "eventual_right": 0.26329893347302513,
+          "direction_bound_distance": 0.030034399860308203
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            143,
+            278,
+            385
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.26329768822110766,
+          "cdf_error": 0.04955633495206152,
+          "joint_cdf_error": 0.041080701372261996,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.11346500409173393,
+            "left_H": 2.2177274590836897,
+            "right_H": 0.1611188998854468
+          },
+          "eventual_right": 0.26329768822153754,
+          "direction_bound_distance": 0.030035645111795795
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_2",
+      "case": "case_7",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.1297991406791573,
+      "root_standardized_error": 0.13487103392070043,
+      "local_direction": 0.1043856810483687,
+      "local_direction_interval": [
+        0.06534930826554304,
+        0.1580391584774381
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            237,
+            286,
+            374
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.10268211732428695,
+          "cdf_error": 0.25318694752401266,
+          "joint_cdf_error": 0.2665875875224848,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.22692864122230214,
+            "left_H": 1.4677146586068703,
+            "right_H": 0.13515051827987085
+          },
+          "eventual_right": 0.10268211732468224,
+          "direction_bound_distance": 0.03565121600865109
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            263,
+            314,
+            402
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.10268075246314723,
+          "cdf_error": 0.03152871838122728,
+          "joint_cdf_error": 0.05931578204194854,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.22693000818346787,
+            "left_H": 2.2177274590836897,
+            "right_H": 0.1611188998854468
+          },
+          "eventual_right": 0.10268075246361852,
+          "direction_bound_distance": 0.03565258086971482
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_2",
+      "case": "case_12",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.2595982813583146,
+      "root_standardized_error": 0.26974206784140087,
+      "local_direction": 0.005970178813203353,
+      "local_direction_interval": [
+        0.0012526301032135371,
+        0.022476242157246595
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            268,
+            297,
+            344
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.005657262733652179,
+          "cdf_error": 0.4758657891232064,
+          "joint_cdf_error": 0.4810552141652302,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.45385728244460427,
+            "left_H": 1.4677146586068703,
+            "right_H": 0.13515051827987085
+          },
+          "eventual_right": 0.005657262733723478,
+          "direction_bound_distance": 0.006009403932943189
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            297,
+            325,
+            373
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.005657016513280248,
+          "cdf_error": 0.1139090304580392,
+          "joint_cdf_error": 0.11883535001002321,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5297353949221745,
+            "lambda_": 0.14596695185806108,
+            "A": 1.014596695185806,
+            "seed_sd": 0.17918967052809281,
+            "seed_mean": -0.45386001636693574,
+            "left_H": 2.2177274590836897,
+            "right_H": 0.1611188998854468
+          },
+          "eventual_right": 0.005657016513365251,
+          "direction_bound_distance": 0.006009650153301416
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_3",
+      "case": "case_2",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.06475174560130242,
+      "root_standardized_error": 0.04072755395821877,
+      "local_direction": 0.27327464704084903,
+      "local_direction_interval": [
+        0.2327409226561717,
+        0.3170272597283753
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            128,
+            249,
+            357
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.2718311505380683,
+          "cdf_error": 0.1616326130994109,
+          "joint_cdf_error": 0.18449802999937795,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.10861195501230142,
+            "left_H": 1.4603163629299023,
+            "right_H": 0.13595799850526405
+          },
+          "eventual_right": 0.2718311505383918,
+          "direction_bound_distance": 0.021502182794941538
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            136,
+            277,
+            372
+          ],
+          "predicted_quantiles": [
+            140,
+            276,
+            384
+          ],
+          "observed_right_by_horizon": 0.29333333333333333,
+          "right_probability_bounds": [
+            0.29333333333333333,
+            0.29333333333333333
+          ],
+          "predicted_right_by_horizon": 0.2718267885560689,
+          "cdf_error": 0.03921738879482045,
+          "joint_cdf_error": 0.04099347968883804,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.1086143065058247,
+            "left_H": 2.204273890449572,
+            "right_H": 0.1619369948256824
+          },
+          "eventual_right": 0.2718267885564542,
+          "direction_bound_distance": 0.021506544776879133
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_3",
+      "case": "case_7",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.12950349120260485,
+      "root_standardized_error": 0.08145510791643754,
+      "local_direction": 0.11393228118117166,
+      "local_direction_interval": [
+        0.07218625632466251,
+        0.1705343546466131
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            235,
+            286,
+            376
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.11226536158455669,
+          "cdf_error": 0.25236775951689866,
+          "joint_cdf_error": 0.25731143375026255,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.21722391002460284,
+            "left_H": 1.4603163629299023,
+            "right_H": 0.13595799850526405
+          },
+          "eventual_right": 0.11226536158492884,
+          "direction_bound_distance": 0.0260679717484045
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            253,
+            314,
+            416
+          ],
+          "predicted_quantiles": [
+            261,
+            314,
+            403
+          ],
+          "observed_right_by_horizon": 0.13833333333333334,
+          "right_probability_bounds": [
+            0.13833333333333334,
+            0.13833333333333334
+          ],
+          "predicted_right_by_horizon": 0.11226034439193783,
+          "cdf_error": 0.024135836446286252,
+          "joint_cdf_error": 0.04838635942435232,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.2172286130116494,
+            "left_H": 2.204273890449572,
+            "right_H": 0.1619369948256824
+          },
+          "eventual_right": 0.11226034439238108,
+          "direction_bound_distance": 0.026072988940952252
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_3",
+      "case": "case_12",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.2590069824052097,
+      "root_standardized_error": 0.16291021583287507,
+      "local_direction": 0.007937954226497798,
+      "local_direction_interval": [
+        0.001753528274575546,
+        0.028447832256428617
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            269,
+            298,
+            348
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.007567407613032842,
+          "cdf_error": 0.4569298260207506,
+          "joint_cdf_error": 0.4609461267337053,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.4344478200492057,
+            "left_H": 1.4603163629299023,
+            "right_H": 0.13595799850526405
+          },
+          "eventual_right": 0.007567407613114258,
+          "direction_bound_distance": 0.004099259053552409
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            298,
+            333,
+            390
+          ],
+          "predicted_quantiles": [
+            297,
+            326,
+            376
+          ],
+          "observed_right_by_horizon": 0.011666666666666667,
+          "right_probability_bounds": [
+            0.011666666666666667,
+            0.011666666666666667
+          ],
+          "predicted_right_by_horizon": 0.007566309926312022,
+          "cdf_error": 0.09831204003368348,
+          "joint_cdf_error": 0.10197870267743636,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": 0.5288901349936344,
+            "lambda_": 0.14663907405119397,
+            "A": 1.0146639074051194,
+            "seed_sd": 0.17884863359336703,
+            "seed_mean": -0.4344572260232988,
+            "left_H": 2.204273890449572,
+            "right_H": 0.1619369948256824
+          },
+          "eventual_right": 0.007566309926408976,
+          "direction_bound_distance": 0.004100356740257691
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_4",
+      "case": "case_47",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.10784037397623011,
+      "root_standardized_error": 0.060331512887098655,
+      "local_direction": 0.8145460737495431,
+      "local_direction_interval": [
+        0.7528263707040916,
+        0.8656664647823424
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            265,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.2389132172473385,
+          "cdf_error": 0.21561380231088328,
+          "joint_cdf_error": 0.20441224206417363,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.24831352825579484,
+            "left_H": 0.06396956737493051,
+            "right_H": 2789.3355250517134
+          },
+          "eventual_right": 0.826185411478328,
+          "direction_bound_distance": 0.011185411478328078
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            302,
+            1996,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.3371802777873832,
+          "cdf_error": 0.1786211814544168,
+          "joint_cdf_error": 0.16745664596560653,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.24826824420948854,
+            "left_H": 0.07771568000639763,
+            "right_H": 2299.124630521661
+          },
+          "eventual_right": 0.8261414468956623,
+          "direction_bound_distance": 0.011141446895662321
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_4",
+      "case": "case_52",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.21568074795246023,
+      "root_standardized_error": 0.12066302577419731,
+      "local_direction": 0.9632367155917589,
+      "local_direction_interval": [
+        0.9141594039679765,
+        0.9865261556094306
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1997,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.07786126802620791,
+          "cdf_error": 0.24789281196707935,
+          "joint_cdf_error": 0.25138433852779035,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.49662705651158967,
+            "left_H": 0.06396956737493051,
+            "right_H": 2789.3355250517134
+          },
+          "eventual_right": 0.9698364721751708,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1960,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.20035834266782437,
+          "cdf_error": 0.159933336537941,
+          "joint_cdf_error": 0.16344594792573364,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.4965364884189771,
+            "left_H": 0.07771568000639763,
+            "right_H": 2299.124630521661
+          },
+          "eventual_right": 0.9698130511537542,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_4",
+      "case": "case_57",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.43136149590492046,
+      "root_standardized_error": 0.24132605154839462,
+      "local_direction": 0.9998276078886911,
+      "local_direction_interval": [
+        0.9968681083689372,
+        0.9999951678114641
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.0022612607211134317,
+          "cdf_error": 0.17788694086490958,
+          "joint_cdf_error": 0.17797294154356888,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.9932541130231793,
+            "left_H": 0.06396956737493051,
+            "right_H": 2789.3355250517134
+          },
+          "eventual_right": 0.9999139470678564,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.046412164179739056,
+          "cdf_error": 0.13621541135717782,
+          "joint_cdf_error": 0.13630163643876586,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9471303766562628,
+            "lambda_": 0.05262092018867456,
+            "A": 1.0052620920188675,
+            "seed_sd": 0.2643889469042832,
+            "seed_mean": 0.9930729768379541,
+            "left_H": 0.07771568000639763,
+            "right_H": 2299.124630521661
+          },
+          "eventual_right": 0.9999137112767428,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_5",
+      "case": "case_47",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.10868663720031646,
+      "root_standardized_error": 0.14664973810025603,
+      "local_direction": 0.7886540953149339,
+      "local_direction_interval": [
+        0.7219815092845283,
+        0.8448950934573038
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            227,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.12338572004877585,
+          "cdf_error": 0.24576872335704825,
+          "joint_cdf_error": 0.26184586846212343,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.22338726737768141,
+            "left_H": 0.06736177175132553,
+            "right_H": 2893.560767039256
+          },
+          "eventual_right": 0.7989055145502119,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            263,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.20852581887513555,
+          "cdf_error": 0.19799735255368128,
+          "joint_cdf_error": 0.21396774521172973,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.22348393018439683,
+            "left_H": 0.08099344727761174,
+            "right_H": 2391.497535202128
+          },
+          "eventual_right": 0.7990073163023577,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_5",
+      "case": "case_52",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.21737327440063292,
+      "root_standardized_error": 0.29329947620051205,
+      "local_direction": 0.94559004821085,
+      "local_direction_interval": [
+        0.8804972506555072,
+        0.9787995491184724
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.010266750297535784,
+          "cdf_error": 0.29281804550298174,
+          "joint_cdf_error": 0.31306658303579754,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.44677453475536283,
+            "left_H": 0.06736177175132553,
+            "right_H": 2893.560767039256
+          },
+          "eventual_right": 0.9530756865115664,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.052284665029324176,
+          "cdf_error": 0.2528340278087942,
+          "joint_cdf_error": 0.273009479911593,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.44696786036879366,
+            "left_H": 0.08099344727761174,
+            "right_H": 2391.497535202128
+          },
+          "eventual_right": 0.9531467135929377,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_5",
+      "case": "case_57",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.43474654880126584,
+      "root_standardized_error": 0.5865989524010241,
+      "local_direction": 0.9993294581282736,
+      "local_direction_interval": [
+        0.9907374598340108,
+        0.9999753717946762
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 1.8028263302123884e-06,
+          "cdf_error": 0.17959601031919223,
+          "joint_cdf_error": 0.17999852496436183,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.8935490695107257,
+            "left_H": 0.06736177175132553,
+            "right_H": 2893.560767039256
+          },
+          "eventual_right": 0.9995972137093531,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.0005848082122138915,
+          "cdf_error": 0.1790812870357175,
+          "joint_cdf_error": 0.17948164449060974,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9431052065750323,
+            "lambda_": 0.051802555073588115,
+            "A": 1.0051802555073588,
+            "seed_sd": 0.2666615798010348,
+            "seed_mean": 0.8939357207375873,
+            "left_H": 0.08099344727761174,
+            "right_H": 2391.497535202128
+          },
+          "eventual_right": 0.9995993175321055,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_6",
+      "case": "case_47",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.10876547219644757,
+      "root_standardized_error": 0.19084567187587648,
+      "local_direction": 0.7755678220117076,
+      "local_direction_interval": [
+        0.7068251151154172,
+        0.8340978707316904
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            212,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.16394545946156514,
+          "cdf_error": 0.2074611227038845,
+          "joint_cdf_error": 0.237398651826092,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.21068882564913813,
+            "left_H": 0.06911412835487409,
+            "right_H": 2527.0258186926826
+          },
+          "eventual_right": 0.7850424104963802,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            247,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.25058223203763075,
+          "cdf_error": 0.1605584487159777,
+          "joint_cdf_error": 0.19048795939689875,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.21068534774164382,
+            "left_H": 0.08271538521412028,
+            "right_H": 2089.976416131312
+          },
+          "eventual_right": 0.7850386037229811,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_6",
+      "case": "case_52",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.21753094439289514,
+      "root_standardized_error": 0.38169134375175295,
+      "local_direction": 0.9350655854394341,
+      "local_direction_interval": [
+        0.8617612698367828,
+        0.9738691732246897
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.025188917258768005,
+          "cdf_error": 0.2676167071721291,
+          "joint_cdf_error": 0.2981444160745653,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.42137765129827626,
+            "left_H": 0.06911412835487409,
+            "right_H": 2527.0258186926826
+          },
+          "eventual_right": 0.9427945301817402,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1977,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.08926138658774774,
+          "cdf_error": 0.20914817563003538,
+          "joint_cdf_error": 0.23967627375413722,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.42137069548328765,
+            "left_H": 0.08271538521412028,
+            "right_H": 2089.976416131312
+          },
+          "eventual_right": 0.9427915399058112,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_6",
+      "case": "case_57",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.4350618887857903,
+      "root_standardized_error": 0.7633826875035059,
+      "local_direction": 0.9987741455611069,
+      "local_direction_interval": [
+        0.985242288031007,
+        0.9999481876990585
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 4.5487046527330945e-05,
+          "cdf_error": 0.17916540642932857,
+          "joint_cdf_error": 0.17996093404489358,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.8427553025965525,
+            "left_H": 0.06911412835487409,
+            "right_H": 2527.0258186926826
+          },
+          "eventual_right": 0.9992039418193597,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.0035658119202773013,
+          "cdf_error": 0.17594905885183412,
+          "joint_cdf_error": 0.17674462430006005,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9410442727466737,
+            "lambda_": 0.05172729345549676,
+            "A": 1.0051727293455497,
+            "seed_sd": 0.26691878999530827,
+            "seed_mean": 0.8427413909665753,
+            "left_H": 0.08271538521412028,
+            "right_H": 2089.976416131312
+          },
+          "eventual_right": 0.9992037995084371,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_7",
+      "case": "case_47",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.10733318414511574,
+      "root_standardized_error": -0.1286878631984855,
+      "local_direction": 0.8618636414970318,
+      "local_direction_interval": [
+        0.8101261860205302,
+        0.9030451496657628
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            426,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.30704155995697,
+          "cdf_error": 0.2546298882014739,
+          "joint_cdf_error": 0.19373567240193684,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 0.30377106439767804,
+            "left_H": 0.056327867563999975,
+            "right_H": 3084.1721765080947
+          },
+          "eventual_right": 0.875882308632866,
+          "direction_bound_distance": 0.06088230863286603
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 280,
+          "observed_quantiles": [
+            281,
+            1973,
+            null
+          ],
+          "predicted_quantiles": [
+            468,
+            1986,
+            null
+          ],
+          "observed_right_by_horizon": 0.34833333333333333,
+          "right_probability_bounds": [
+            0.34833333333333333,
+            0.815
+          ],
+          "predicted_right_by_horizon": 0.4177862353008214,
+          "cdf_error": 0.21663326808130845,
+          "joint_cdf_error": 0.15570540351410336,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 0.3038054738410522,
+            "left_H": 0.0703306711329597,
+            "right_H": 2532.8123164743097
+          },
+          "eventual_right": 0.8759090975435619,
+          "direction_bound_distance": 0.060909097543561996
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_7",
+      "case": "case_52",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.21466636829023147,
+      "root_standardized_error": -0.257375726396971,
+      "local_direction": 0.9852769108712701,
+      "local_direction_interval": [
+        0.9605174643662164,
+        0.9953142983801934
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1982,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.15660547610609427,
+          "cdf_error": 0.2151590093562007,
+          "joint_cdf_error": 0.1989540068975813,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 0.6075421287953561,
+            "left_H": 0.056327867563999975,
+            "right_H": 3084.1721765080947
+          },
+          "eventual_right": 0.9895363135628837,
+          "direction_bound_distance": 0.016202980229550357
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 390,
+          "observed_quantiles": [
+            1885,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1945,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.3233333333333333,
+          "right_probability_bounds": [
+            0.3233333333333333,
+            0.9733333333333334
+          ],
+          "predicted_right_by_horizon": 0.3390269649608695,
+          "cdf_error": 0.13298569378092426,
+          "joint_cdf_error": 0.11677248913704608,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 0.6076109476821044,
+            "left_H": 0.0703306711329597,
+            "right_H": 2532.8123164743097
+          },
+          "eventual_right": 0.989543564257531,
+          "direction_bound_distance": 0.0162102309241976
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_7",
+      "case": "case_57",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.42933273658046295,
+      "root_standardized_error": -0.514751452793942,
+      "local_direction": 0.999993344293041,
+      "local_direction_interval": [
+        0.9997788324910145,
+        0.9999998984070331
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            null,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.021846987732308473,
+          "cdf_error": 0.1599260397293627,
+          "joint_cdf_error": 0.15992797042996665,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 1.2150842575907121,
+            "left_H": 0.056327867563999975,
+            "right_H": 3084.1721765080947
+          },
+          "eventual_right": 0.9999980681656495,
+          "direction_bound_distance": 0.0
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 492,
+          "observed_quantiles": [
+            1976,
+            null,
+            null
+          ],
+          "predicted_quantiles": [
+            1985,
+            null,
+            null
+          ],
+          "observed_right_by_horizon": 0.18,
+          "right_probability_bounds": [
+            0.18,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.2032014521700593,
+          "cdf_error": 0.05118267929747975,
+          "joint_cdf_error": 0.051184604531861654,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.9559446813470012,
+            "lambda_": 0.053120726600828116,
+            "A": 1.0053120726600828,
+            "seed_sd": 0.26308586327731037,
+            "seed_mean": 1.2152218953642089,
+            "left_H": 0.0703306711329597,
+            "right_H": 2532.8123164743097
+          },
+          "eventual_right": 0.9999980730295865,
+          "direction_bound_distance": 0.0
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_8",
+      "case": "case_92",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.09560514106612661,
+      "root_standardized_error": -0.0594030861236618,
+      "local_direction": 0.6668165140906499,
+      "local_direction_interval": [
+        0.5962904196004286,
+        0.7318843798091432
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            282,
+            434,
+            676
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6677228658667183,
+          "cdf_error": 0.14360892767291017,
+          "joint_cdf_error": 0.10501479179915787,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.10844384517966749,
+            "left_H": 0.2590051511459375,
+            "right_H": 0.820136697878281
+          },
+          "eventual_right": 0.6677335419253931,
+          "direction_bound_distance": 0.04773354192539314
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            250,
+            390,
+            632
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.667722479983839,
+          "cdf_error": 0.01954156964817355,
+          "joint_cdf_error": 0.05049095200764142,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.10844142342780788,
+            "left_H": 0.22922976336663223,
+            "right_H": 0.5796157467209854
+          },
+          "eventual_right": 0.6677300250993746,
+          "direction_bound_distance": 0.04773002509937463
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_8",
+      "case": "case_97",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.19121028213225322,
+      "root_standardized_error": -0.1188061722473236,
+      "local_direction": 0.8057329738087365,
+      "local_direction_interval": [
+        0.6870528136885004,
+        0.8919646597764215
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            404,
+            521,
+            744
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.807102386499231,
+          "cdf_error": 0.1832451972974975,
+          "joint_cdf_error": 0.12340693119965784,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.21688769035933497,
+            "left_H": 0.2590051511459375,
+            "right_H": 0.820136697878281
+          },
+          "eventual_right": 0.8071184906035339,
+          "direction_bound_distance": 0.055451823936867206
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            360,
+            474,
+            699
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.8071018044097671,
+          "cdf_error": 0.03163750740309029,
+          "joint_cdf_error": 0.06679999313616852,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.21688284685561576,
+            "left_H": 0.22922976336663223,
+            "right_H": 0.5796157467209854
+          },
+          "eventual_right": 0.8071131857800541,
+          "direction_bound_distance": 0.05544651911338738
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_8",
+      "case": "case_102",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.38242056426450644,
+      "root_standardized_error": -0.2376123444946472,
+      "local_direction": 0.9576964057762261,
+      "local_direction_interval": [
+        0.8352266403911697,
+        0.9933211673124536
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            479,
+            561,
+            723
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.9585884746431433,
+          "cdf_error": 0.18312841864376617,
+          "joint_cdf_error": 0.17945402692689538,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.43377538071866995,
+            "left_H": 0.2590051511459375,
+            "right_H": 0.820136697878281
+          },
+          "eventual_right": 0.9585988965953987,
+          "direction_bound_distance": 0.0235988965953986
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            428,
+            509,
+            674
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.9585880979075416,
+          "cdf_error": 0.11588427839496895,
+          "joint_cdf_error": 0.12112522899792777,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2592681048867028,
+            "lambda_": 0.0669992600681486,
+            "A": 1.0066999260068148,
+            "seed_sd": 0.25006457731235,
+            "seed_mean": 0.4337656937112315,
+            "left_H": 0.22922976336663223,
+            "right_H": 0.5796157467209854
+          },
+          "eventual_right": 0.9585954636953121,
+          "direction_bound_distance": 0.02359546369531207
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_9",
+      "case": "case_92",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.09547063373426147,
+      "root_standardized_error": -0.07784429134663258,
+      "local_direction": 0.6736973898868043,
+      "local_direction_interval": [
+        0.6037350875045924,
+        0.7380238561719834
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            283,
+            434,
+            675
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6747364623625078,
+          "cdf_error": 0.1453968992275363,
+          "joint_cdf_error": 0.10423728228456366,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.11314607218407449,
+            "left_H": 0.257022241910803,
+            "right_H": 0.8336108650097955
+          },
+          "eventual_right": 0.6747468368338534,
+          "direction_bound_distance": 0.054746836833853396
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            251,
+            389,
+            631
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6747418806414629,
+          "cdf_error": 0.020922028255766834,
+          "joint_cdf_error": 0.057827853378044414,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.1131477026545663,
+            "left_H": 0.22751449213171202,
+            "right_H": 0.5871133991612366
+          },
+          "eventual_right": 0.6747491873616837,
+          "direction_bound_distance": 0.05474918736168366
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_9",
+      "case": "case_97",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.19094126746852294,
+      "root_standardized_error": -0.15568858269326516,
+      "local_direction": 0.8160175243936372,
+      "local_direction_interval": [
+        0.7005746050671167,
+        0.8987621529009064
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            405,
+            520,
+            740
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.8175479992793988,
+          "cdf_error": 0.18331355586553472,
+          "joint_cdf_error": 0.11900375838732569,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.22629214436814898,
+            "left_H": 0.257022241910803,
+            "right_H": 0.8336108650097955
+          },
+          "eventual_right": 0.8175632499170715,
+          "direction_bound_distance": 0.06589658325040482
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            359,
+            472,
+            695
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.8175559643100414,
+          "cdf_error": 0.027571536146371395,
+          "joint_cdf_error": 0.07811189319715633,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.2262954053091326,
+            "left_H": 0.22751449213171202,
+            "right_H": 0.5871133991612366
+          },
+          "eventual_right": 0.8175667051473264,
+          "direction_bound_distance": 0.06590003848065973
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_9",
+      "case": "case_102",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.3818825349370459,
+      "root_standardized_error": -0.3113771653865303,
+      "local_direction": 0.9641157416461739,
+      "local_direction_interval": [
+        0.8536249318126368,
+        0.9945993101706295
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            477,
+            556,
+            711
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.965016199131107,
+          "cdf_error": 0.17040124485438368,
+          "joint_cdf_error": 0.16592555773784712,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.45258428873629797,
+            "left_H": 0.257022241910803,
+            "right_H": 0.8336108650097955
+          },
+          "eventual_right": 0.9650251011011272,
+          "direction_bound_distance": 0.030025101101127105
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            425,
+            504,
+            662
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.9650208485837203,
+          "cdf_error": 0.1405888525352339,
+          "joint_cdf_error": 0.14773447980052246,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.2600823180776112,
+            "lambda_": 0.06718881649963174,
+            "A": 1.0067188816499633,
+            "seed_sd": 0.24973810488369982,
+            "seed_mean": 0.4525908106182652,
+            "left_H": 0.22751449213171202,
+            "right_H": 0.5871133991612366
+          },
+          "eventual_right": 0.9650271177644133,
+          "direction_bound_distance": 0.030027117764413247
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_10",
+      "case": "case_92",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.09573313125536566,
+      "root_standardized_error": 0.09996308038744119,
+      "local_direction": 0.6069622713309131,
+      "local_direction_interval": [
+        0.5333830694134785,
+        0.6768986506615609
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            266,
+            434,
+            683
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6073377235334849,
+          "cdf_error": 0.1402116808264811,
+          "joint_cdf_error": 0.14459164363329285,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.06826154860161263,
+            "left_H": 0.264759679991601,
+            "right_H": 0.8093324565159692
+          },
+          "eventual_right": 0.607349257591624,
+          "direction_bound_distance": 0.012650742408376048
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            241,
+            391,
+            640
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.6073421282007461,
+          "cdf_error": 0.02229812257735412,
+          "joint_cdf_error": 0.03844598072612532,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.06826219795156363,
+            "left_H": 0.23515287102526944,
+            "right_H": 0.5701627120430509
+          },
+          "eventual_right": 0.6073502537580894,
+          "direction_bound_distance": 0.01264974624191062
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_10",
+      "case": "case_97",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.19146626251073132,
+      "root_standardized_error": 0.19992616077488237,
+      "local_direction": 0.7063733570272406,
+      "local_direction_interval": [
+        0.5665327941350564,
+        0.8207135074909264
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            397,
+            535,
+            774
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.7070454421460685,
+          "cdf_error": 0.2171138186853957,
+          "joint_cdf_error": 0.21289560688863585,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.13652309720322525,
+            "left_H": 0.264759679991601,
+            "right_H": 0.8093324565159692
+          },
+          "eventual_right": 0.7070660804183745,
+          "direction_bound_distance": 0.04460058624829222
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            360,
+            490,
+            730
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.7070533236228335,
+          "cdf_error": 0.07583728920068189,
+          "joint_cdf_error": 0.0893912957127645,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.13652439590312726,
+            "left_H": 0.23515287102526944,
+            "right_H": 0.5701627120430509
+          },
+          "eventual_right": 0.7070678628682894,
+          "direction_bound_distance": 0.04459880379837733
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_10",
+      "case": "case_102",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.38293252502146263,
+      "root_standardized_error": 0.39985232154976474,
+      "local_direction": 0.8611811450088518,
+      "local_direction_interval": [
+        0.6312279515592847,
+        0.9668341313272085
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            505,
+            610,
+            822
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.86204375208043,
+          "cdf_error": 0.3123894164940926,
+          "joint_cdf_error": 0.3353660070535688,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.2730461944064505,
+            "left_H": 0.264759679991601,
+            "right_H": 0.8093324565159692
+          },
+          "eventual_right": 0.8620701973598477,
+          "direction_bound_distance": 0.07292980264015236
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            456,
+            561,
+            776
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.862053851480711,
+          "cdf_error": 0.11491586998203746,
+          "joint_cdf_error": 0.1528331834797999,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.25223179498239096,
+            "lambda_": 0.06681963267839065,
+            "A": 1.006681963267839,
+            "seed_sd": 0.25057751668396755,
+            "seed_mean": 0.2730487918062545,
+            "left_H": 0.23515287102526944,
+            "right_H": 0.5701627120430509
+          },
+          "eventual_right": 0.8620724812174345,
+          "direction_bound_distance": 0.07292751878256554
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_11",
+      "case": "case_92",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.09546271789220666,
+      "root_standardized_error": -0.1970136030383027,
+      "local_direction": 0.7154968393646443,
+      "local_direction_interval": [
+        0.648922127070346,
+        0.7753609340660599
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            292,
+            432,
+            667
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.7170438954616868,
+          "cdf_error": 0.14467171373487048,
+          "joint_cdf_error": 0.0977795912365439,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.14332968375009286,
+            "left_H": 0.25294109094143524,
+            "right_H": 0.8388184122729012
+          },
+          "eventual_right": 0.7170536870004909,
+          "direction_bound_distance": 0.09705368700049088
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            252,
+            391,
+            644
+          ],
+          "predicted_quantiles": [
+            256,
+            386,
+            623
+          ],
+          "observed_right_by_horizon": 0.62,
+          "right_probability_bounds": [
+            0.62,
+            0.62
+          ],
+          "predicted_right_by_horizon": 0.7170416211355243,
+          "cdf_error": 0.02900614955040126,
+          "joint_cdf_error": 0.10285174481524373,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.1433258862432695,
+            "left_H": 0.22326014302709649,
+            "right_H": 0.5927765822466664
+          },
+          "eventual_right": 0.717048540668244,
+          "direction_bound_distance": 0.09704854066824398
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_11",
+      "case": "case_97",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.19092543578441332,
+      "root_standardized_error": -0.3940272060766054,
+      "local_direction": 0.8726549083768721,
+      "local_direction_interval": [
+        0.7778118589054285,
+        0.9348904022790909
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            401,
+            504,
+            710
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.8745496297168678,
+          "cdf_error": 0.1655966632235299,
+          "joint_cdf_error": 0.13015208719404792,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.2866593675001857,
+            "left_H": 0.25294109094143524,
+            "right_H": 0.8388184122729012
+          },
+          "eventual_right": 0.8745615743898664,
+          "direction_bound_distance": 0.12289490772319966
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            358,
+            475,
+            695
+          ],
+          "predicted_quantiles": [
+            353,
+            455,
+            664
+          ],
+          "observed_right_by_horizon": 0.7516666666666667,
+          "right_probability_bounds": [
+            0.7516666666666667,
+            0.7516666666666667
+          ],
+          "predicted_right_by_horizon": 0.8745468551870272,
+          "cdf_error": 0.07640297163951892,
+          "joint_cdf_error": 0.16949508858093776,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.286651772486539,
+            "left_H": 0.22326014302709649,
+            "right_H": 0.5927765822466664
+          },
+          "eventual_right": 0.874555296466624,
+          "direction_bound_distance": 0.1228886297999573
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_11",
+      "case": "case_102",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.38185087156882663,
+      "root_standardized_error": -0.7880544121532108,
+      "local_direction": 0.9886385639631033,
+      "local_direction_interval": [
+        0.9369480893486986,
+        0.9987628883207555
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            457,
+            523,
+            641
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.9891714504489836,
+          "cdf_error": 0.1146939213696001,
+          "joint_cdf_error": 0.13028645480444745,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.5733187350003714,
+            "left_H": 0.25294109094143524,
+            "right_H": 0.8388184122729012
+          },
+          "eventual_right": 0.9891747570176098,
+          "direction_bound_distance": 0.054174757017609765
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            437,
+            533,
+            706
+          ],
+          "predicted_quantiles": [
+            405,
+            471,
+            590
+          ],
+          "observed_right_by_horizon": 0.935,
+          "right_probability_bounds": [
+            0.935,
+            0.935
+          ],
+          "predicted_right_by_horizon": 0.989170682299002,
+          "cdf_error": 0.3039476289556842,
+          "joint_cdf_error": 0.3140818451833539,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.26534386277372274,
+            "lambda_": 0.06719999709939516,
+            "A": 1.0067199997099394,
+            "seed_sd": 0.24965496235088136,
+            "seed_mean": 0.573303544973078,
+            "left_H": 0.22326014302709649,
+            "right_H": 0.5927765822466664
+          },
+          "eventual_right": 0.9891730192218336,
+          "direction_bound_distance": 0.054173019221833596
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_12",
+      "case": "case_137",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.06943262421121821,
+      "root_standardized_error": -0.06839203213925842,
+      "local_direction": 0.9651357666146484,
+      "local_direction_interval": [
+        0.9532859356902676,
+        0.9743973935114416
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            288,
+            330,
+            406
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9698809914522891,
+          "cdf_error": 0.09985923920968268,
+          "joint_cdf_error": 0.072190718005052,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 0.3467655110873191,
+            "left_H": 0.05314434709407606,
+            "right_H": 4.1398760797824785
+          },
+          "eventual_right": 0.9698809915395254,
+          "direction_bound_distance": 0.028214324872858798
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            282,
+            324,
+            400
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9698820141985703,
+          "cdf_error": 0.05841483901414035,
+          "joint_cdf_error": 0.0877778455916981,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 0.3467682759082376,
+            "left_H": 0.051829447196640815,
+            "right_H": 3.831285957215292
+          },
+          "eventual_right": 0.9698820142793017,
+          "direction_bound_distance": 0.028215347612635
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_12",
+      "case": "case_142",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.13886524842243642,
+      "root_standardized_error": -0.13678406427851683,
+      "local_direction": 0.9998568225172686,
+      "local_direction_interval": [
+        0.9996034190825641,
+        0.9999518066037898
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            310,
+            333,
+            366
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9999143940119868,
+          "cdf_error": 0.09306098758136472,
+          "joint_cdf_error": 0.09312991708554308,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 0.6935310221746382,
+            "left_H": 0.05314434709407606,
+            "right_H": 4.1398760797824785
+          },
+          "eventual_right": 0.999914394012861,
+          "direction_bound_distance": 0.0015810606795276794
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            304,
+            327,
+            360
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9999144042603991,
+          "cdf_error": 0.06508265475628183,
+          "joint_cdf_error": 0.0650110909700301,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 0.6935365518164752,
+            "left_H": 0.051829447196640815,
+            "right_H": 3.831285957215292
+          },
+          "eventual_right": 0.999914404261208,
+          "direction_bound_distance": 0.0015810709278747392
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_12",
+      "case": "case_147",
+      "budget": 1048576,
+      "repeat": 0,
+      "root_noise_ratio": 0.27773049684487283,
+      "root_standardized_error": -0.27356812855703366,
+      "local_direction": 0.9999999999997987,
+      "local_direction_interval": [
+        0.9999999999902914,
+        0.9999999999999969
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            321,
+            333,
+            348
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999999718,
+          "cdf_error": 0.15359806960957345,
+          "joint_cdf_error": 0.15359806960958589,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 1.3870620443492765,
+            "left_H": 0.05314434709407606,
+            "right_H": 4.1398760797824785
+          },
+          "eventual_right": 0.9999999999999718,
+          "direction_bound_distance": 2.8199664825478976e-14
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            315,
+            327,
+            342
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999999718,
+          "cdf_error": 0.10185992729492754,
+          "joint_cdf_error": 0.10185992729491322,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8285292935039128,
+            "lambda_": 0.1274121503127021,
+            "A": 1.0127412150312702,
+            "seed_sd": 0.18454324521272225,
+            "seed_mean": 1.3870731036329504,
+            "left_H": 0.051829447196640815,
+            "right_H": 3.831285957215292
+          },
+          "eventual_right": 0.9999999999999718,
+          "direction_bound_distance": 2.8199664825478976e-14
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_13",
+      "case": "case_137",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.06925797764181754,
+      "root_standardized_error": -0.014284371065889574,
+      "local_direction": 0.96114980044428,
+      "local_direction_interval": [
+        0.9482846617692592,
+        0.9712788956918134
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            287,
+            330,
+            407
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9660178316023635,
+          "cdf_error": 0.09381439364887403,
+          "joint_cdf_error": 0.06966845078263786,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 0.33595552777561766,
+            "left_H": 0.054810929573832226,
+            "right_H": 4.115329680070945
+          },
+          "eventual_right": 0.9660178316868909,
+          "direction_bound_distance": 0.024351165020224275
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            281,
+            324,
+            401
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9660200123521149,
+          "cdf_error": 0.05521792703414852,
+          "joint_cdf_error": 0.08085402640996764,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 0.33596085003237364,
+            "left_H": 0.053495986707874615,
+            "right_H": 3.807763016827596
+          },
+          "eventual_right": 0.9660200124303209,
+          "direction_bound_distance": 0.02435334576365422
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_13",
+      "case": "case_142",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.13851595528363508,
+      "root_standardized_error": -0.028568742131779148,
+      "local_direction": 0.9997909404792998,
+      "local_direction_interval": [
+        0.9994367974910321,
+        0.99992761150813
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            310,
+            334,
+            368
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9998691279192315,
+          "cdf_error": 0.09587754491591322,
+          "joint_cdf_error": 0.09598321405060667,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 0.6719110555512353,
+            "left_H": 0.054810929573832226,
+            "right_H": 4.115329680070945
+          },
+          "eventual_right": 0.9998691279203737,
+          "direction_bound_distance": 0.001535794587040451
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            304,
+            327,
+            361
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9998691573848146,
+          "cdf_error": 0.05576647408021029,
+          "joint_cdf_error": 0.05565682894246926,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 0.6719217000647473,
+            "left_H": 0.053495986707874615,
+            "right_H": 3.807763016827596
+          },
+          "eventual_right": 0.9998691573858712,
+          "direction_bound_distance": 0.0015358240525379374
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_13",
+      "case": "case_147",
+      "budget": 1048576,
+      "repeat": 1,
+      "root_noise_ratio": 0.27703191056727017,
+      "root_standardized_error": -0.057137484263558296,
+      "local_direction": 0.9999999999991478,
+      "local_direction_interval": [
+        0.9999999999633581,
+        0.9999999999999851
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            321,
+            334,
+            349
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999998571,
+          "cdf_error": 0.1588206422418606,
+          "joint_cdf_error": 0.15882064224192433,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 1.3438221111024706,
+            "left_H": 0.054810929573832226,
+            "right_H": 4.115329680070945
+          },
+          "eventual_right": 0.9999999999998571,
+          "direction_bound_distance": 1.4288570326925765e-13
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            315,
+            327,
+            343
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999998572,
+          "cdf_error": 0.08867442732853015,
+          "joint_cdf_error": 0.08867442732845687,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8267645226703678,
+            "lambda_": 0.12805966592033574,
+            "A": 1.0128059665920335,
+            "seed_sd": 0.1840606922345514,
+            "seed_mean": 1.3438434001294945,
+            "left_H": 0.053495986707874615,
+            "right_H": 3.807763016827596
+          },
+          "eventual_right": 0.9999999999998572,
+          "direction_bound_distance": 1.4277468096679513e-13
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_14",
+      "case": "case_137",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.06930266677680141,
+      "root_standardized_error": -0.10776708237862288,
+      "local_direction": 0.9683142296730107,
+      "local_direction_interval": [
+        0.9573514458378893,
+        0.9768367600510343
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            287,
+            328,
+            402
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9728867563555758,
+          "cdf_error": 0.09324971706009139,
+          "joint_cdf_error": 0.07286373564027648,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 0.3545728744065264,
+            "left_H": 0.05193447662573059,
+            "right_H": 4.168515405708922
+          },
+          "eventual_right": 0.9728867564289019,
+          "direction_bound_distance": 0.031220089762235226
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            281,
+            322,
+            396
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.972891060487687,
+          "cdf_error": 0.0739126418536672,
+          "joint_cdf_error": 0.10614876752495095,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 0.3545855497217076,
+            "left_H": 0.05061877776657953,
+            "right_H": 3.856791762085482
+          },
+          "eventual_right": 0.9728910605555208,
+          "direction_bound_distance": 0.03122439388885412
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_14",
+      "case": "case_142",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.13860533355360283,
+      "root_standardized_error": -0.21553416475724577,
+      "local_direction": 0.9998976528434795,
+      "local_direction_interval": [
+        0.999710740053832,
+        0.9999662333431034
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            308,
+            331,
+            363
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9999409521537881,
+          "cdf_error": 0.048725329797458417,
+          "joint_cdf_error": 0.04877303097900276,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 0.7091457488130528,
+            "left_H": 0.05193447662573059,
+            "right_H": 4.168515405708922
+          },
+          "eventual_right": 0.9999409521543533,
+          "direction_bound_distance": 0.001607618821020007
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            302,
+            325,
+            357
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9999409853258909,
+          "cdf_error": 0.1056472965071299,
+          "joint_cdf_error": 0.1055978124057455,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 0.7091710994434152,
+            "left_H": 0.05061877776657953,
+            "right_H": 3.856791762085482
+          },
+          "eventual_right": 0.9999409853264136,
+          "direction_bound_distance": 0.001607651993080328
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_14",
+      "case": "case_147",
+      "budget": 1048576,
+      "repeat": 2,
+      "root_noise_ratio": 0.27721066710720565,
+      "root_standardized_error": -0.43106832951449153,
+      "local_direction": 0.9999999999999442,
+      "local_direction_interval": [
+        0.9999999999970693,
+        0.9999999999999992
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            319,
+            331,
+            345
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999999932,
+          "cdf_error": 0.07676146786497606,
+          "joint_cdf_error": 0.07676146786497912,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 1.4182914976261056,
+            "left_H": 0.05193447662573059,
+            "right_H": 4.168515405708922
+          },
+          "eventual_right": 0.9999999999999932,
+          "direction_bound_distance": 6.772360450213455e-15
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            313,
+            325,
+            339
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999999932,
+          "cdf_error": 0.1847641820210124,
+          "joint_cdf_error": 0.18476418202100925,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8298135467658968,
+            "lambda_": 0.12789350738914734,
+            "A": 1.0127893507389147,
+            "seed_sd": 0.1841915050369753,
+            "seed_mean": 1.4183421988868303,
+            "left_H": 0.05061877776657953,
+            "right_H": 3.856791762085482
+          },
+          "eventual_right": 0.9999999999999932,
+          "direction_bound_distance": 6.772360450213455e-15
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_15",
+      "case": "case_137",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.06952937083161212,
+      "root_standardized_error": 0.12526007653428384,
+      "local_direction": 0.9469425310128691,
+      "local_direction_interval": [
+        0.9305139321334235,
+        0.9601285414097238
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            289,
+            336,
+            420
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9522878193560227,
+          "cdf_error": 0.11331871192682502,
+          "joint_cdf_error": 0.1023364631539791,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 0.3085085281428933,
+            "left_H": 0.059066409422451026,
+            "right_H": 4.046835637336048
+          },
+          "eventual_right": 0.952287819488837,
+          "direction_bound_distance": 0.010621152822170354
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            270,
+            327,
+            417
+          ],
+          "predicted_quantiles": [
+            283,
+            330,
+            414
+          ],
+          "observed_right_by_horizon": 0.9416666666666667,
+          "right_probability_bounds": [
+            0.9416666666666667,
+            0.9416666666666667
+          ],
+          "predicted_right_by_horizon": 0.9523079636750366,
+          "cdf_error": 0.07183266260150234,
+          "joint_cdf_error": 0.06007962566947797,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 0.30854605009299346,
+            "left_H": 0.05775183915920009,
+            "right_H": 3.7471084685156844
+          },
+          "eventual_right": 0.9523079637979724,
+          "direction_bound_distance": 0.010641297131305794
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_15",
+      "case": "case_142",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.13905874166322424,
+      "root_standardized_error": 0.2505201530685677,
+      "local_direction": 0.9993849542524351,
+      "local_direction_interval": [
+        0.9984581014998036,
+        0.9997711463650156
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            316,
+            342,
+            380
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9995733588312421,
+          "cdf_error": 0.21247603435732582,
+          "joint_cdf_error": 0.2128187695556668,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 0.6170170562857866,
+            "left_H": 0.059066409422451026,
+            "right_H": 4.046835637336048
+          },
+          "eventual_right": 0.9995733588353442,
+          "direction_bound_distance": 0.0012400255020108553
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            304,
+            330,
+            369
+          ],
+          "predicted_quantiles": [
+            310,
+            335,
+            374
+          ],
+          "observed_right_by_horizon": 0.9983333333333333,
+          "right_probability_bounds": [
+            0.9983333333333333,
+            0.9983333333333333
+          ],
+          "predicted_right_by_horizon": 0.9995739806932931,
+          "cdf_error": 0.11361980804961735,
+          "joint_cdf_error": 0.1139637208033617,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 0.6170921001859869,
+            "left_H": 0.05775183915920009,
+            "right_H": 3.7471084685156844
+          },
+          "eventual_right": 0.9995739806970863,
+          "direction_bound_distance": 0.0012406473637529558
+        }
+      },
+      "unavailable": {}
+    },
+    {
+      "calibration": "calibration_15",
+      "case": "case_147",
+      "budget": 1048576,
+      "repeat": 3,
+      "root_noise_ratio": 0.2781174833264485,
+      "root_standardized_error": 0.5010403061371353,
+      "local_direction": 0.9999999999488858,
+      "local_direction_interval": [
+        0.9999999983757247,
+        0.9999999999987974
+      ],
+      "predictions": {
+        "source_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            328,
+            342,
+            359
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999871935,
+          "cdf_error": 0.399765728991338,
+          "joint_cdf_error": 0.39976572899750185,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 1.2340341125715732,
+            "left_H": 0.059066409422451026,
+            "right_H": 4.046835637336048
+          },
+          "eventual_right": 0.9999999999871935,
+          "direction_bound_distance": 1.2806533611353643e-11
+        },
+        "oracle_risk": {
+          "paths": 600,
+          "censored": 0,
+          "observed_quantiles": [
+            316,
+            330,
+            347
+          ],
+          "predicted_quantiles": [
+            322,
+            336,
+            352
+          ],
+          "observed_right_by_horizon": 1.0,
+          "right_probability_bounds": [
+            1.0,
+            1.0
+          ],
+          "predicted_right_by_horizon": 0.9999999999872641,
+          "cdf_error": 0.2071081252317385,
+          "joint_cdf_error": 0.2071081252378555,
+          "cdf_sampling_band_95": 0.05544426220774891,
+          "geometry": {
+            "q": -0.8222131529341302,
+            "lambda_": 0.12705557083886104,
+            "A": 1.012705557083886,
+            "seed_sd": 0.18501782456603932,
+            "seed_mean": 1.2341842003719738,
+            "left_H": 0.05775183915920009,
+            "right_H": 3.7471084685156844
+          },
+          "eventual_right": 0.9999999999872641,
+          "direction_bound_distance": 1.2735923426987483e-11
+        }
+      },
+      "unavailable": {}
+    }
+  ],
+  "aggregate": [
+    {
+      "key": "case_2_m1048576_source_risk",
+      "case": "case_2",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.16026929985737312,
+      "mean_joint_error": 0.18262814205314398,
+      "mean_direction_bound_distance": 0.023395253204708075
+    },
+    {
+      "key": "case_2_m1048576_oracle_risk",
+      "case": "case_2",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.040286084553498705,
+      "mean_joint_error": 0.04069112574046875,
+      "mean_direction_bound_distance": 0.023395593300074083
+    },
+    {
+      "key": "case_7_m1048576_source_risk",
+      "case": "case_7",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.25046339949432006,
+      "mean_joint_error": 0.25393699562970756,
+      "mean_direction_bound_distance": 0.027878450579396724
+    },
+    {
+      "key": "case_7_m1048576_oracle_risk",
+      "case": "case_7",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.03751142096446847,
+      "mean_joint_error": 0.0614056415000562,
+      "mean_direction_bound_distance": 0.027879189158088305
+    },
+    {
+      "key": "case_12_m1048576_source_risk",
+      "case": "case_12",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.4499632921454656,
+      "mean_joint_error": 0.4532605459082468,
+      "mean_direction_bound_distance": 0.005714774877318365
+    },
+    {
+      "key": "case_12_m1048576_oracle_risk",
+      "case": "case_12",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.10613043974478728,
+      "mean_joint_error": 0.11014663592403627,
+      "mean_direction_bound_distance": 0.005715265689435495
+    },
+    {
+      "key": "case_47_m1048576_source_risk",
+      "case": "case_47",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.2308683841433225,
+      "mean_joint_error": 0.22434810868858146,
+      "mean_direction_bound_distance": 0.018016930027798528
+    },
+    {
+      "key": "case_47_m1048576_oracle_risk",
+      "case": "case_47",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.18845256270134605,
+      "mean_joint_error": 0.1819044385220846,
+      "mean_direction_bound_distance": 0.01801263610980608
+    },
+    {
+      "key": "case_52_m1048576_source_risk",
+      "case": "case_52",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.2558716434995977,
+      "mean_joint_error": 0.2653873361339336,
+      "mean_direction_bound_distance": 0.004050745057387589
+    },
+    {
+      "key": "case_52_m1048576_oracle_risk",
+      "case": "case_52",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.18872530843942373,
+      "mean_joint_error": 0.19822604768212748,
+      "mean_direction_bound_distance": 0.0040525577310494
+    },
+    {
+      "key": "case_57_m1048576_source_risk",
+      "case": "case_57",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.17414359933569826,
+      "mean_joint_error": 0.17446509274569774,
+      "mean_direction_bound_distance": 0.0
+    },
+    {
+      "key": "case_57_m1048576_oracle_risk",
+      "case": "case_57",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.1356071091355523,
+      "mean_joint_error": 0.13592812744032431,
+      "mean_direction_bound_distance": 0.0
+    },
+    {
+      "key": "case_92_m1048576_source_risk",
+      "case": "case_92",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.14347230536544953,
+      "mean_joint_error": 0.11290582723838957,
+      "mean_direction_bound_distance": 0.05304620204202837
+    },
+    {
+      "key": "case_92_m1048576_oracle_risk",
+      "case": "case_92",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.02294196750792394,
+      "mean_joint_error": 0.06240413273176372,
+      "mean_direction_bound_distance": 0.05304437484280322
+    },
+    {
+      "key": "case_97_m1048576_source_risk",
+      "case": "case_97",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.18731730876798947,
+      "mean_joint_error": 0.14636459591741682,
+      "mean_direction_bound_distance": 0.07221097528969098
+    },
+    {
+      "key": "case_97_m1048576_oracle_risk",
+      "case": "case_97",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.052862326097415625,
+      "mean_joint_error": 0.10094956765675678,
+      "mean_direction_bound_distance": 0.07220849779809543
+    },
+    {
+      "key": "case_102_m1048576_source_risk",
+      "case": "case_102",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.19515325034046063,
+      "mean_joint_error": 0.20275801163068968,
+      "mean_direction_bound_distance": 0.04518213933857196
+    },
+    {
+      "key": "case_102_m1048576_oracle_risk",
+      "case": "case_102",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.16883415746698113,
+      "mean_joint_error": 0.183943684365401,
+      "mean_direction_bound_distance": 0.04518077986603111
+    },
+    {
+      "key": "case_137_m1048576_source_risk",
+      "case": "case_137",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.10006051546136828,
+      "mean_joint_error": 0.07926484189548635,
+      "mean_direction_bound_distance": 0.023601683119372163
+    },
+    {
+      "key": "case_137_m1048576_oracle_risk",
+      "case": "case_137",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.0648445176258646,
+      "mean_joint_error": 0.08371506629902367,
+      "mean_direction_bound_distance": 0.023608596099112283
+    },
+    {
+      "key": "case_142_m1048576_source_risk",
+      "case": "case_142",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.11253497416301554,
+      "mean_joint_error": 0.11267623291770483,
+      "mean_direction_bound_distance": 0.0014911248973997482
+    },
+    {
+      "key": "case_142_m1048576_oracle_risk",
+      "case": "case_142",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.08502905834830984,
+      "mean_joint_error": 0.08505736328040164,
+      "mean_direction_bound_distance": 0.00149129858431149
+    },
+    {
+      "key": "case_147_m1048576_source_risk",
+      "case": "case_147",
+      "budget": 1048576,
+      "model": "source_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.19723647717693704,
+      "mean_joint_error": 0.1972364771784978,
+      "mean_direction_bound_distance": 3.2460978349746483e-12
+    },
+    {
+      "key": "case_147_m1048576_oracle_risk",
+      "case": "case_147",
+      "budget": 1048576,
+      "model": "oracle_risk",
+      "count": 4,
+      "availability": 1.0,
+      "mean_cdf_error": 0.14560166546905215,
+      "mean_joint_error": 0.1456016654705587,
+      "mean_direction_bound_distance": 3.2284175333074927e-12
+    }
+  ]
+}

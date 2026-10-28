@@ -1,0 +1,362 @@
+# General scalar entropy-SGD exit
+
+Part of [the manuscript](DRAFT.md). E-numbering and section numbers are continuous across [scalar exit](scalar_exit.md), [calibration](calibration.md), and [risk boundaries](risk_boundaries.md). Full statements and proofs are retained. Constants are not numerically calibrated; integration is not a completed independent proof audit. Use \(B_U=w/4\) for the update bound and \(M\) for calibration sample size; the original Gaussian sections use \(M=w/4\) locally.
+
+## 1. The process being predicted
+
+Let \(Q\) be a fixed probability distribution on scalar scores \(Z\in\mathbb R\). It may be continuous, discrete, or a fixed weighted empirical distribution. Fix \(w>0\), define
+\[
+s(u)=(1+e^{-u})^{-1},\qquad a(u)=s(u)(1-s(u)),
+\]
+and use the actual threshold entropy velocity
+\[
+U(x,z)=-w^2(z-x)a(w(z-x)),\qquad
+v(x)=\mathbb E_Q U(x,Z).
+\tag{E.1}
+\]
+The population map and fresh-batch update are
+\[
+G(x)=x+\eta v(x),\qquad
+x_{t+1}=x_t+\frac{\eta}{n}\sum_{i=1}^n U(x_t,Z_{t,i}),
+\tag{E.2}
+\]
+where the \(Z_{t,i}\) are iid from \(Q\), and the initial state is deterministic unless stated otherwise.
+
+An independent calibration sample
+\[
+\widetilde Z_1,\ldots,\widetilde Z_M\overset{\mathrm{iid}}{\sim}Q
+\tag{E.3}
+\]
+will be used only to construct a predictor. It does not alter \(x_0\), \(Q\), the adaptation samples, or the recursion (E.2). Conditioning on a fixed feature pool, its source projection, and any externally fixed design parameters is permitted. All probabilities in that case are conditional on those objects.
+
+For intervals \(I_n=[a_n,c_n]\), define
+\[
+\tau_n=\inf\{t\ge0:x_t\notin I_n\},\qquad
+J_n=\begin{cases}+1,&x_{\tau_n}>c_n,\\-1,&x_{\tau_n}<a_n.\end{cases}
+\tag{E.4}
+\]
+The first part of the analysis concerns this interval-exit event. It becomes a classification-risk exit theorem when the relevant risk-safe set is exactly \(I_n\), or when the event discrepancy is separately controlled as in [Section 7](risk_boundaries.md).
+
+### Lemma E.1. Distribution-free regularity of the entropy update
+
+For every \(x,z\),
+\[
+|U(x,z)|\le B_U:=w/4,\qquad
+|\partial_xU(x,z)|\le L_U:=w^2/4.
+\tag{E.5}
+\]
+Every higher fixed-order derivative in \(x\) is also uniformly bounded. In particular, \(|\partial_x^2 U|\le 3w^3/4\). Consequently \(v\) is smooth for every probability distribution \(Q\), without moment assumptions on \(Z\).
+
+If \(0<\eta<1/L_U\), both \(G\) and every empirical population map \(x+\eta M^{-1}\sum_i U(x,\widetilde Z_i)\) are increasing smooth bijections of the line.
+
+**Proof.** If \(h\) is the binary entropy of \(s\), then \(h'(u)=-ua(u)\) and
+\[
+h''(u)=a(u)\{u\tanh(u/2)-1\}.
+\]
+To verify the constants, write \(a(u)=[2(1+\cosh u)]^{-1}\). The inequality \(1+\cosh u\ge2+u^2/2\ge2|u|\) gives \(|u|a(u)\le1/4\). The two nonnegative terms \(ua(u)\tanh(u/2)\) and \(a(u)\) each lie in \([0,1/4]\), proving \(|h''|\le1/4\). Differentiation gives
+\[
+h'''(u)=2a(u)\tanh(u/2)+ua(u)\{6a(u)-1\},
+\]
+whose absolute value is at most \(1/2+1/4=3/4\). These bounds give (E.5) and the second-derivative bound after scaling. Further derivatives are sums of polynomial factors times derivatives of the logistic function, and decay at both infinities; hence they are bounded. Dominated differentiation applies under any \(Q\). Finally,
+\[
+G'(x)\ge1-\eta L_U>0,\qquad |G(x)-x|\le\eta B_U.
+\]
+Strict monotonicity and the limits at infinity give bijectivity. The empirical map satisfies the same inequalities. \(\square\)
+
+## 2. General scalar exit geometry
+
+Fix a compact interval \(\mathcal K=[\ell,r]\) and \(q\in(\ell,r)\). We impose the following conditions.
+
+**G1: one repeller on the required domain.**
+\[
+v(q)=0,\qquad \lambda:=v'(q)>0,\qquad
+(x-q)v(x)>0\quad(x\in\mathcal K,\ x\ne q).
+\tag{E.6}
+\]
+No uniqueness of the entropy peak outside \(\mathcal K\) is required.
+
+**G2: nondegenerate noise.**
+\[
+\sigma_g^2:=\operatorname{Var}_Q U(q,Z)>0.
+\tag{E.7}
+\]
+
+**G3: fixed step size and interior exit boundaries.** Fix \(0<\eta<1/L_U\), and set
+\[
+A=1+\eta\lambda>1,\qquad
+s^2=\frac{\eta^2\sigma_g^2}{A^2-1}.
+\tag{E.8}
+\]
+For fixed \(d_0,\gamma>0\), all sufficiently large \(n\) satisfy
+\[
+a_n\le q-d_0,\qquad c_n\ge q+d_0,
+\]
+\[
+[a_n-\eta B_U,c_n+\eta B_U]
+\subset[\ell+\gamma,r-\gamma].
+\tag{E.9}
+\]
+Thus both the deterministic proposal and the actual one-step overshoot from \(I_n\) remain in the domain where the geometry is controlled.
+
+**G4: critical initialization.**
+\[
+|x_{0,n}-q|\le K_0/\sqrt n
+\tag{E.10}
+\]
+for a fixed finite \(K_0\). In particular \(x_{0,n}\in I_n\) for large \(n\).
+
+Constants below may depend on \(Q,w,\eta,\mathcal K,d_0,\gamma,K_0\). They do not depend on \(n,t,M\). Uniformity over a family of score distributions additionally requires uniform versions of these geometric and noise bounds; it is not automatic when a curvature or an outward drift bottleneck approaches zero.
+
+### Lemma E.2. Normalized conjugacy on the exit domain
+
+Under G1 and G3, there is an increasing \(C^2\) function \(H\) on \(\mathcal K\), with bounded derivatives and a strictly positive lower bound on \(H'\), such that
+\[
+H(q)=0,\qquad H'(q)=1,\qquad H(G(x))=A H(x)
+\tag{E.11}
+\]
+whenever \(x,G(x)\in\mathcal K\). It is the unique normalized \(C^1\) conjugacy on this domain.
+
+**Proof.** Since \(G\) is increasing and \(G(q)=q\), its inverse sends each point of \(\mathcal K\) toward \(q\). For example, if \(x>q\), then
+\[
+q<G^{-1}(x)<x,
+\]
+using \(G(x)>x\) and monotonicity. The inverse orbit stays in \(\mathcal K\) and converges to \(q\); any other limit would be another zero of \(v\).
+
+Near zero define the centered inverse
+\[
+g(y)=G^{-1}(q+y)-q=A^{-1}y+O(y^2).
+\]
+Choose a sufficiently small neighborhood and \(b<1\) such that
+\[
+\sup |g'|\le b,\qquad Ab^2<1.
+\]
+Writing \(R(y)=g(y)-A^{-1}y\), the approximants
+\[
+h_j(y)=A^j g^j(y)
+\]
+satisfy
+\[
+h_{j+1}(y)-h_j(y)=A^{j+1}R(g^j(y)).
+\tag{E.12}
+\]
+Here \(g^j\) denotes composition. Iterated differentiation gives
+\[
+\|g^j\|_{C^2}\le Cb^j
+\]
+on this local interval. Since \(R(0)=R'(0)=0\), the \(C^2\) norm of the right-hand side of (E.12) is at most \(C(Ab^2)^j\). The sequence converges in \(C^2\) to \(h\), with \(h(0)=0,h'(0)=1\), and \(h'>0\) after decreasing the local interval if necessary.
+
+A fixed finite number \(N\) of inverse steps brings all of \(\mathcal K\) into that local interval. This follows first for the two endpoints and then for every interior point by monotonicity. Set
+\[
+H(x)=A^N h(G^{-N}(x)-q).
+\tag{E.13}
+\]
+The local functional equation makes this definition independent of a sufficiently large \(N\). It gives (E.11), regularity, and positivity of \(H'\). Compactness supplies the derivative bounds.
+
+For uniqueness, any other normalized \(C^1\) conjugacy \(\widetilde H\) satisfies
+\[
+\widetilde H(x)=A^j\widetilde H(G^{-j}(x)).
+\]
+Since \(\widetilde H(q+y)=y+o(y)\) and \(A^j(G^{-j}(x)-q)\to H(x)\), the right-hand side tends to \(H(x)\). \(\square\)
+
+### Theorem E.3. Joint exit approximation for general scalar score laws
+
+Under G1–G4, \(\tau_n<\infty\) almost surely. Define
+\[
+\mu_n=\sqrt n H(x_{0,n}),\qquad
+B_n^+=H(c_n),\qquad B_n^-=-H(a_n),
+\tag{E.14}
+\]
+and
+\[
+\Psi_n^+(t)=
+\Phi\!\left(\frac{\mu_n-\sqrt n A^{-t}B_n^+}{s}\right),
+\qquad
+\Psi_n^-(t)=
+\Phi\!\left(\frac{-\mu_n-\sqrt n A^{-t}B_n^-}{s}\right).
+\tag{E.15}
+\]
+The \(B_n^\pm\) are uniformly bounded above and away from zero. For all integers \(t\ge0\),
+\[
+\left|\Pr(\tau_n\le t,J_n=\pm1)-\Psi_n^\pm(t)\right|
+\le C\left[n^{-1/2}+
+\left(\frac{1+\log n}{n}+A^{-2t}\right)^{1/3}\right].
+\tag{E.16}
+\]
+Moreover, with
+\[
+e_n=n^{-1/2}+\left(\frac{1+\log n}{n}\right)^{1/3},
+\tag{E.17}
+\]
+the stronger uniform-in-time statement holds:
+\[
+\sup_{t\in\mathbb Z_{\ge0}}
+\max_{\pm}\left|\Pr(\tau_n\le t,J_n=\pm1)-\Psi_n^\pm(t)\right|
+\le Ce_n.
+\tag{E.18}
+\]
+In particular,
+\[
+\left|\Pr(J_n=+1)-\Phi(\mu_n/s)\right|\le Ce_n.
+\tag{E.19}
+\]
+The same conclusions hold for open or half-open intervals, with their declared endpoint membership used consistently in the exit event and in \(J_n\).
+
+**Proof.**
+
+**Step 1: finite exit without Gaussian tails.** Since \(\mathbb E U(q,Z)=0\) and its variance is positive, both \(U(q,Z)>0\) and \(U(q,Z)<0\) have positive probability. The sign of \(U(q,z)\) is the sign of \(q-z\). There therefore exist bounded score intervals strictly to the left and right of \(q\), with positive masses \(p_L,p_R\). For states \(x\in[q,c_n]\), samples from the left interval produce a uniformly positive velocity; for states \(x\in[a_n,q]\), samples from the right interval produce a uniformly negative velocity. Uniformity follows from continuity and compactness, and from the positive separation of the selected score intervals from \(q\).
+
+Choose a fixed block length \(N_0\) large enough that either such sequence of updates exits the relevant side. At the start of any block before exit, select the left-score event if the state is at least \(q\), and the right-score event otherwise. The conditional probability of the selected event is at least
+\[
+p_n:=\min(p_L,p_R)^{nN_0}>0.
+\]
+Thus \(\Pr(\tau_n>kN_0)\le(1-p_n)^k\). This argument applies to discrete score laws as well.
+
+**Step 2: stopped conjugacy coordinates.** Write
+\[
+\xi_j(x)=\frac1n\sum_{i=1}^n U(x,Z_{j,i})-v(x).
+\]
+Conditional on the history before batch \(j\), for predictable \(x\),
+\[
+\mathbb E\xi_j(x)^2\le B_U^2/n,\qquad
+\mathbb E\xi_j(x)^4\le C/n^2,
+\]
+\[
+\mathbb E(\xi_j(x)-\xi_j(q))^2\le L_U^2|x-q|^2/n,
+\qquad
+\mathbb E e^{u\xi_j(x)}\le e^{u^2B_U^2/(2n)}.
+\tag{E.20}
+\]
+Taylor expansion on the overshoot domain gives, before exit,
+\[
+H(x_{j+1})=AH(x_j)+
+\eta H'(G(x_j))\xi_j(x_j)+R_j,
+\qquad |R_j|\le C\xi_j(x_j)^2.
+\tag{E.21}
+\]
+Define
+\[
+Y_{n,t}=\sqrt n A^{-(t\wedge\tau_n)}
+H(x_{t\wedge\tau_n}).
+\]
+Summation of (E.21) expresses \(Y_{n,t}\) as \(\mu_n\), a stopped martingale \(\mathcal M_{n,t}\), and a remainder \(\mathcal E_{n,t}\). Orthogonality and (E.20) yield
+\[
+\sup_t\mathbb E|\mathcal M_{n,t}|^2\le C,\qquad
+\sup_t\|\mathcal E_{n,t}\|_2\le C/\sqrt n,
+\qquad \sup_t\mathbb E|Y_{n,t}|^2\le C.
+\tag{E.22}
+\]
+For the remainder, use Minkowski's inequality and
+\(\|\mathbf1_{\{j<\tau_n\}}\xi_j(x_j)^2\|_2\le C/n\)
+in the geometrically weighted sum. Fatou's lemma also gives the corresponding estimate at exit. Since \(|H(x_{\tau_n})|\ge b_0>0\),
+\[
+\mathbb E A^{-2\tau_n}\le C/n.
+\tag{E.23}
+\]
+
+**Step 3: freeze the noise at the actual root.** On the same infinite independent sample array, define
+\[
+W_n=\mu_n+\eta\sum_{j\ge0}A^{-j-1}\sqrt n\,\xi_j(q).
+\tag{E.24}
+\]
+Before exit,
+\[
+D_j=H'(G(x_j))\xi_j(x_j)-\xi_j(q)
+\]
+has conditional mean zero and conditional variance at most \(C|x_j-q|^2/n\). The lower bound on \(H'\), (E.22), and compactness imply
+\[
+\mathbb E[\mathbf1_{\{j<\tau_n\}}|x_j-q|^2]
+\le C\min(A^{2j}/n,1).
+\tag{E.25}
+\]
+Consequently,
+\[
+\mathbb E\left|
+\sqrt n\eta\sum_{j<t\wedge\tau_n}A^{-j-1}D_j
+\right|^2
+\le C\sum_{j\ge0}A^{-2j}\min(A^{2j}/n,1)
+\le C(1+\log n)/n.
+\tag{E.26}
+\]
+The frozen-noise tail after \(t\wedge\tau_n\) has conditional variance
+\(s^2A^{-2(t\wedge\tau_n)}\). Equation (E.23) bounds its expected contribution. Together with the remainder,
+\[
+\mathbb E|Y_{n,t}-W_n|^2
+\le C\left[\frac{1+\log n}{n}+A^{-2t}\right],
+\]
+\[
+\mathbb E|Y_{n,\tau_n}-W_n|^2
+\le C(1+\log n)/n.
+\tag{E.27}
+\]
+This comparison controls the actual state-dependent batch updates.
+
+**Step 4: Gaussian seed and event identities.** Grouping (E.24) by sample column gives
+\[
+W_n-\mu_n=\frac1{\sqrt n}\sum_{i=1}^n V_i,\qquad
+V_i=\eta\sum_{j\ge0}A^{-j-1}U(q,Z_{j,i}).
+\tag{E.28}
+\]
+The \(V_i\) are iid, centered, bounded by \(\eta B_U/(A-1)\), and have variance \(s^2>0\). Berry–Esseen therefore gives
+\[
+\sup_z\left|
+\Pr(W_n\le z)-\Phi((z-\mu_n)/s)
+\right|\le C/\sqrt n.
+\tag{E.29}
+\]
+For closed intervals the exact stopped-coordinate identities are
+\[
+\{\tau_n\le t,J_n=+1\}
+=\{Y_{n,t}>\sqrt n A^{-t}B_n^+\},
+\]
+\[
+\{\tau_n\le t,J_n=-1\}
+=\{Y_{n,t}<-\sqrt n A^{-t}B_n^-\}.
+\tag{E.30}
+\]
+Before exit, the threshold cannot be crossed. After an exit at \(j\le t\), the coordinate is frozen at a value whose magnitude is larger than the boundary scaled by \(A^{-t}\).
+
+For an excluded endpoint, replace the corresponding strict comparison in (E.30) by a weak comparison. The smoothing argument below works for either convention because the comparison Gaussian has a continuous bounded density. No non-atomicity of the finite-batch updates is assumed.
+
+For any threshold, (E.27), Chebyshev's inequality, and (E.29) bound the probability error by
+\[
+C\{n^{-1/2}+h+\Delta_t/h^2\},\qquad
+\Delta_t=(1+\log n)/n+A^{-2t}.
+\]
+Choosing \(h=\Delta_t^{1/3}\) proves (E.16). At exit, the sign of \(Y_{n,\tau_n}\) is \(J_n\), which proves (E.19).
+
+**Step 5: remove the early-time loss in the bound.** The martingale in (E.22) has a uniform sub-Gaussian proxy. Indeed, each increment has conditional proxy at most
+\[
+\eta^2 A^{-2j-2}B_U^2\sup_{\mathcal K}|H'|^2.
+\]
+The sum is finite, so for every deterministic \(t\),
+\[
+\mathbb E e^{u\mathcal M_{n,t}}\le e^{C u^2}.
+\tag{E.31}
+\]
+For sufficiently large \(y\), (E.22) and (E.31) imply
+\[
+\Pr(|Y_{n,t}|>y)\le C e^{-c y^2}+\frac{C}{ny^2}.
+\tag{E.32}
+\]
+Uniform boundedness of \(\mu_n\) is used here.
+
+If \(nA^{-2t}>D\log n\), both true exit probabilities in (E.30) and their Gaussian approximations are at most
+\[
+C e^{-cD\log n}+\frac{C}{nD\log n}.
+\]
+Choose a fixed sufficiently large \(D\). On all remaining times,
+\(A^{-2t}\le D\log n/n\), so (E.16) is bounded by \(Ce_n\).
+This proves (E.18). \(\square\)
+
+The logarithmic mechanism and the Gaussian seed are classical unstable-exit phenomena [E-R2, E-R3]. The extension here keeps the actual batch-gradient noise, a declared exit interval, discrete update times, and the geometric quantities needed for the calibration analysis below.
+
+
+## References
+
+[E-R1] A. W. van der Vaart. *Asymptotic Statistics*. Cambridge University Press, 1998. Chapter 5, “M- and Z-Estimators.” [Publisher chapter](https://doi.org/10.1017/CBO9780511802256.006).
+
+[E-R2] Y. Bakhtin. *Exit asymptotics for small diffusion about an unstable equilibrium*. arXiv:math/0701569, 2007. [Preprint](https://arxiv.org/abs/math/0701569). Journal DOI: [10.1016/j.spa.2007.06.003](https://doi.org/10.1016/j.spa.2007.06.003).
+
+[E-R3] Y. Bakhtin and A. Gaál. *Exit time asymptotics for dynamical systems with fast random switching near an unstable equilibrium*. arXiv:1901.05513, 2019. [Preprint](https://arxiv.org/abs/1901.05513). Journal DOI: [10.1142/S0219493720500264](https://doi.org/10.1142/S0219493720500264).
+
+[E-R4] P. Massart. *The Tight Constant in the Dvoretzky–Kiefer–Wolfowitz Inequality*. The Annals of Probability 18(3):1269–1283, 1990. [DOI](https://doi.org/10.1214/aop/1176990746).

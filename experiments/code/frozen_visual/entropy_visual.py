@@ -16,8 +16,7 @@ import sys
 import json
 import numpy as np
 from scipy.special import expit, ndtr
-from scipy.optimize import brentq
-from scipy.interpolate import PchipInterpolator
+from field_geometry import calibrate_peak, conjugate_prediction
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'common'))
 from entropy_prediction import joint_prediction, observed_cdf, summarize
 
@@ -85,51 +84,21 @@ class Marginal:
         return lo, hi, components
 
     def calibrate(self):
-        # Search independently of target outcomes; multiple peaks are not hidden.
-        mesh = np.linspace(min(self.pos[0],self.neg[0])-2, max(self.pos[-1],self.neg[-1])+2, 513)
-        v = np.array([self.moments(x)[0] for x in mesh])
-        peaks = []
-        for i in range(len(mesh)-1):
-            if v[i] <= 0 < v[i+1]:
-                q = brentq(lambda x:self.moments(x)[0], mesh[i], mesh[i+1])
-                if self.moments(q)[1] > 0:
-                    peaks.append(float(q))
-        if len(peaks) != 1:
-            raise ValueError(f'Expected one unstable peak, found {len(peaks)}')
-        q = peaks[0]
-        _, lam, sg2 = self.moments(q)
-        A = 1+ETA*lam
-        return dict(q=q, lambda_=lam, A=A, seed_sd=float(np.sqrt(ETA**2*sg2/(A*A-1))))
+        return calibrate_peak(self,min(self.pos[0],self.neg[0]),
+                              max(self.pos[-1],self.neg[-1]),ETA)
 
-    def prediction(self, calibration, n, x0, epsilon):
-        lo, hi, components = self.safe_component(x0, epsilon)
-        q, A = calibration['q'], calibration['A']
-        if not lo < q < hi:
-            raise ValueError('Calibrated peak lies outside the frozen-risk safe component')
-        # Monotone interpolation of the deterministic update, not of exit data.
-        mesh = np.unique(np.r_[np.linspace(lo, hi, 4097), q])
-        mapped = mesh+ETA*np.array([self.moments(x)[0] for x in mesh])
-        if np.any(np.diff(mapped) <= 0):
-            raise ValueError('Update is not monotone on the calibrated interval')
-        inverse = PchipInterpolator(mapped, mesh, extrapolate=False)
-        def H(x):
-            count = 0
-            while abs(x-q) > 1e-5:
-                x = float(inverse(x))
-                count += 1
-                if not np.isfinite(x) or count > 10000:
-                    raise ValueError('Inverse conjugacy did not approach the peak')
-            return A**count*(x-q)
-        linear = dict(**calibration, seed_mean=float(np.sqrt(n)*(x0-q)),
-                      left_H=q-lo, right_H=hi-q)
-        full = dict(**calibration, seed_mean=float(np.sqrt(n)*H(x0)),
-                    left_H=-H(lo), right_H=H(hi))
-        probes = np.linspace(lo, hi, 17)[1:-1]
-        residual = max(abs(H(x+ETA*self.moments(x)[0])-A*H(x))
-                       for x in probes if lo <= x+ETA*self.moments(x)[0] <= hi)
-        return dict(actual_linear=linear, conjugate=full), dict(
-            left_boundary=lo, right_boundary=hi, safe_components=components,
-            conjugacy_residual=float(residual), inverse_grid_points=len(mesh))
+    def prediction(self, calibration, n, x0, epsilon, boundaries=None):
+        # Optional boundaries are for separating field and risk calibration in
+        # saved-trajectory diagnostics; normal experiment calls use own risk.
+        if boundaries is None:
+            lo, hi, components = self.safe_component(x0, epsilon)
+        else:
+            lo, hi = boundaries
+            components = None
+        predictions, diagnostic = conjugate_prediction(self,calibration,n,x0,lo,hi,ETA)
+        diagnostic['safe_components'] = components
+        return predictions, diagnostic
+
 
 
 def project_pair(train, train_y, test, test_y, pair):

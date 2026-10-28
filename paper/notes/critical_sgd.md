@@ -640,7 +640,7 @@ $r_0''(0)=B$，而 $Bk_0=\varphi(m/\sigma)/\sigma$。
 
 ## 6. 数值核查与复现
 
-分析、完整表格、误差说明与四面板图解释保存在结果原处的 [analysis.md](../../critical_sgd_reproducibility/critical_sgd/analysis.md)。运行命令见 [复现 README](../../critical_sgd_reproducibility/critical_sgd/README.md)。本节原分析已收拢至该文件，不在理论笔记重复保存。
+分析、完整表格、误差说明与四面板图解释保存在结果原处的 [analysis.md](../../experiments/results/critical/analysis.md)。运行命令见 [复现 README](../../experiments/code/entropy/README.md)。本节原分析已收拢至该文件，不在理论笔记重复保存。
 
 ## 7. 应如何写成论文贡献
 
@@ -671,3 +671,93 @@ $r_0''(0)=B$，而 $Bk_0=\varphi(m/\sigma)/\sigma$。
 本篇对照这些经典结果，落实的是固定步长 mini-batch 熵更新、弱先验与位置偏移、分类风险边界、离散格点，以及 $\epsilon$ 从固定量变为 $1/n$ 时的区别。这些模型化组合是否形成足够的新贡献，仍需与 TTA、SGD 退出和在线安全适应的近邻工作逐项核对；单凭本篇不能判定 CVPR 录用潜力。
 
 
+
+## 9. 独立校准误差与临界随机尺度
+
+本节保留扩展前的一阶与冻结线性推导。后续真实SGD扩展已合入[一般标量退出](../scalar_exit.md)、[独立校准理论](../calibration.md)及[风险边界](../risk_boundaries.md)；下文“尚未证明”指本节形成时的范围，不代表当前稿件仍缺少对应带证明陈述。
+
+本节区分一个可直接推导的冻结线性参考结论与尚未证明的真实 SGD 扩展；不将其当作已完成的新主定理。经验验证和结果留在相应实验结果目录，当前安排见 STATUS.md。
+
+固定目标分布，记不稳定峰为 $q$，$v(q)=0$、$\lambda=v'(q)>0$，单样本更新速度为 $U(x,Z)$，$\sigma_g^2=\operatorname{Var}(U(q,Z))>0$。独立校准流 $Z_1^c,\ldots,Z_M^c$ 仅用于估计熵场，令
+
+\[
+\widehat v_M(x)=M^{-1}\sum_{i=1}^M U(x,Z_i^c),\qquad
+\widehat v_M(\widehat q_M)=0.
+\]
+
+若选取一致收敛到 $q$ 的局部根，且样本场的一阶导数在该邻域内一致收敛，则根方程的 Taylor 展开给出
+
+\[
+\widehat q_M-q=-\frac{\widehat v_M(q)}{\lambda}+o_P(M^{-1/2}),\qquad
+\sqrt M(\widehat q_M-q)\Rightarrow
+N(0,\sigma_g^2/\lambda^2).
+\]
+
+这里要求根选择一致；有限样本出现多个不稳定峰时，不能利用真实峰位置挑选根再称为无标签校准。代码直接报告该情形不适用。
+
+### 9.1 校准精度的有限参数尺度
+
+令 $A=1+\eta\lambda$，固定正步长下的原 SGD 高斯种子方差为
+
+\[
+s^2=\frac{\eta^2\sigma_g^2}{A^2-1}.
+\]
+
+阈值单位中的 SGD 随机尺度为 $s/\sqrt n$；峰校准标准差约为 $\sigma_g/(\lambda\sqrt M)$。二者比值的平方为
+
+\[
+\mathcal R_{M,n}^2
+=\frac{n\sigma_g^2}{M\lambda^2s^2}
+=\frac nM\frac{A^2-1}{\eta^2\lambda^2}
+=\frac nM\frac{2+\eta\lambda}{\eta\lambda}.
+\]
+
+因此，忽略峰校准误差所需的有限参数尺度是
+
+\[
+M\gg n\,\frac{2+\eta\lambda}{\eta\lambda},
+\]
+
+而不只是 $M>n$。这是一阶校准误差与冻结噪声的比较，不是完整退出 CDF 的有限样本保证，也不是 $\eta\to0$ 联合极限定理。它没有处理曲率估计、远端非线性漂移或风险端点的误差。
+
+### 9.2 只有初始化依赖校准时，才向实际种子加入校准方差
+
+考虑明确的冻结线性参考过程
+
+\[
+D_{t+1,n}=A D_{t,n}+\eta\overline U_{t+1,n},\qquad
+\overline U_{j,n}=n^{-1}\sum_{i=1}^n U(q,Z_{j,i}),
+\]
+
+各批独立，且与校准流独立。若初始化是
+
+\[
+D_{0,n}=\widehat q_{M_n}-q+\kappa/\sqrt n,\qquad
+n/M_n\to r\in[0,\infty),
+\]
+
+则其归一化无限时种子满足
+
+\[
+\mathcal W_n=\sqrt nD_{0,n}
++\eta\sum_{j\ge1}A^{-j}\sqrt n\,\overline U_{j,n}
+\Rightarrow
+N\!\left(\kappa,
+ s^2+r\frac{\sigma_g^2}{\lambda^2}\right).
+\]
+
+证明：校准根的 CLT 给出第一项的极限；有限个独立批平均的联合 CLT 给出级数有限前缀的高斯极限，剩余项的二阶矩由 $\eta^2\sigma_g^2\sum_{j>J}A^{-2j}$ 一致控制并随 $J\to\infty$ 消失。两部分因独立数据流而独立，方差相加。这个推导只证明冻结线性参考模型；迁移到真实状态依赖 SGD，需要另外验证随机初始化下的共轭误差控制与联合收敛。
+
+反之，当前独立校准实验复用已有固定初始化的 SGD 轨迹，新的 $\widehat q_M$ 只用于预测，不改变实际初始化。此时它产生预测器的随机误差，不能直接给实际 SGD 种子加上 $n\operatorname{Var}(\widehat q_M)$ 来声称修正了退出分布。代码分别记录峰估计误差、标准误及预测误差，不做这种方差膨胀。
+
+### 9.3 风险边界和时间仍是独立问题
+
+即使熵场可以从无标签目标分数估计，原训练风险端点也不自动成为正确的目标风险端点。当前实验分别固定训练端点与目标 oracle 端点；后者仅用于隔离场校准误差，不能作为无标签风险预测成果。
+
+在退出种子远离零、边界规则且几何估计误差较小时，表达式
+
+\[
+T\approx\frac{\tfrac12\log n+\log|H(a)|-\log|\mathcal W|}{\log A}
+\]
+
+说明边界共轭、有效种子与曲率误差都会影响时间；尤其种子接近零时，不能用一个均匀的一阶时间误差界替代完整分布分析。风险安全集单侧无界、峰不在初始安全分量内或远端存在慢漂移瓶颈时，也不能直接套用双侧临界退出近似。
