@@ -2,6 +2,23 @@
 
 本实验检验独立校准的方向与时间预测，并比较阈值、尺度和 LA 更新。当前结果与待办见 [STATUS.md](../../../STATUS.md)，其它实验见 [实验导航](../../README.md)。数值计算依赖 NumPy、SciPy，绘图依赖 Matplotlib；特征提取另需 PyTorch、torchvision、Transformers。
 
+## 预测性停止闭环
+
+[stopping.py](stopping.py) 复用原初始化与协议，用新独立种子模拟逐步阈值和风险。默认四类对、p=.5、n=128、offset=-2/0/2，每组128路径、1500步；无标签场预算2048/131072，各4次校准重复。全部参数预定，不从退出数据拟合安全余量。
+
+```shell
+python experiments/code/frozen_visual/stopping.py --features experiments/results/visual_features/features.npz --results experiments/results/visual_shift/results.json --diagnosis experiments/results/visual_shift/diagnosis/results.json --output experiments/results/stopping_pilot
+python experiments/code/frozen_visual/stopping_plot.py --input experiments/results/stopping_pilot
+```
+
+计算支持 `--pairs`、`--batches`、`--priors`、`--offsets`、`--paths`、`--steps`、`--alphas`、`--budgets`、`--repeats`、`--fixed-steps`、`--seed`。筛选限原 results.json 中存在的threshold case，eta=.1、w=2。新参数须指定新输出目录。输出 results.json 逐case逐重复决策和 paths.npz 逐步阈值/风险。每完成一个case保存，中断保留部分结果但不支持续跑。绘图进程要求全部完成，生成 summary.json、analysis.md、tradeoff.png。
+
+对照包括 frozen、固定步数、全预算风险最低点oracle checkpoint、精确无标签经验边际的候选分歧保护、精确目标几何oracle预测，以及独立无标签场配源/oracle端点。不可用预测冻结在0步并纳入全部case。校准与SGD随机数独立；同一校准复用于batch/offset。M为固定池重复观测次数，不是新图像。分歧保护先检查候选再部署，拒绝后冻结上一状态。
+
+预测时长是近似退出CDF不超过alpha的最后安全前缀时刻，初始预测已超标则冻结。它测试安全上限作为停止点的效果，不含收益优化，也不是已证明的概率保证。源端点是未经保证的迁移消融；oracle端点读取目标标签。分歧保护使用精确池边际，不是有限样本估计；已发表风险监测基线尚未实现。
+
+报告路径/最终违规率、收益、相对hindsight收益损失、平均停止步数、冻结率与可用率。先在case内平均校准重复，再对case等权；不把共享路径当作独立重复。平均停止步数是策略长度，不是本次完整轨迹生成的实测成本。当前结果见根目录STATUS.md。
+
 ## 提取冻结特征
 
 [visual_features.py](visual_features.py) 读取本地 CIFAR-10 官方 train/test，使用 ImageNet-1k 预训练的 [microsoft/resnet-18](https://huggingface.co/microsoft/resnet-18) 及配套 `AutoImageProcessor`，保存池化层展平后的 512 维特征。不训练、不新增划分，CIFAR-10 不自动下载。
