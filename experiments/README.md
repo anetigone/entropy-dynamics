@@ -1,9 +1,11 @@
 # 实验导航
 
-当前研究状态、采用的证据和下一步见 [STATUS.md](../STATUS.md)，工作纪律与本机环境约定见 [AGENTS.md](../AGENTS.md)。
+结果与原处分析见 [结果导航](results/README.md)。当前研究状态和下一步见 [STATUS.md](../STATUS.md)，工作纪律与本机环境约定见 [AGENTS.md](../AGENTS.md)。
 
 实验代码按功能分组，各目录的 README 说明用途、依赖、参数和运行方式：
 
+- [固定规则精度确认](../entropy_prediction_revision/contribution_precision/README.md)：独立真实 SGD 参考路径、校准重复及双层同时区间。
+- [有限信息高斯决策与真实 SGD pilot](../gaussian_decision/README.md)：候选规则搜索、连续窗口证书及独立校准验证；文件保留原位。
 - [理论与基础合成复现](code/entropy/README.md)：基础扫描、几何与安全时长、临界 SGD 和独立数值检查。
 - [混合偏移机制实验](code/mixed_shift/README.md)：平移与先验抵消、方向和退出时间预测消融。
 - [冻结视觉特征实验](code/frozen_visual/README.md)：特征提取、独立校准、尺度和 LA 对照。

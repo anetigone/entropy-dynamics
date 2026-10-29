@@ -663,9 +663,9 @@ passage by an early Gaussian seed.
 For this new actual-SGD sample, the original target-geometry conjugacy
 predictor has total-CDF errors .3740/.2903/.2086. A separate, unfitted
 first-order population-orbit diagnostic propagates variance by
-\(V_{t+1}=G^{\prime}(\bar x_t)^2V_t+\eta^2\operatorname{Var}(U(\bar x_t,Z))/n\), starting at
-zero. Dividing terminal standard deviation by the magnitude of the
-deterministic crossing velocity gives time standard deviations
+\(V_{t+1}=G^{\prime}(\bar x_t)^2V_t+\eta^2\operatorname{Var}(U(\bar x_t,Z))/n\),
+starting at zero. Dividing terminal standard deviation by the magnitude
+of the deterministic crossing velocity gives time standard deviations
 approximately 230/124/67 updates; a normal approximation centered at
 deterministic exit gives CDF errors .0527/.0388/.0569. This is a
 single-branch diagnostic, not a proved joint exit law. It does not fit a
@@ -687,3 +687,123 @@ certification. The empirical-CDF comparisons use coupled paths and are
 descriptive, not independent two-sample significance tests. Further
 theory should connect the early random seed to accumulated passage noise
 before extending the diagnostic to mixed exit directions.
+
+\subsubsection{10.12. Target-centered calibration
+scale}\label{experiments-target-centered-calibration-scale}
+
+We fix four visual empirical score laws at prior .5 and initialize
+actual entropy SGD at the exact target peak q. For n=32/128/512 and
+eta=.1, calibration budgets are chosen from the exact target curvature
+to keep R=.5/1/2, where R²=(n/M)(2+eta lambda)/(eta lambda). A second
+sequence sets M proportional to n², reducing R from1 to .5 to .25. The
+design uses geometry, not observed exits. Each unique budget has128
+calibration repetitions; prefixes are nested and reused when settings
+have the same budget. The estimator receives only unlabeled scores and
+multiplicities.
+
+This experiment evaluates the local empirical-root predictor
+Phi(sqrt(n)(q-qhat)/shat), rather than the full conjugacy time forecast.
+Across the four pairs, fixed R=1 gives centered MAE approximately
+.237--.269 against .5 despite decreasing absolute root error, close to
+arctan(1)/pi=.25. On the decreasing-R sequence, MAE ranges are:
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}rrrr@{}}
+\toprule\noalign{}
+n & R & Centered MAE across pairs & arctan(R)/pi \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+32 & 1 & .237--.257 & .2500 \\
+128 & .5 & .139--.143 & .1476 \\
+512 & .25 & .080--.082 & .0780 \\
+\end{longtable}
+}
+
+These are successful-root means; the lowest individual-setting success
+rate is .9141. Failed estimates and failure-inclusive MAE bounds are
+reported in the result analysis. Repetitions sharing prefixes are not
+independent additional observations. The entire experiment is
+conditional on fixed pools, not increasing numbers of independent
+images.
+
+Independent actual SGD uses256 paths per pair and batch. Three pairs
+have at most one censored path by1500 steps. Automobile/truck
+has129--132 censored paths; replaying the same paths to4000 steps
+preserves all earlier observed exits and resolves every censor on the
+right. Final right-exit counts for n=32/128/512 are132/132/129 out
+of256. This extension is a continuation, not an independent replication;
+only its summary was retained. Its cause is the asymmetric risk
+geometry: peak-to-left distance about .100 and peak-to-right
+distance1.884, with representative deterministic right passages
+taking2071--2342 steps. It is consistent with the slow-passage
+diagnostics in §10.11.
+
+The centered errors test a specific forecast limit. If the predictor
+knows exact centering, a constant .5 forecast bypasses this error.
+Unknown local displacement and a lower bound over a local family are
+separate questions defined in \href{local_prediction.md}{§8B}. Detailed
+protocol, per-setting estimates, uncertainty and censoring remain in the
+\href{../experiments/results/centered_calibration/analysis.md}{result
+analysis}.
+
+\subsubsection{10.13. Safety-horizon stopping as an application stress
+test}\label{experiments-safety-horizon-stopping-as-an-application-stress-test}
+
+Two independent random-seed runs use four pairs, prior .5, n=128 and
+offsets -2/0/2:12 cases,128 paths each and1500 steps per run. All cases
+remain in the denominator; unavailable forecasts freeze at
+initialization. The stopping horizon is the last prefix whose
+approximate exit CDF is no greater than alpha, without fitting a safety
+margin to test exits. A disagreement gate checks candidates against the
+exact unlabeled empirical marginal before deployment. It is not a
+finite-sample marginal estimator or a reproduction of a published risk
+monitor.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2727}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3636}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3636}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Rule
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Run1 path violation / gain(pp)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Run2 path violation / gain(pp)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Exact-geometry forecast, alpha=.01 & .0130 / .651 & .0124 / .701 \\
+Fixed100 steps & .0020 / .652 & .0026 / .639 \\
+Exact-pool disagreement gate & 0 / .572 & 0 / .569 \\
+\end{longtable}
+}
+
+These runs do not show a stable utility advantage from treating a safety
+upper horizon as the desired stopping point. They do not disprove
+risk-exit forecasting or all stopping methods. Target-endpoint forecasts
+use labels; source endpoints are an uncontrolled transfer ablation.
+Nominal alpha is not a proved safety bound. The runs share the same
+feature pools and therefore do not establish cross-environment
+generalization. Full results are in the
+\href{../experiments/results/stopping_pilot/analysis.md}{first analysis}
+and \href{../experiments/results/stopping_repeat/analysis.md}{seed
+repetition}; all evidence is indexed by the
+\href{../experiments/results/README.md}{results README}.
+
+\subsubsection{10.14. Fixed-rule finite-batch
+confirmation}\label{experiments-fixed-rule-finite-batch-confirmation}
+
+The
+\href{../entropy_prediction_revision/contribution_precision/precision_report.md}{original
+confirmation report} gives the fixed design, two-layer simultaneous
+confidence construction, all cellwise and five-cell maximum-risk
+comparisons, and evidence boundaries. It excludes pilot observations and
+retains the previously selected Gaussian rule. The unknown-direction
+extension is theoretical; no nuisance simulation is claimed. The report
+and its raw outputs remain in their original directory.

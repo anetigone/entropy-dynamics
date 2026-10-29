@@ -1,110 +1,272 @@
-\section{Process and Risk Comparator}
-Let $Z$ be a scalar score and $x$ a decision threshold. With fixed confidence slope $w>0$, define
-\begin{align}
- s(u)&=(1+e^{-u})^{-1},\quad a(u)=s(u)(1-s(u)),\\
- U(x,z)&=-w^2(z-x)a(w(z-x)),\label{eq:update}\\
- v(x)&=\E U(x,Z),\quad G(x)=x+\eta v(x).
-\end{align}
-The actual fresh-batch recursion is
-\begin{equation}
- x_{t+1}=x_t+\frac\eta n\sum_{i=1}^n U(x_t,Z_{t,i}),\label{eq:sgd}
-\end{equation}
-with iid batches independent of the past. It is the gradient update for expected binary entropy, not a diffusion surrogate. Labels do not enter this update. Uniform bounds are $|U|\le w/4=:B_U$ and $|\partial_xU|\le w^2/4=:L_U$; fixed higher derivatives are bounded as well.
+\section{Information, dynamics and prediction loss}\label{information-dynamics-and-prediction-loss}
 
-For classification risk $r$, frozen initialization $x_0$, and tolerance $\epsilon\ge0$, define
-\begin{equation}
- T_\epsilon=\inf\{t\ge0:r(x_t)>r(x_0)+\epsilon\}.
- \label{eq:riskexit}
-\end{equation}
-The strict inequality specifies the first unsafe iterate. Both sides of the safe set can be unsafe, and lower entropy does not certify lower risk. For a disconnected safe set, leaving its initial connected component need not equal~\eqref{eq:riskexit}; an SGD step can jump into another safe component.
+Fix confidence slope \(w>0\) and positive step size \(\eta\). For \(s(u)=(1+e^{-u})^{-1}\) and \(a(u)=s(u)(1-s(u))\), define
+\[
+\begin{gathered}
+U(x,z)=-w^2(z-x)a(w(z-x)) \\
+v_Q(x)=E_Q U(x,Z).
+\end{gathered}
+\]
+Actual fresh-batch adaptation starts at \(x_0=0\) and uses
+\[
+x_{j+1}=x_j+\frac\eta n\sum_{i=1}^n U(x_j,Z_{j,i}).
+\]
+All future scores are iid from the unknown score law Q. Labels do not enter this update. Uniformly in x,z, \(|U|\le B_U=w/4\) and \(|\partial_x U|\le L_U=w^2/4\); every fixed higher state derivative is bounded.
 
-\subsection{Gaussian geometry under mixed shifts}
-Take $Z_{\rm raw}=\delta+Ym+\sigma\xi$, with $\Prob(Y=1)=p$, $\xi\sim N(0,1)$, and $m,\sigma,w>0$. Center scores and thresholds by $\delta$; the frozen raw threshold zero becomes $x_0=-\delta$. Then
-\begin{equation}
- r_p(x)=p\Phi((x-m)/\sigma)+(1-p)\Phi((-x-m)/\sigma).
-\end{equation}
-Its unique minimizer is $x_*(p)=\frac{\sigma^2}{2m}\log\frac{1-p}{p}$. Translation changes the initialization and comparator but not the centered entropy field.
+Let R\_Q be classification risk and \(\epsilon>0\). Define
+\[
+T_\epsilon=\inf\{j\ge0:R_Q(x_j)>R_Q(0)+\epsilon\}.
+\]
+Our construction makes the entire risk-safe set exactly \([-b,b]\), and exit is almost surely finite. The prediction target is
+\[
+\pi_n(Q)=P_Q(x_{T_\epsilon}>b).
+\]
 
-For $0<m\le\sigma$, the entropy has a unique unstable maximum $q_p$. For $p<1/2$, $q_p<0<x_*(p)$. An initialization strictly between $q_p$ and $x_*(p)$ moves right, initially improves risk for sufficiently small step size, and ultimately approaches risk $p$. It crosses the frozen risk plus tolerance precisely when $r_p(x_0)+\epsilon<p$. Thus entropy collapse alone does not imply crossing a poor frozen comparator. Sufficiently separated mixtures instead admit a locally safe population basin; this is not permanent finite-batch safety. Full sufficient conditions and proofs are retained in the supplement.
+The predictor receives M iid calibration scores from Q, independent of all future SGD samples. It knows the declared baseline family, initialization, fixed constants, and may receive the entire common risk function and identical source information. It does not receive the unknown environment, root, local seed displacement, future trajectory or exact target marginal. The risk of a forecast is expected absolute probability error over calibration randomness; \(\pi_n\) itself averages over future SGD.
 
-Write $p=(1-\rho)/2$. Near balance,
-\begin{equation}
- v_\rho(x)=\beta\rho+\lambda x+O(x^2+|\rho x|+\rho^2),
-\end{equation}
-with $\beta,\lambda>0$, so $q_\rho=-\beta\rho/\lambda+O(\rho^2)$. The leading displacement from the peak is $\beta\rho/\lambda-\delta$: feature and prior shifts can reinforce or cancel. For admissible $x_0=\alpha_0\rho$, fixed positive tolerance gives the population law
-\begin{equation}
- T_\epsilon=\frac{\log(1/\rho)}{\log(1+\eta\lambda)}+O(1).
-\end{equation}
-Tolerance of order $\rho^2$, comparable to the available risk improvement, instead gives bounded crossing times under the stated nondegeneracy conditions. A long horizon need not mean substantial improvement.
+For a local parameter u in \([-A_0,A_0]\), define
+\[
+\mathfrak R_{n,M}(A_0)=\inf_{\widehat\pi}\sup_{|u|\le A_0}
+ E_{u/\sqrt n}|\widehat\pi-\pi_n(Q_{u/\sqrt n})|.
+\]
+The fixed width \(A_0>0\) is part of the declared problem. Known exact centering is a different experiment: the symmetric center admits the exact forecast .5. The root-calibration arctangent error of a particular plug-in is consequently not a universal lower bound.
 
-\section{Nonlinear Exit and Calibration}
-We now fix a score law $Q$, which may be a weighted empirical pool. All probabilities for such a pool are conditional on it and its source projection.
+\section{A common-risk environment family}\label{a-common-risk-environment-family}
 
-\paragraph{Exit-domain assumptions.}
-On a fixed compact interval $\mathcal K$, assume a unique repelling root $q$ with $v'(q)=\lambda>0$ and $(x-q)v(x)>0$ away from $q$. Assume $\sigma_g^2=\Var U(q,Z)>0$ and fixed $0<\eta<1/L_U$. Exit intervals $[a_n,c_n]$ contain $q$, with uniformly positive peak-to-boundary distances; their one-step overshoot domains lie strictly inside $\mathcal K$. Finally, $|x_{0,n}-q|\le K_0/\sqrt n$. These are G1--G4 in the supplement. Local curvature alone does not imply them.
+Let \(f_0\) be the centered Gaussian density with variance \(\nu^2>0\). Define
+\[
+\begin{gathered}
+\lambda=v_0'(0)=\frac{w^2}{\nu^2}E_0[Z^2a(wZ)]>0 \\
+\sigma_g^2=E_0U(0,Z)^2>0 \\
+h_0=U(0,\cdot)/\sigma_g.
+\end{gathered}
+\]
+Symmetry gives \(E_0h_0=0\), \(E_0h_0^2=1\), and \(h_0\) is bounded. Choose \(0<\kappa<1\) and
+\[
+\begin{gathered}
+f_\theta=f_0(1+\theta h_0) \\
+g(z)=\kappa\tanh(z)f_0(z) \\
+p_\theta(z,\pm1)=\tfrac12(f_\theta(z)\pm g(z)).
+\end{gathered}
+\]
+When \(|\theta|\|h_0\|_\infty\le\min(1/2,1-\kappa)\), these are legal joint densities with equal class priors. For the classifier predicting +1 when \(z>x\), every environment has the same complete risk
+\[
+\begin{gathered}
+R(x)=\tfrac12+\int_{-\infty}^x g(z)\,dz \\
+R(x)-R(0)=\kappa\int_0^x\tanh(z)f_0(z)\,dz.
+\end{gathered}
+\]
+This function is even and strictly increases with \(|x|\). Thus for any chosen b\textgreater0 and \(\epsilon=R(b)-R(0)\), its global safe set is exactly \([-b,b]\). Interval exit and actual risk exit coincide path by path, even for discrete overshoots. The labeled conditionals of this family are not assumed Gaussian mixtures.
 
-An increasing normalized conjugacy $H$ satisfies
-\begin{equation}
- H(q)=0,\quad H'(q)=1,\quad H(G(x))=AH(x),\quad A=1+\eta\lambda.
-\end{equation}
-It incorporates the full deterministic transit geometry. Put
-\begin{align}
- \mu_n&=\sqrt n H(x_{0,n}),\quad s^2=\frac{\eta^2\sigma_g^2}{A^2-1},\\
- B_n^+&=H(c_n),\qquad B_n^-=-H(a_n).
-\end{align}
-For interval exit time $\tau_n$ and side $J_n\in\{-1,+1\}$, define
-\begin{equation}
- \Psi_n^\pm(t)=\Phi\left(\frac{\pm\mu_n-\sqrt n A^{-t}B_n^\pm}{s}\right).
- \label{eq:joint}
-\end{equation}
-\begin{theorem}[Actual-SGD interval exit]
-Under G1--G4, a constant $C$ independent of $n,t$ gives
-\begin{equation}
- \sup_{t\in\mathbb Z_{\ge0}}\max_\pm
- |\Prob(\tau_n\le t,J_n=\pm1)-\Psi_n^\pm(t)|\le Ce_n,
-\end{equation}
-where $e_n=n^{-1/2}+((1+\log n)/n)^{1/3}$.
-\end{theorem}
-This is Theorem E.3 of the supplement. The proof uses inverse-iteration conjugacy, a stopped weighted-noise expansion, Gaussian approximation, and separate early-time tail control. Constants depend on the entire exit domain, including drift bottlenecks; they are not calibrated numerically. The theorem becomes a risk-exit statement when the safe set is the interval, or when component-skipping error is separately controlled.
+To establish uniform exit geometry, choose small d\textgreater0 with \(v_0'\ge\lambda/2\) on \([-d,d]\), set b=d/2, and fix
+\[
+0<\eta<\min\{1/L_U,d/(4B_U)\}.
+\]
+For all sufficiently small \textbar{}\(\theta\)\textbar, \(v_\theta'\ge\lambda/4\) on this compact domain and there is a unique root with \(|q_\theta|\le b/2\). The overshoot interval stays strictly inside \([-d,d]\), the root noise variance is bounded below, and
+\[
+q_\theta=-\frac{\sigma_g}{\lambda}\theta+O(\theta^2).
+\]
+These are Proposition L.1 and its proof in the local prediction proof chapter. Complete risk knowledge therefore does not remove uncertainty about the location of the entropy repeller.
 
-Under critical initialization and fixed positive tolerance in the Gaussian family,
-\begin{equation}
- T_\epsilon=\frac{\log n}{2\log A}+O_{\Prob}(1).
-\end{equation}
-The fluctuation is a rounded negative logarithm of a Gaussian magnitude, retaining an integer lattice phase. This law does not apply to arbitrary fixed off-peak initializations. For $\rho=c/\sqrt n$, $x_0=u/\sqrt n$, and $n\epsilon_n\to e$, the limit instead is finite-step first exit of
-\begin{equation}
- X_{t+1}=AX_t+\eta\beta c+\eta s_0 Z_t,\quad X_0=u,
-\end{equation}
-from the corresponding quadratic-risk interval, where $s_0^2=\Var_0 U(0,Z)$ and $Z_t$ are iid standard normals. These limits fix $\eta>0$.
+\section{Uniform direction exit of actual SGD}\label{uniform-direction-exit-of-actual-sgd}
 
-\subsection{Independent field calibration}
-An independent iid sample of $M$ scores estimates the field and its root $\widehat q$. It changes the predictor, while leaving the actual initialization and SGD unchanged. The local root CLT gives
-\begin{equation}
- \sqrt M(\widehat q-q)\Rightarrow N(0,\sigma_g^2/\lambda^2).
-\end{equation}
-Relative to the SGD threshold scale $s/\sqrt n$, its squared uncertainty is
-\begin{equation}
- \mathcal R_{M,n}^2=\frac nM\frac{2+\eta\lambda}{\eta\lambda}.
- \label{eq:ratio}
-\end{equation}
-Small absolute root error can therefore dominate a large-batch experiment. This is uncertainty in a forecast, not extra variance of the unchanged SGD process.
+Write \(\lambda_\theta=v_\theta'(q_\theta)\), \(A_\theta=1+\eta\lambda_\theta\), and
+\[
+s_\theta^2=\frac{\eta^2\operatorname{Var}_\theta U(q_\theta,Z)}{A_\theta^2-1}.
+\]
+At the baseline put \(s=s_0\), \(A=1+\eta\lambda\) and
+\[
+\begin{gathered}
+c=\frac{\sigma_g}{\lambda s}=\sqrt{\frac{2+\eta\lambda}{\eta\lambda}} \\
+e_n=n^{-1/2}+((1+\log n)/n)^{1/3}.
+\end{gathered}
+\]
 
-More generally, Theorem E.6 bounds the conditional plug-in forecast error on its good-calibration and endpoint event by
-\begin{align}
- C\big[ e_n+\sqrt n|d_q|+\sqrt n d_q^2
- +(1+\log n)d_v+d_\sigma+d_b\big],\label{eq:plugin}
-\end{align}
-where $d_q=\widehat q-q$, $d_v$ is the $C^3$ field error, $d_\sigma$ the root-noise variance error, and $d_b$ the endpoint error. These terms distinguish peak sensitivity, accumulated growth error, and risk-boundary uncertainty.
+\textbf{Theorem 1 (Uniform actual-SGD direction law; L.2).} For every fixed finite \(A_0\), a constant C independent of \(n,u\) satisfies
+\[
+\sup_{|u|\le A_0}|\pi_n(Q_{u/\sqrt n})-\Phi(cu)|\le Ce_n
+\]
+for all sufficiently large n.~The step size and tolerance are fixed; C is not numerically calibrated.
 
-\begin{proposition}[Random direction forecast]
-If $\sqrt n(x_{0,n}-q)/s\to z$ and $\mathcal R_{M,n}\to r<\infty$, then
-\begin{equation}
- \Prob(J_n=+1)\to\Phi(z),\qquad
- \widehat\pi_{M,n}\Rightarrow\Phi(z-rZ),
-\end{equation}
-where $Z\sim N(0,1)$ describes calibration randomness. At $z=0$, the limiting mean absolute forecast error is $\arctan(r)/\pi$.
-\end{proposition}
-This restates E.7--E.8. The present grid supports calibration sensitivity, but is not an exact test of this centered limit. Consistent endpoints and $M/n\to\infty$ suffice for plug-in consistency for fixed geometry; no universal sample-complexity lower bound is asserted.
+The proof constructs increasing normalized \(C^2\) conjugacies \(H_\theta\) with \(H_\theta(q_\theta)=0\), \(H_\theta'(q_\theta)=1\) and \(H_\theta(G_\theta(x))=A_\theta H_\theta(x)\). Uniform inverse contraction gives common derivative bounds, including a positive lower bound. The latter follows from a convergent product of positive derivatives, not normalization alone.
 
-\paragraph{Risk information remains separate.}
-The field depends only on score marginals, while risk boundaries depend on labels. Arbitrary unlabeled marginals do not identify those boundaries. Smooth transversality-based endpoint perturbations also do not directly apply to an empirical step-function risk. These distinctions prevent interpreting field calibration as a completed stopping certificate.
+At interval exit \(\tau\) define the stopped coordinate \(Y_\tau=\sqrt n A_\theta^{-\tau}H_\theta(x_\tau)\). Compare it to the frozen-root weighted seed
+\[
+\begin{gathered}
+W=\sqrt n H_\theta(0)+\eta\sum_{j\ge0}A_\theta^{-j-1}\sqrt n\,\xi_j(q_\theta) \\
+\xi_j(x)=n^{-1}\sum_i U(x,Z_{j,i})-v_\theta(x).
+\end{gathered}
+\]
+The stopped martingale and Taylor expansion give uniformly
+\[
+\begin{gathered}
+E A_\theta^{-2\tau}\le C/n \\
+E|Y_\tau-W|^2\le C(1+\log n)/n.
+\end{gathered}
+\]
+The first bound is obtained from a stopped second moment without assuming a typical exit-time estimate. Batches after \(\tau\) are fresh conditional on the stopping history, which bounds the frozen tail. Grouping W by sample column gives a uniform Gaussian approximation. Anti-concentration handles seeds close to zero before equating their signs to exit directions. Finally \(\sqrt n H_\theta(0)/s_\theta=cu+O(n^{-1/2})\). The following subsections give the proof, retaining the source labels from L.2; the broader time-distribution theory remains in the scalar-exit proof chapter.
+
+\subsection{Proof of the uniform direction law}\label{proof-of-the-uniform-direction-law}
+
+Within this proof, \(K=[-d,d]\) denotes the compact state interval. We supply the common constants and the stopped-seed argument, so this is not an application of a pointwise exit limit to changing laws.
+
+Construct normalized \(C^2\) conjugacies \(H_\theta\) with \(H_\theta\)(\(q_\theta\))=0, \(H_\theta\)'(\(q_\theta\))=1 and \(H_\theta\)(\(G_\theta\)(x))=\(A_\theta\) \(H_\theta\)(x) whenever both arguments are in K. The uniform inverse construction is as follows.
+
+Let K={[}-d,d{]} and \(G_\theta\)(x)=x+\(\eta\) \(v_\theta\)(x). The signs of \(v_\theta\) at the endpoints imply \(G_\theta\)(K) contains K. Thus \(F_\theta\)=\(G_\theta\)\^{}\{-1\} is defined on K, maps K into itself, and fixes \(q_\theta\). Its derivative satisfies
+
+\[
+0<F_\theta'(x)\le \gamma:=(1+\eta\lambda/4)^{-1}<1.
+\]
+
+In centered coordinates write
+
+\[
+\begin{gathered}
+\widetilde F_\theta(y)=A_\theta^{-1}y+r_\theta(y) \\
+r_\theta(0)=r_\theta'(0)=0.
+\end{gathered}
+\]
+
+On a common small neighborhood, uniform smoothness gives bounded third derivatives and a bound \(\beta\) on the inverse derivative, with \(A_{\max}\) \(\beta\)\^{}2\textless1. If y\_j=F\_tilde\_theta\^{}j(y), then, uniformly in \(\theta\),
+
+\[
+\begin{gathered}
+|y_j|\le C\beta^j|y| \\
+|y_j'|\le C\beta^j \\
+|y_j''|\le C\beta^j.
+\end{gathered}
+\]
+
+For the second inequality use the derivative product. The third follows from
+
+\[
+y_{j+1}''=\widetilde F_\theta''(y_j)(y_j')^2
+             +\widetilde F_\theta'(y_j)y_j''.
+\]
+
+The successive differences in \(A_\theta\)\^{}j y\_j equal
+\(A_\theta\)\^{}\{j+1\} r\_theta(y\_j). Their functions, first derivatives and second derivatives have summable bounds C(\(A_{\max}\) \(\beta\)\textsuperscript{2)}j. This proves local \(C^2\) convergence. To establish positivity of the limiting derivative, use its derivative product:
+
+\[
+\prod_{k=0}^{j-1} A_\theta\widetilde F_\theta'(y_k).
+\]
+
+Each factor is positive and differs from one by O(\textbar y\_k\textbar). On a sufficiently small common neighborhood the sum of these deviations is uniformly bounded, so the limiting product is bounded away from zero. A fixed number of inverse iterations maps all of K into that neighborhood, since \(F_\theta\) contracts by \(\gamma\). Finite composition gives uniform \(C^2\) bounds and a positive derivative lower bound on K. This also verifies the functional equation wherever its two arguments are in K.
+
+Thus, for constants independent of \(\theta\),
+\[
+\begin{gathered}
+\|H_\theta\|_{C^2(K)}\le C \\
+\inf_K H_\theta'\ge m>0 \\
+1<A_{\min}\le A_\theta\le A_{\max} \\
+0<s_{\min}\le s_\theta\le s_{\max}.
+\tag{L.3}
+\end{gathered}
+\]
+The inverse derivative bounds use the uniform smoothness of U and the positive derivative of \(G_\theta\). The root-to-boundary distances are at least b/2. These facts also give uniform bounds above and below for the absolute conjugate boundary values.
+
+Let \(\tau\) be exit from {[}-b,b{]} and \(\xi_j\)(x)=n\^{}\{-1\}sum\_i U(x,Z\_\{j,i\})-\(v_\theta\)(x). Each \(\theta\) has finite \(\tau\) almost surely: choose two fixed bounded score intervals respectively left and right of K. Their masses are uniformly positive since f\_theta\textgreater=\(f_0\)/2. Repeated batches entirely in the left interval drive any state at least \(q_\theta\) rightward by a positive minimum speed until exit; the right interval does the converse. Compactness supplies a fixed finite block length N. The conditional chance of an appropriate exiting block is at least p\^{}\{nN\}\textgreater0; geometric blocking proves finiteness. This is not a bound on the typical exit time.
+
+For \textbar{}\(\theta\)\textbar\textless=\(A_0\)/\(\sqrt n\), (L.1) implies \textbar{}\(q_\theta\)\textbar\textless=C/\(\sqrt n\) and \(\mu\)=sqrt(n)\(H_\theta\)(0) is bounded. Conditional batch moments give
+\[
+\begin{gathered}
+E[\xi_j(x)^2\mid\mathcal F_j]\le C/n \\
+E[\xi_j(x)^4\mid\mathcal F_j]\le C/n^2 \\
+E[(\xi_j(x)-\xi_j(q_\theta))^2\mid\mathcal F_j]
+\le C|x-q_\theta|^2/n.
+\end{gathered}
+\]
+All constants are distribution independent, by bounded U and partial\_x U. Taylor expansion on the established overshoot domain gives, for j\textless{}\(\tau\),
+\[
+\begin{gathered}
+H_\theta(x_{j+1})=A_\theta H_\theta(x_j)
+ +\eta H_\theta'(G_\theta(x_j))\xi_j(x_j)+r_j \\
+|r_j|\le C\xi_j(x_j)^2.
+\end{gathered}
+\]
+Set \(Y_t\)=\(\sqrt n\) \(A_\theta\)\^{}\{-(t wedge \(\tau\))\}\(H_\theta\)(x\_\{t wedge \(\tau\)\}).
+
+Let F\_j denote the history before batch j and write I\_j=1\_\{j\textless{}\(\tau\)\}. With
+
+\[
+D_j=\sqrt n\,\eta A_\theta^{-j-1} I_j
+ H_\theta'(G_\theta(x_j))\xi_j(x_j),
+\]
+
+and
+
+\[
+E_j=\sqrt n A_\theta^{-j-1}I_j r_j,
+\]
+
+the stopped recursion gives
+
+\[
+Y_t=\mu+\sum_{j<t}D_j+\sum_{j<t}E_j.
+\]
+
+The indicator and the coefficient are F\_j-measurable. Thus D\_j are martingale differences and
+
+\[
+\sum_j\mathbb E D_j^2\le C\sum_j A_\theta^{-2j}\le C.
+\]
+
+The conditional fourth-moment bound gives
+
+\[
+\begin{gathered}
+\|E_j\|_2\le C n^{-1/2}A_\theta^{-j} \\
+\left\|\sum_{j<t}E_j\right\|_2\le Cn^{-1/2}.
+\end{gathered}
+\]
+
+Therefore sup\_t E\textbar{}\(Y_t\)\textbar\^{}2\textless=C without assuming a logarithmic exit-time estimate. Finite exit and Fatou then imply E\textbar{}\(Y_\tau\)\textbar\^{}2\textless=C. At exit, the uniform root-to-boundary separation and positive derivative of H imply \textbar{}\(H_\theta\)(x\_tau)\textbar\textgreater=\(b_H\)\textgreater0. Consequently
+
+\[
+\mathbb E A_\theta^{-2\tau}\le (nb_H^2)^{-1}\mathbb E|Y_\tau|^2\le C/n.
+\]
+
+There is no circular inference from a desired exit approximation to its own moment estimate.
+
+Before exit, \(H_\theta\)'\textgreater=m and bounded K also imply
+\[
+E[\mathbf1_{j<\tau}|x_j-q_\theta|^2]\le C\min(A_\theta^{2j}/n,1).
+\tag{L.4}
+\]
+
+On the same infinite sample array introduce the frozen seed
+\[
+W=\mu+\eta\sum_{j\ge0}A_\theta^{-j-1}\sqrt n\,\xi_j(q_\theta).
+\]
+The difference \(H_\theta\)`(\(G_\theta\)(\(x_j\)))\(\xi_j\)(\(x_j\))-\(\xi_j\)(\(q_\theta\)) has conditional mean zero and variance at most C\textbar{}\(x_j\)-\(q_\theta\)\textbar²/n, using \(H_\theta\)'(\(q_\theta\))=1 and (L.3). Consequently its stopped weighted sum has second moment at most
+\[
+C\sum_{j\ge0}A_\theta^{-2j}\min(A_\theta^{2j}/n,1)
+\le C(1+\log n)/n.
+\]
+Use the convention that batch j moves \(x_j\) to x\_\{j+1\}. At \(\tau\), all batches with indices j\textgreater=\(\tau\) remain fresh. Conditional on F\_tau, the frozen tail has mean zero and variance
+
+\[
+\eta^2\sigma_\theta^2\sum_{j\ge\tau}A_\theta^{-2j-2}
+=s_\theta^2 A_\theta^{-2\tau}.
+\]
+
+This proves the O(1/n) tail second moment in (L.5) below. It is a stopped-tail independence argument, not a claim that the stopped trajectory is independent of the full frozen seed.
+
+Together,
+\[
+E|Y_\tau-W|^2\le C(1+\log n)/n.
+\tag{L.5}
+\]
+Grouping W-\(\mu\) by sample column gives n\^{}\{-1/2\}sum\_i V\_i with iid centered
+V\_i=\(\eta\) sum\_\{j\textgreater=0\} \(A_\theta\)\^{}\{-j-1\}U(\(q_\theta\),Z\_\{j,i\}). These variables have uniform absolute bounds \(\eta\) B\_U/(\(A_{\min}\)-1), and variance \(s_\theta\)² bounded below. Berry--Esseen gives a uniform C/\(\sqrt n\) Kolmogorov error relative to N(\(\mu\),\(s_\theta\)²). In particular P(\textbar W\textbar\textless=\(\delta\))\textless=C \(\delta\)+C/\(\sqrt n\).
+
+The sign of \(Y_\tau\) is exactly the exit direction. Hence (L.5), Chebyshev, and the preceding anti-concentration bound give
+\[
+|\pi_n(Q_\theta)-\Phi(\mu/s_\theta)|
+\le C\{n^{-1/2}+\delta+(1+\log n)/(n\delta^2)\}\le C e_n,
+\]
+choosing \(\delta\)=((1+log n)/n)\^{}\{1/3\}. This explicitly controls seeds near zero, rather than identifying their signs without an error bound. Finally normalization and the uniform \(C^2\) bound imply \(H_\theta\)(0)=-\(q_\theta\)+O(\(q_\theta\)²); smoothness gives \(s_\theta\)=s+O(\textbar{}\(\theta\)\textbar). Uniformly on \textbar u\textbar\textless=\(A_0\),
+\[
+\mu/s_\theta=cu+O(n^{-1/2}).
+\]
+The Lipschitz property of Phi proves (L.2). \(\square\)

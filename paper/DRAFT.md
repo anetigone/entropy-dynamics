@@ -1,609 +1,870 @@
-# When Does Entropy Adaptation Stop Helping?
+# How Much Unlabeled Information Is Needed to Predict Entropy-SGD Risk Exit?
 
-## Risk Rebound and Safe Horizons under Mixed Feature and Prior Shift
-
-Working manuscript in multiple parts. This file gives the main narrative and Gaussian-model result statements. Read it with [general scalar exit theory](scalar_exit.md), [independent calibration theory](calibration.md), [risk boundaries and empirical pools](risk_boundaries.md), [Gaussian proofs](gaussian_proofs.md), and [numerical evidence](experiments.md). The analysis concerns a scalar classifier with fixed features and fixed confidence slope. It does not establish a general guarantee for neural-network adaptation or a completed unlabeled stopping algorithm.
+This manuscript studies prospective probability prediction under local scalar entropy dynamics. The [proof chapters](README.md) retain complete arguments and original theorem labels. Supporting Gaussian-mixture geometry and exit-time results are in [gaussian_model.md](gaussian_model.md); they are distinct from the shared-risk family used for the statistical results below.
 
 ## Abstract
 
-Entropy minimization can initially improve a deployed classifier and later make it worse than its frozen initialization. We quantify this behavior for actual entropy-gradient updates of a decision threshold in a Gaussian mixture under simultaneous feature translation and class-prior shift. In the weak-separation regime, the marginal distribution implies a unique unstable entropy maximum and an explicit open parameter region of risk rebound. Sufficiently separated mixtures instead admit locally safe population convergence. Near class balance, fixed positive risk tolerance yields a discrete logarithmic population crossing time, whereas tolerance comparable to the available risk improvement yields bounded crossing times. For fresh-batch stochastic gradient descent, a direct drift argument bounds first risk exit outside the critical region. Near the unstable entropy maximum, a deterministic conjugacy controls the nonlinear, state-dependent updates and yields a joint approximation for exit direction and crossing time. The resulting law retains the discrete-time lattice phase. When tolerance shrinks as the inverse batch size, the limit changes to finite-step exit of a Gaussian autoregression. A mixed-shift scan supports cancellation and direction reversal. Frozen visual features expose a calibration gap: source-calibrated predictions fail overall, whereas accurate target empirical geometry substantially improves exit prediction. A general scalar extension under explicit exit-domain conditions gives uniform integer-time approximation and separates peak, growth-rate, noise, and boundary errors under independent calibration. Its critical limit predicts persistent random forecast error when root uncertainty matches SGD noise. An expanded independent unlabeled field-calibration study reduces the empirical gap as its budget grows, but unlabeled target risk-boundary estimation remains unresolved. These visual results concern a fixed empirical distribution, not a general neural-network guarantee or an unlabeled stopping algorithm. Classical instability mechanisms and known class-imbalance failures are treated as prior knowledge; the candidate contribution is their precise connection to actual entropy updates and risk-defined safety.
+Predicting the consequences of entropy adaptation requires knowledge of target-domain dynamics, even when classification risk is known. We study this distinction for a scalar threshold following actual fresh-batch entropy-gradient updates. Target environments share initialization and their complete classification-risk function, while unlabeled marginals move an unstable entropy root on the batch-noise scale. A uniform exit-direction approximation connects this future trajectory to an independent calibration experiment. Around a known baseline, uniformly consistent prediction is possible exactly when calibration size M grows faster than future batch size n. At positive finite \(M/n\), the minimax risk converges to a bounded-parameter Gaussian decision value, for which we compute lower and continuous-window upper certificates. The same value holds over unknown uniformly bounded local directions: the entropy-gradient tilt is already least favorable for root displacement relative to Fisher information. A frozen prediction rule improves five-cell maximum MAE over raw and clipped moment rules in real entropy-SGD confirmation, with simultaneous intervals accounting for calibration and reference-trajectory uncertainty. These results concern local scalar dynamics at fixed step size, not unknown baselines or general neural-network safety.
 
 ## 1. Introduction
 
-Test-time adaptation changes a model using observations from its deployment distribution. Entropy minimization is attractive because it uses predictions rather than labels. Its optimization objective, however, is not the classification risk. A low-entropy prediction can be confidently wrong, and continuing adaptation can remove an improvement that was present earlier.
+Knowing which classifier states are unsafe does not determine how likely stochastic adaptation is to reach them. A complete risk function specifies the first object; an unlabeled score distribution determines the entropy dynamics. We isolate the second uncertainty by supplying identical complete risk information across environments and asking for an independent forecast before adaptation begins.
 
-The deterioration itself is established prior work. Weerasinghe et al. study partial class imbalance, show accuracy trajectories that improve and then decline, analyze normalization-parameter drift, and propose logit-adjusted entropy minimization [1]. We accept those results as valid. An additional example of collapse, a scalar restatement of drift, or the observation that entropy and accuracy can disagree would therefore be insufficient.
+Entropy deterioration itself is established prior knowledge. POEM includes a one-dimensional Gaussian example of entropy collapse [1]; logit-adjusted TTA analyzes degradation under class imbalance [2]. Risk monitoring observes an evolving adapted model and test stream [3], while action-identifiability work studies what unlabeled evidence determines about competing actions [4]. Here the action is fixed, risk is shared, and the target is a probability over a future independent stochastic path. The predictor is not asked to guess that path's realized branch.
 
-Our question is quantitative: under what distributional conditions does actual entropy adaptation cross the risk of the frozen classifier, and how does the crossing time depend on initialization, prior imbalance, batch size, step size, and tolerated risk increase? A useful answer must distinguish the geometry that produces instability from a favorable drift sign assumed along a trajectory. It must also distinguish fixed positive tolerance from a tolerance that vanishes with the perturbation or noise.
+Our contribution is the connection between this information experiment and a uniform approximation of actual entropy-SGD risk exit. It yields an exact consistency threshold, a finite-information minimax characterization, and a least-favorable direction that remains sufficient to describe worst-case difficulty in a larger bounded local class. Classical unstable-exit, experiment-comparison and efficiency tools are explicitly credited. The numerical contribution is a pair of valid decision bounds and a fixed-rule finite-batch comparison, rather than a claim that an optimizer found an exact least-favorable prior.
 
-We use a controlled binary model. The feature extractor, class orientation, separation, variance, and confidence slope are fixed. Only a scalar threshold adapts. This restriction makes the entropy objective, supervised risk, and stochastic update simultaneously explicit. The same model contains both escaping and locally convergent population trajectories. It also exposes a singular distinction: at exact class balance the population threshold can remain optimal forever, while any finite batch makes its first nonzero update unsafe under zero tolerance.
+The paper proceeds from the observation experiment and common-risk construction to the exit approximation, statistical limits, unknown directions, numerical certificates and independent confirmation. Complete proofs remain in the linked chapters. Earlier rebound, tolerance, visual-feature and stopping investigations are supporting evidence, not the main contribution.
 
-The results develop three connected statements.
+## 2. Information, dynamics and prediction loss
 
-1. Distribution structure determines threshold stability. Weak separation gives a unique entropy maximum and explicit rebound conditions; sufficiently strong separation gives a safe population basin.
-2. Safety duration depends on tolerance. Near balance, fixed positive tolerance gives logarithmic escape, while tolerance on the scale of the initial risk improvement can be crossed in finitely many steps.
-3. Fresh-batch noise changes both direction and time. Outside the critical region, positive drift gives direct first-exit bounds. In the critical region, the true nonlinear updates admit a Gaussian-seed approximation with discrete-time and risk-boundary corrections.
-
-These are mathematical statements about the declared model. Their novelty relative to entropy-drift analyses and classical random-exit theory requires direct comparison; no claim rests on finding an error in prior work.
-
-The empirical investigation separates three questions: whether mixed shifts produce the predicted cancellation, whether correct empirical geometry explains exits on frozen visual features, and whether that geometry can be calibrated independently. The first two receive positive evidence, with residual failures; the third remains incomplete. In particular, target-geometry diagnostics use target labels for risk boundaries and cannot establish an executable unlabeled prediction rule.
-
-## 2. Prior work and the precise comparison
-
-**Imbalance, drift, and stabilization.** Logit-adjusted TTA [1] already studies degradation during long adaptation under partial class imbalance and connects it to BN shift and logit bias. Its adjustment uses target-prior estimates in the entropy objective. Persistent TTA, including PeTTA [2], studies accumulated errors in mixture-based classifiers. GALA [3] and STAG [4] provide practical controls using layer selection and structural gradients. These works preclude treating imbalance-induced degradation, iterative failure, or label-free update selection as new phenomena.
-
-The comparison with [1] also requires matching the evaluation distribution. Its adaptation stream contains a subset of classes, while its All-Class Accuracy evaluates an independent holdout containing both observed and unobserved classes. Its Peak-to-Average Reduction measures a peak-to-time-average accuracy gap. Here every risk comparison uses the same fixed target distribution, and the event is the first iterate whose risk exceeds that of the frozen initialization by a specified amount. These different metrics cannot be substituted for one another.
-
-**Recovery and information.** Recovery-complexity theory [5] makes local optimization and information conditions explicit. Identifiability analyses [6] show why unlabeled observations do not always determine a safe adaptation action. Our ordered Gaussian components and known anchor parameters supply additional structure; our theorems cannot be transferred to arbitrary observation channels or unknown anchors without further analysis.
-
-**Classical mathematical mechanisms.** Convolution preserves log-concavity [7]. Small random perturbations near unstable equilibria have logarithmic exit times and random-seed corrections [8–10]. In particular, a Gaussian seed and a negative logarithm of its magnitude are not new mechanisms. The technical question here is whether the actual state-dependent mini-batch entropy update can be connected to such a seed while retaining its classification-risk boundary, finite-parameter geometry, and integer update times.
-
-This manuscript establishes that connection within the stated scalar family. It does not assert that the underlying probability tools are new or that combining them automatically establishes sufficient novelty for a vision contribution.
-
-## 3. Model, information, and risk safety
-
-### 3.1. Anchored mixture and the deployed classifier
-
-Let the target feature and label satisfy
+Fix confidence slope \(w>0\) and positive step size \(\eta\). For \(s(u)=(1+e^{-u})^{-1}\) and \(a(u)=s(u)(1-s(u))\), define
 \[
-Z=\delta+Ym+\sigma\xi,\qquad
-\Pr(Y=1)=p,\qquad \xi\sim N(0,1),
+U(x,z)=-w^2(z-x)a(w(z-x)),\qquad v_Q(x)=E_Q U(x,Z).
 \]
-where \(Y\in\{-1,+1\}\), \(0<p<1\), and \(m,\sigma,w>0\). The positive class orientation and the parameters \(m,\sigma\) are supplied by a source anchor. The translation \(\delta\) and target prior \(p\) characterize the shift. An oracle analysis may use them to describe the dynamics; an unlabeled deployment rule would have to estimate or otherwise handle their uncertainty.
+Actual fresh-batch adaptation starts at \(x_0=0\) and uses
+\[
+x_{j+1}=x_j+\frac\eta n\sum_{i=1}^n U(x_j,Z_{j,i}).
+\]
+All future scores are iid from the unknown score law Q. Labels do not enter this update. Uniformly in x,z, \(|U|\le B_U=w/4\) and \(|\partial_x U|\le L_U=w^2/4\); every fixed higher state derivative is bounded.
 
-The frozen classifier has threshold \(b_0=0\). Its prediction is \(\operatorname{sign}(Z-b)\), and its positive-class confidence is
+Let R_Q be classification risk and \(\epsilon>0\). Define
 \[
-s(w(Z-b)),\qquad s(u)=(1+e^{-u})^{-1}.
+T_\epsilon=\inf\{j\ge0:R_Q(x_j)>R_Q(0)+\epsilon\}.
 \]
-Only \(b\) adapts. The feature representation and positive slope \(w\) remain fixed.
-
-Center the feature and threshold:
+Our construction makes the entire risk-safe set exactly \([-b,b]\), and exit is almost surely finite. The prediction target is
 \[
-z=Z-\delta,\qquad x=b-\delta,\qquad x_0=-\delta.
-\]
-The centered feature density is
-\[
-f_p(z)=p\varphi_\sigma(z-m)+(1-p)\varphi_\sigma(z+m),
-\]
-where \(\varphi_\sigma(z)=\sigma^{-1}\varphi(z/\sigma)\), and \(\varphi,\Phi\) are the standard normal density and CDF. Translation changes the initialization and the frozen-risk comparator, but not the centered entropy vector field.
-
-### 3.2. Actual entropy updates
-
-Let
-\[
-a(u)=s(u)(1-s(u)),\qquad
-h(u)=-s(u)\log s(u)-(1-s(u))\log(1-s(u)).
-\]
-Define expected entropy and rightward velocity by
-\[
-F_p(x)=\mathbb E_p h(w(z-x)),\qquad v_p(x)=-F_p'(x).
-\]
-The rightward update from one sample is
-\[
-U(x,z)=-w^2(z-x)a(w(z-x)),\qquad \mathbb E_pU(x,z)=v_p(x).
-\]
-Thus population gradient descent is
-\[
-\bar x_{t+1}=\bar x_t+\eta v_p(\bar x_t),
-\]
-and fresh-batch SGD is
-\[
-x_{t+1}=x_t+\frac{\eta}{n}\sum_{i=1}^n U(x_t,z_{t,i}).
-\]
-The batch size is \(n\). Every batch is independent of the past, and all samples have the same target distribution. Labels are not read by the update. Dependent reuse of observations, changing priors, momentum, and feature learning are outside this recursion. The visual experiments below instead draw independently with replacement from a fixed feature pool: conditional on that pool, the samples are iid from its empirical distribution. This preserves sampling independence but does not make that non-Gaussian empirical distribution satisfy the Gaussian model assumptions.
-
-### 3.3. The comparator and the first unsafe iterate
-
-Classification risk on an independent target draw is
-\[
-r_p(x)=p\Phi((x-m)/\sigma)+(1-p)\Phi((-x-m)/\sigma).
-\]
-The corresponding uncentered risk is \(R(b)=r_p(b-\delta)\). For tolerance \(\epsilon\ge0\), define
-\[
-T_\epsilon=\inf\{t\ge0:r_p(x_t)>r_p(x_0)+\epsilon\},
-\qquad \inf\varnothing=\infty.
-\]
-The comparator is the frozen classifier evaluated on this same target distribution, not its source training risk. The strict inequality specifies the first unsafe iterate. The risk-safe set is
-\[
-\mathcal S_\epsilon=\{x:r_p(x)\le r_p(x_0)+\epsilon\}.
+\pi_n(Q)=P_Q(x_{T_\epsilon}>b).
 \]
 
-A deployment rule intended to guarantee safety must reject an unsafe proposal before it is used. Low average risk over time does not imply that every deployed iterate is safe. Nor does an exit to the more frequent class represent safety: either boundary of \(\mathcal S_\epsilon\) is a violation.
+The predictor receives M iid calibration scores from Q, independent of all future SGD samples. It knows the declared baseline family, initialization, fixed constants, and may receive the entire common risk function and identical source information. It does not receive the unknown environment, root, local seed displacement, future trajectory or exact target marginal. The risk of a forecast is expected absolute probability error over calibration randomness; \(\pi_n\) itself averages over future SGD.
 
-## 4. Exact identities and entropy-kernel geometry
-
-### Proposition 1. Risk geometry and uniform update bounds
-
-The risk has a unique finite minimizer
+For a local parameter u in \([-A_0,A_0]\), define
 \[
-x_*(p)=\frac{\sigma^2}{2m}\log\frac{1-p}{p}.
+\mathfrak R_{n,M}(A_0)=\inf_{\widehat\pi}\sup_{|u|\le A_0}
+ E_{u/\sqrt n}|\widehat\pi-\pi_n(Q_{u/\sqrt n})|.
 \]
-It decreases strictly left of \(x_*\), increases strictly right of \(x_*\), and satisfies
+The fixed width \(A_0>0\) is part of the declared problem. Known exact centering is a different experiment: the symmetric center admits the exact forecast .5. The root-calibration arctangent error of a particular plug-in is consequently not a universal lower bound.
+
+## 3. A common-risk environment family
+
+Let \(f_0\) be the centered Gaussian density with variance \(\nu^2>0\). Define
 \[
-r_p(-\infty)=1-p,\qquad r_p(+\infty)=p.
+\lambda=v_0'(0)=\frac{w^2}{\nu^2}E_0[Z^2a(wZ)]>0,
+\quad \sigma_g^2=E_0U(0,Z)^2>0,
+\quad h_0=U(0,\cdot)/\sigma_g.
 \]
-Moreover,
+Symmetry gives \(E_0h_0=0\), \(E_0h_0^2=1\), and \(h_0\) is bounded. Choose \(0<\kappa<1\) and
 \[
-|U(x,z)|\le M:=w/4,\qquad
-|\partial_xU(x,z)|\le L:=w^2/4.
+f_\theta=f_0(1+\theta h_0),\quad
+ g(z)=\kappa\tanh(z)f_0(z),\quad
+ p_\theta(z,\pm1)=\tfrac12(f_\theta(z)\pm g(z)).
 \]
-If \(0<\eta<2/L\), every nonstationary population update strictly decreases \(F_p\).
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-### Lemma 2. The entropy kernel is log-concave
-
-The function \(h\) is positive, even, integrable, and log-concave. If
+When \(|\theta|\|h_0\|_\infty\le\min(1/2,1-\kappa)\), these are legal joint densities with equal class priors. For the classifier predicting +1 when \(z>x\), every environment has the same complete risk
 \[
-K(t)=\mathbb E h(w(t+\sigma\xi)),
+R(x)=\tfrac12+\int_{-\infty}^x g(z)\,dz,
+\quad R(x)-R(0)=\kappa\int_0^x\tanh(z)f_0(z)\,dz.
 \]
-then \(K\) is positive and even, and \(K'(t)<0\) for \(t>0\). Consequently,
+This function is even and strictly increases with \(|x|\). Thus for any chosen b>0 and \(\epsilon=R(b)-R(0)\), its global safe set is exactly \([-b,b]\). Interval exit and actual risk exit coincide path by path, even for discrete overshoots. The labeled conditionals of this family are not assumed Gaussian mixtures.
+
+To establish uniform exit geometry, choose small d>0 with \(v_0'\ge\lambda/2\) on \([-d,d]\), set b=d/2, and fix
 \[
-F_p(x)=pK(x-m)+(1-p)K(x+m).
+0<\eta<\min\{1/L_U,d/(4B_U)\}.
 \]
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-We use the standard convolution closure property: if two nonnegative integrable functions are log-concave, their convolution is log-concave [7]. The model-specific task is verifying the kernel and the mixture density, rather than claiming this closure result as a contribution.
-
-## 5. Distribution structure determines population behavior
-
-### Theorem 3. Weak separation gives a unique unstable entropy peak
-
-Assume \(0<m\le\sigma\). There is a unique stationary point \(q_p\) of \(F_p\), and it is a strict global maximum. Its drift signs are
+For all sufficiently small |\(\theta\)|, \(v_\theta'\ge\lambda/4\) on this compact domain and there is a unique root with \(|q_\theta|\le b/2\). The overshoot interval stays strictly inside \([-d,d]\), the root noise variance is bounded below, and
 \[
-v_p(x)<0\quad(x<q_p),\qquad v_p(x)>0\quad(x>q_p).
+q_\theta=-\frac{\sigma_g}{\lambda}\theta+O(\theta^2).
 \]
-The sign of \(q_p\) is the sign of \(p-1/2\). For every \(\eta>0\), population iterates initialized right of \(q_p\) increase to \(+\infty\); iterates initialized left of it decrease to \(-\infty\). Initialization at \(q_p\) stays fixed.
+These are Proposition L.1 and its proof in [local_prediction.md](local_prediction.md). Complete risk knowledge therefore does not remove uncertainty about the location of the entropy repeller.
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
+## 4. Uniform direction exit of actual SGD
 
-Escape monotonicity holds for every positive step size. Entropy descent additionally requires a condition such as \(0<\eta<2/L\).
-
-### Corollary 4. An explicit mixed-shift rebound region
-
-Fix \(\epsilon\ge0\). Suppose
+Write \(\lambda_\theta=v_\theta'(q_\theta)\), \(A_\theta=1+\eta\lambda_\theta\), and
 \[
-0<m\le\sigma,\qquad
-\Phi(-m/\sigma)+\epsilon<p<1/2,\qquad -x_*(p)<\delta\le0,
+s_\theta^2=\frac{\eta^2\operatorname{Var}_\theta U(q_\theta,Z)}{A_\theta^2-1}.
 \]
+At the baseline put \(s=s_0\), \(A=1+\eta\lambda\) and
+\[
+c=\frac{\sigma_g}{\lambda s}=\sqrt{\frac{2+\eta\lambda}{\eta\lambda}},
+\quad e_n=n^{-1/2}+((1+\log n)/n)^{1/3}.
+\]
+
+**Theorem 1 (Uniform actual-SGD direction law; L.2).** For every fixed finite \(A_0\), a constant C independent of \(n,u\) satisfies
+\[
+\sup_{|u|\le A_0}|\pi_n(Q_{u/\sqrt n})-\Phi(cu)|\le Ce_n
+\]
+for all sufficiently large n. The step size and tolerance are fixed; C is not numerically calibrated.
+
+The proof constructs increasing normalized \(C^2\) conjugacies \(H_\theta\) with \(H_\theta(q_\theta)=0\), \(H_\theta'(q_\theta)=1\) and \(H_\theta(G_\theta(x))=A_\theta H_\theta(x)\). Uniform inverse contraction gives common derivative bounds, including a positive lower bound. The latter follows from a convergent product of positive derivatives, not normalization alone.
+
+At interval exit \(\tau\) define the stopped coordinate \(Y_\tau=\sqrt n A_\theta^{-\tau}H_\theta(x_\tau)\). Compare it to the frozen-root weighted seed
+\[
+W=\sqrt n H_\theta(0)+\eta\sum_{j\ge0}A_\theta^{-j-1}\sqrt n\,\xi_j(q_\theta),
+\quad \xi_j(x)=n^{-1}\sum_i U(x,Z_{j,i})-v_\theta(x).
+\]
+The stopped martingale and Taylor expansion give uniformly
+\[
+E A_\theta^{-2\tau}\le C/n,\qquad
+E|Y_\tau-W|^2\le C(1+\log n)/n.
+\]
+The first bound is obtained from a stopped second moment without assuming a typical exit-time estimate. Batches after \(\tau\) are fresh conditional on the stopping history, which bounds the frozen tail. Grouping W by sample column gives a uniform Gaussian approximation. Anti-concentration handles seeds close to zero before equating their signs to exit directions. Finally \(\sqrt n H_\theta(0)/s_\theta=cu+O(n^{-1/2})\). The following subsections give the proof, retaining the source labels from L.2; the broader time-distribution theory remains in [scalar_exit.md](scalar_exit.md).
+
+### 4.1. Proof of the uniform direction law
+
+Within this proof, \(K=[-d,d]\) denotes the compact state interval. We supply the common constants and the stopped-seed argument, so this is not an application of a pointwise exit limit to changing laws.
+
+Construct normalized \(C^2\) conjugacies \(H_\theta\) with \(H_\theta\)(\(q_\theta\))=0, \(H_\theta\)'(\(q_\theta\))=1 and \(H_\theta\)(\(G_\theta\)(x))=\(A_\theta\) \(H_\theta\)(x) whenever both arguments are in K. The uniform inverse construction is as follows.
+
+Let K=[-d,d] and \(G_\theta\)(x)=x+\(\eta\) \(v_\theta\)(x). The signs of \(v_\theta\) at the endpoints imply \(G_\theta\)(K) contains K. Thus \(F_\theta\)=\(G_\theta\)^{-1} is defined on K, maps K into itself, and fixes \(q_\theta\). Its derivative satisfies
+
+\[
+0<F_\theta'(x)\le \gamma:=(1+\eta\lambda/4)^{-1}<1.
+\]
+
+In centered coordinates write
+
+\[
+\widetilde F_\theta(y)=A_\theta^{-1}y+r_\theta(y),
+\qquad r_\theta(0)=r_\theta'(0)=0.
+\]
+
+On a common small neighborhood, uniform smoothness gives bounded third derivatives and a bound \(\beta\) on the inverse derivative, with \(A_{\max}\) \(\beta\)^2<1. If y_j=F_tilde_theta^j(y), then, uniformly in \(\theta\),
+
+\[
+|y_j|\le C\beta^j|y|,\qquad
+|y_j'|\le C\beta^j,\qquad |y_j''|\le C\beta^j.
+\]
+
+For the second inequality use the derivative product. The third follows from
+
+\[
+y_{j+1}''=\widetilde F_\theta''(y_j)(y_j')^2
+             +\widetilde F_\theta'(y_j)y_j''.
+\]
+
+The successive differences in \(A_\theta\)^j y_j equal
+\(A_\theta\)^{j+1} r_theta(y_j). Their functions, first derivatives and second derivatives have summable bounds C(\(A_{\max}\) \(\beta\)^2)^j. This proves local \(C^2\) convergence. To establish positivity of the limiting derivative, use its derivative product:
+
+\[
+\prod_{k=0}^{j-1} A_\theta\widetilde F_\theta'(y_k).
+\]
+
+Each factor is positive and differs from one by O(|y_k|). On a sufficiently small common neighborhood the sum of these deviations is uniformly bounded, so the limiting product is bounded away from zero. A fixed number of inverse iterations maps all of K into that neighborhood, since \(F_\theta\) contracts by \(\gamma\). Finite composition gives uniform \(C^2\) bounds and a positive derivative lower bound on K. This also verifies the functional equation wherever its two arguments are in K.
+
+Thus, for constants independent of \(\theta\),
+\[
+\|H_\theta\|_{C^2(K)}\le C,\quad \inf_K H_\theta'\ge m>0,
+\quad 1<A_{\min}\le A_\theta\le A_{\max},\quad
+0<s_{\min}\le s_\theta\le s_{\max}.
+\tag{L.3}
+\]
+The inverse derivative bounds use the uniform smoothness of U and the positive derivative of \(G_\theta\). The root-to-boundary distances are at least b/2. These facts also give uniform bounds above and below for the absolute conjugate boundary values.
+
+Let \(\tau\) be exit from [-b,b] and \(\xi_j\)(x)=n^{-1}sum_i U(x,Z_{j,i})-\(v_\theta\)(x). Each \(\theta\) has finite \(\tau\) almost surely: choose two fixed bounded score intervals respectively left and right of K. Their masses are uniformly positive since f_theta>=\(f_0\)/2. Repeated batches entirely in the left interval drive any state at least \(q_\theta\) rightward by a positive minimum speed until exit; the right interval does the converse. Compactness supplies a fixed finite block length N. The conditional chance of an appropriate exiting block is at least p^{nN}>0; geometric blocking proves finiteness. This is not a bound on the typical exit time.
+
+For |\(\theta\)|<=\(A_0\)/\(\sqrt n\), (L.1) implies |\(q_\theta\)|<=C/\(\sqrt n\) and \(\mu\)=sqrt(n)\(H_\theta\)(0) is bounded. Conditional batch moments give
+\[
+E[\xi_j(x)^2\mid\mathcal F_j]\le C/n,\quad
+E[\xi_j(x)^4\mid\mathcal F_j]\le C/n^2,\quad
+E[(\xi_j(x)-\xi_j(q_\theta))^2\mid\mathcal F_j]
+\le C|x-q_\theta|^2/n.
+\]
+All constants are distribution independent, by bounded U and partial_x U. Taylor expansion on the established overshoot domain gives, for j<\(\tau\),
+\[
+H_\theta(x_{j+1})=A_\theta H_\theta(x_j)
+ +\eta H_\theta'(G_\theta(x_j))\xi_j(x_j)+r_j,
+\quad |r_j|\le C\xi_j(x_j)^2.
+\]
+Set \(Y_t\)=\(\sqrt n\) \(A_\theta\)^{-(t wedge \(\tau\))}\(H_\theta\)(x_{t wedge \(\tau\)}).
+
+Let F_j denote the history before batch j and write I_j=1_{j<\(\tau\)}. With
+
+\[
+D_j=\sqrt n\,\eta A_\theta^{-j-1} I_j
+ H_\theta'(G_\theta(x_j))\xi_j(x_j),
+\]
+
 and
+
 \[
-0<\eta<\min\left\{\frac8{w^2},
-\frac{4[x_*(p)+\delta]}{w}\right\}.
-\]
-Then the first population update strictly reduces classification risk, every population update strictly reduces entropy, and \(T_\epsilon<\infty\). The iterates tend to \(+\infty\) and risk tends to \(p\). Taking \(m<\sigma,\delta<0\) with strict inequalities gives a nonempty open set with genuine translation and prior shift. Reflection \((x,\delta,p)\mapsto(-x,-\delta,1-p)\) gives the other orientation.
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-For \(p<1/2\), weak separation also yields the following classification.
-
-| Initialization | Threshold motion | Risk behavior |
-|---|---|---|
-| \(x_0<q_p\) | To \(-\infty\) | Immediately worsens; limit \(1-p\) |
-| \(x_0=q_p\) | Fixed | No population adaptation |
-| \(q_p<x_0<x_*\) | To \(+\infty\) | Initially improves for a sufficiently small step; then rises |
-| \(x_0\ge x_*\) | To \(+\infty\) | Strictly worsens; limit \(p\) |
-
-On a rightward trajectory, \(T_\epsilon<\infty\) exactly when \(r_p(x_0)+\epsilon<p\). On a leftward trajectory the corresponding criterion uses \(1-p\). Thus collapse toward one predicted class does not automatically imply crossing the risk of an already poor initialization.
-
-### Theorem 5. A sufficiently separated safe population basin
-
-Set \(p=1/2\), \(a_m=m/\sigma>1\), and
-\[
-C_0=\int h(u)\,du=\pi^2/3,\qquad
-C_2=\int u^2h(u)\,du=7\pi^4/45.
-\]
-If
-\[
-(w\sigma)^2>
-\frac{3C_2}{2C_0}\frac{e^{a_m^2/2}}{a_m^2-1},
-\]
-then \(F_{1/2}''(0)>0\). There is an \(r>0\) such that, for
-\(0<|\delta|<r\) and \(0<\eta\le1/L\), population iterates converge monotonically to zero and their risks strictly decrease to Bayes risk.
-
-For any fixed nonzero initialization strictly inside this basin and \(\eta<1/L\), a sufficiently small open perturbation of the parameters permits \(p\ne1/2,\delta\ne0\): the iterates converge to a finite entropy minimum \(x_e\), and
-\[
-r_p(x_t)\le r_p(x_0)\quad\text{for every }t,\qquad
-r_p(x_e)<r_p(x_0).
+E_j=\sqrt n A_\theta^{-j-1}I_j r_j,
 \]
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
+the stopped recursion gives
 
-This is a local sufficient condition, not the exact boundary between all stable and unstable regimes. It does not guarantee that fixed-step SGD remains in the basin forever.
-
-## 6. Deterministic safety duration near class balance
-
-Assume \(0<m\le\sigma\) and write \(p_\rho=(1-\rho)/2\). Subscripts \(\rho\) denote the corresponding prior. Define
 \[
-\beta=-K'(m)>0,\qquad \lambda=-K''(m)>0,\qquad
-k_0=\sigma^2/m,\qquad A=1+\eta\lambda.
-\]
-Positivity of \(\lambda\) follows from the balanced density \(f_0\): for \(z>0\),
-\[
-(\log f_0)'(z)=\frac{-z+m\tanh(mz/\sigma^2)}{\sigma^2}<0.
-\]
-Since \(h_w'(z)<0\), integration by parts gives
-\[
-F_0''(0)=-\int h_w'(z)f_0'(z)\,dz<0.
-\]
-Near the origin,
-\[
-v_\rho(x)=\beta\rho+\lambda x+O(x^2+|\rho x|+\rho^2).
-\]
-The implicit function theorem then gives
-\[
-q_\rho=-\frac\beta\lambda\rho+O(\rho^2),\qquad
-\lambda_\rho=v_\rho'(q_\rho)=\lambda+O(\rho).
+Y_t=\mu+\sum_{j<t}D_j+\sum_{j<t}E_j.
 \]
 
-### Theorem 6. Fixed and shrinking tolerances have different time scales
+The indicator and the coefficient are F_j-measurable. Thus D_j are martingale differences and
 
-Fix \(\eta>0\) and initialize \(x_0=\alpha_0\rho\), where
 \[
--\beta/\lambda<\alpha_0<k_0.
-\]
-For fixed
-\[
-0<\epsilon<1/2-\Phi(-m/\sigma),
-\]
-the population crossing time satisfies
-\[
-T_\epsilon(\rho)=\frac{\log(1/\rho)}{\log(1+\eta\lambda)}+O(1),
-\qquad \rho\downarrow0.
-\]
-If also
-\[
-\eta<\min\{2/L,\;(k_0-\alpha_0)/(\beta+\lambda\alpha_0)\},
-\]
-the first update improves risk and every update reduces entropy.
-
-For \(\epsilon=c\rho^2\), \(c\ge0\), the crossing time is bounded as \(\rho\downarrow0\). Put
-\[
-B=\frac{m\varphi(m/\sigma)}{\sigma^3},\qquad
-u_t=(\alpha_0+\beta/\lambda)A^t-\beta/\lambda,
-\]
-\[
-u_c=k_0+\sqrt{(\alpha_0-k_0)^2+2c/B}.
-\]
-If no integer \(t\) satisfies \(u_t=u_c\), then, for sufficiently small \(\rho>0\),
-\[
-T_{c\rho^2}=
-\left\lfloor
-\frac{\log[(u_c+\beta/\lambda)/(\alpha_0+\beta/\lambda)]}
-{\log A}\right\rfloor+1.
-\]
-At an integer equality \(u_j=u_c\), the first crossing is \(j\) or \(j+1\), depending on higher-order terms.
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-At exact balance with \(x_0=0\), the population recursion remains fixed forever. This does not contradict either limiting regime. The available risk improvement under a small prior perturbation is itself only \(O(\rho^2)\). A longer fixed-tolerance horizon need not mean a larger useful improvement.
-
-## 7. Direct first-exit bounds in a positive-drift corridor
-
-Write SGD as
-\[
-x_{t+1}=x_t+\eta[v_p(x_t)+\xi_t],\qquad
-\mathbb E[\xi_t\mid\mathcal F_t]=0,
-\]
-where \(\mathcal F_t\) contains the history before the new batch. Proposition 1 and Hoeffding's lemma imply
-\[
-\mathbb E[e^{s\xi_t}\mid\mathcal F_t]
-\le\exp(s^2M^2/(2n)).
-\]
-The conditional formulation permits state-dependent noise.
-
-### Theorem 7. Two-sided first-exit control
-
-Suppose \(\mathcal S_\epsilon=[a,c]\) is finite,
-\(a<x_0<c\), and
-\[
-0<\nu\le v_p(x)\le V\qquad(x\in[a,c]).
-\]
-Let \(d=x_0-a\), \(D=c-x_0\), and \(\tau=T_\epsilon\). Then
-\[
-\Pr(x_\tau<a,\tau<\infty)\le
-\exp\left(-\frac{2n\nu d}{\eta M^2}\right).
-\]
-For integers \(t\ge1\),
-\[
-\Pr(\tau\le t,x_\tau>c)
-\le\exp\left[-\frac{n(D-\eta Vt)^2}{2\eta^2M^2t}\right]
-\quad\text{if }D>\eta Vt,
-\]
-and
-\[
-\Pr(\tau>t)
-\le\exp\left[-\frac{n(\eta\nu t-D)^2}{2\eta^2M^2t}\right]
-\quad\text{if }\eta\nu t>D.
-\]
-Calling the three bounds \(\alpha_L,\alpha_E(t),\alpha_D(t)\), respectively,
-\[
-\Pr(t_-<T_\epsilon\le t_+,\ x_{T_\epsilon}>c)
-\ge1-\alpha_L-\alpha_E(t_-)-\alpha_D(t_+).
+\sum_j\mathbb E D_j^2\le C\sum_j A_\theta^{-2j}\le C.
 \]
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
+The conditional fourth-moment bound gives
 
-The theorem allows backward stochastic steps and overshoot. Its price is a positive drift bound on the entire safe interval. It cannot cover a critical safe interval containing the entropy peak.
-
-For comparison, a standard global tracking argument gives, for fixed \(T\ge1\) and failure level \(\alpha\),
 \[
-q=M\sqrt{2\log(2T/\alpha)/n},\qquad
-e_t=q[(1+\eta L)^t-1]/L.
-\]
-With probability at least \(1-\alpha\), simultaneously through \(T\),
-\[
-|x_t-\bar x_t|\le e_t,\qquad
-|r_p(x_t)-r_p(\bar x_t)|\le e_t/(\sigma\sqrt{2\pi}).
-\]
-Conditional Hoeffding bounds followed by
-\(d_{t+1}\le(1+\eta L)d_t+\eta q\) prove this. Its exponential amplification can make it uninformative before rebound; it is a baseline, not a principal result.
-
-## 8. Critical nonlinear SGD: a quantitative joint distribution
-
-Throughout this section fix \(0<m\le\sigma\),
-\(0<\eta<1/L\), and
-\[
-0<\epsilon<1/2-\Phi(-m/\sigma).
-\]
-Take \(|\rho|\le\rho_0\) for a sufficiently small fixed \(\rho_0\). Constants may depend on these fixed parameters and on the initialization bound, but not on \(n,t\) or the parameter sequence within this neighborhood.
-
-### Lemma 8. A normalized deterministic conjugacy
-
-Let \(G_\rho(x)=x+\eta v_\rho(x)\) and
-\(A_\rho=G_\rho'(q_\rho)=1+\eta\lambda_\rho>1\).
-There is a strictly increasing \(C^2\) function \(H_\rho\) with
-\[
-H_\rho(q_\rho)=0,\qquad H_\rho'(q_\rho)=1,\qquad
-H_\rho(G_\rho(x))=A_\rho H_\rho(x).
-\]
-On fixed compact intervals, \(H_\rho,H_\rho',H_\rho''\) are uniformly bounded for small \(\rho\), \(H_\rho'\) has a uniform positive lower bound, and these functions depend continuously on \(\rho\). At balance, \(H_0\) is odd.
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-### Theorem 9. State-dependent SGD admits a Gaussian-seed exit approximation
-
-Suppose
-\[
-|x_0-q_\rho|\le K/\sqrt n
-\]
-for a fixed \(K<\infty\). For sufficiently large \(n\), the safe set is a finite interval \([a_n,c_n]\) containing \(q_\rho\) in its interior, with peak-to-boundary distances uniformly positive. Put
-\[
-\tau=T_\epsilon,\qquad
-J=\begin{cases}+1,&x_\tau>c_n,\\-1,&x_\tau<a_n,\end{cases}
-\]
-\[
-\mu_n=\sqrt n H_\rho(x_0),\qquad
-s_n^2=\frac{\eta^2\operatorname{Var}_\rho U(q_\rho,z)}{A_\rho^2-1},
-\]
-\[
-B_n^+=H_\rho(c_n)>0,\qquad B_n^-=-H_\rho(a_n)>0.
-\]
-Then \(\tau<\infty\) almost surely. There is a constant \(C\) such that, for every integer \(t\ge0\),
-\[
-\left|\Pr(\tau\le t,J=+1)
--\Phi\!\left(\frac{\mu_n-\sqrt n A_\rho^{-t}B_n^+}{s_n}\right)\right|
-\le C\left[n^{-1/2}+
-\left(\frac{1+\log n}{n}+A_\rho^{-2t}\right)^{1/3}\right],
-\]
-\[
-\left|\Pr(\tau\le t,J=-1)
--\Phi\!\left(\frac{-\mu_n-\sqrt n A_\rho^{-t}B_n^-}{s_n}\right)\right|
-\le C\left[n^{-1/2}+
-\left(\frac{1+\log n}{n}+A_\rho^{-2t}\right)^{1/3}\right].
-\]
-Also,
-\[
-|\Pr(J=+1)-\Phi(\mu_n/s_n)|
-\le C[n^{-1/2}+((1+\log n)/n)^{1/3}].
-\]
-In the logarithmic window \(nA_\rho^{-2t}=O(1)\), the error is \(O((\log n/n)^{1/3})\). This rate is not asserted optimal, and \(C\) is not numerically calibrated.
-
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-## 8A. General scalar laws and estimated geometry
-
-The Gaussian model supplies explicit distributional geometry. The extension in [general scalar exit theory](scalar_exit.md) instead fixes any score law \(Q\), including a finite weighted pool, and assumes one repelling root on the required compact domain, positive root noise variance, fixed positive step size, two finite interior exit boundaries with an overshoot margin, and \(O(n^{-1/2})\) initialization relative to the true root (G1–G4). These assumptions are not inferred from local positive curvature alone. Lemmas E.1–E.2 and Theorem E.3 give the actual entropy-SGD joint interval-exit approximation, including
-\[
-\sup_{t\in\mathbb Z_{\ge0}}\max_\pm
-|\Pr(\tau_n\le t,J_n=\pm1)-\Psi_n^\pm(t)|\le C e_n,
-\qquad e_n=n^{-1/2}+((1+\log n)/n)^{1/3}.
-\]
-The early-time stopped-martingale tail argument is essential for this uniform statement. The original Theorem 9 retains its Gaussian-family formulation and proof; the extension does not automatically imply uniformity over changing score laws without common geometric constants.
-
-[Independent calibration theory](calibration.md) treats a separate iid sample of size \(M\) from the same \(Q\). It changes the predictor, not the actual initialization or adaptation recursion. Lemma E.4 controls normalized conjugacy under small \(C^3\) field perturbations; Proposition E.5 gives empirical field concentration and the root CLT. Theorem E.6 yields, on the declared good-calibration and endpoint event,
-\[
-\sup_t\max_\pm |\Pr(\tau_n\le t,J_n=\pm1)-\widehat\Psi_n^\pm(t)|
-\le C[e_n+\sqrt n|d_q|+\sqrt n d_q^2
- +(1+\log n)d_v+d_\sigma+d_b],
-\]
-where \(d_q=\widehat q-q\), \(d_v=\|\widehat v-v\|_{C^3}\), \(d_\sigma=|\widehat\sigma_g^2-\sigma_g^2|\), and \(d_b\) is endpoint error. Thus peak error acts on the shrinking SGD seed scale, growth-rate error accumulates over logarithmic time, and endpoint error remains a separate input. With fixed \(Q,w,\eta\), consistent endpoints and \(M/n\to\infty\) suffice for consistency of this empirical-root predictor; no universal sample-complexity lower bound is asserted.
-
-For \(s^2=\eta^2\sigma_g^2/((1+\eta\lambda)^2-1)\), define
-\[
-\mathcal R_{M,n}^2=\frac nM\frac{2+\eta\lambda}{\eta\lambda}.
-\]
-If \(\sqrt n(x_{0,n}-q)/s\to z\) and \(\mathcal R_{M,n}\to r<\infty\), Theorem E.7 gives
-\[
-\Pr(J_n=+1)\to\Phi(z),\qquad
-\widehat\pi_{M,n}\Rightarrow\Phi(z-rZ),\quad Z\sim N(0,1).
-\]
-The randomness on the right is over calibration samples. At exact critical centering, Corollary E.8 gives limiting mean absolute direction-probability error \(\arctan(r)/\pi\), equal to \(1/4\) when \(r=1\). Joint time limits retain an integer-phase subsequence. This random forecast limit does not inflate the variance of the unchanged SGD process. The distinct calibration-driven initialization result is Proposition E.13 in [the boundary and pool part](risk_boundaries.md).
-
-[Risk boundaries and empirical pools](risk_boundaries.md) supplies the remaining interfaces. Proposition E.9 distinguishes a fixed off-peak initialization, whose strict-margin exit converges to a finite deterministic count, from a genuinely critical parameter sequence. Proposition E.10 controls regular differentiable endpoints by risk-difference error divided by a positive transversality constant; it does not apply directly to step-function empirical risk. Proposition E.11 adds a component-skip probability when transferring interval exit to actual risk exit. Proposition E.12 separates conditional-pool inference from population-risk uncertainty. None estimates label-dependent risk endpoints from an arbitrary unlabeled score marginal.
-
-These are supplied statements with proofs, integrated here without claiming a completed independent proof audit or numerical calibration of their constants. The visual experiments must still verify interval-wide conditions, initialization regime, endpoint conventions, and component-skip discrepancies before any setting is declared covered. The extension does not generalize the Gaussian inverse-batch-tolerance result to arbitrary score laws.
-
-## 9. Critical scaling, lattice phase, and microscopic tolerance
-
-### Corollary 10. The critical joint limit
-
-Suppose
-\[
-\sqrt n\rho_n\to c\in\mathbb R,\qquad
-\sqrt n x_{0,n}\to u\in\mathbb R.
-\]
-Define
-\[
-\mu=u+\beta c/\lambda,\qquad
-s_0^2=\operatorname{Var}_0U(0,z)>0,
-\]
-\[
-s_\eta^2=\frac{\eta^2s_0^2}{A^2-1}
-=\frac{\eta s_0^2}{\lambda(2+\eta\lambda)}.
-\]
-Let \(c_\epsilon>0\) solve \(r_0(c_\epsilon)=r_0(0)+\epsilon\), and set
-\(C_\epsilon=H_0(c_\epsilon)>0\). Then
-\[
-\Pr(J=+1)\to\Phi(\mu/s_\eta).
-\]
-For integer time sequences with \(\sqrt n A^{-t_n}\to r\in(0,\infty)\),
-\[
-\Pr(T_\epsilon\le t_n,J=+1)\to
-\Phi((\mu-C_\epsilon r)/s_\eta),
-\]
-\[
-\Pr(T_\epsilon\le t_n,J=-1)\to
-\Phi((-\mu-C_\epsilon r)/s_\eta),
-\]
-and
-\[
-T_\epsilon=\frac{\log n}{2\log A}+O_{\mathbb P}(1).
+\|E_j\|_2\le C n^{-1/2}A_\theta^{-j},
+\qquad \left\|\sum_{j<t}E_j\right\|_2\le Cn^{-1/2}.
 \]
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
+Therefore sup_t E|\(Y_t\)|^2<=C without assuming a logarithmic exit-time estimate. Finite exit and Fatou then imply E|\(Y_\tau\)|^2<=C. At exit, the uniform root-to-boundary separation and positive derivative of H imply |\(H_\theta\)(x_tau)|>=\(b_H\)>0. Consequently
 
-The lattice cannot generally be removed at fixed step size. Put
 \[
-b_n=\log\sqrt n/\log A.
-\]
-Along a subsequence whose fractional part satisfies \(\{b_n\}\to\theta\), for integer \(k\),
-\[
-\Pr(T_\epsilon-\lfloor b_n\rfloor\le k)
-\to\Pr(|N(\mu,s_\eta^2)|>C_\epsilon A^{\theta-k}).
-\]
-Equivalently, the integer-valued limit is
-\[
-\left\lceil\theta+
-\frac{\log C_\epsilon-\log|N(\mu,s_\eta^2)|}{\log A}\right\rceil.
-\]
-Gaussian boundary atoms have probability zero. The time fluctuation is a rounded negative logarithm of a Gaussian magnitude; it is not Gaussian and is not automatically Gumbel.
-
-The effective seed signal-to-noise ratio is
-\[
-\kappa_n\simeq\frac{\sqrt n(x_0-q_\rho)}{s_\eta}
-\simeq\frac{\sqrt n(\beta\rho/\lambda-\delta)}{s_\eta}.
-\]
-Translation can cancel or reinforce the leading prior seed. For pure prior shift,
-\[
-\rho_{\rm cross}\simeq\frac{\lambda s_\eta}{\beta\sqrt n}.
-\]
-If \(\rho_n\downarrow0\), \(\sqrt n\rho_n\to\infty\),
-\(x_0=\alpha_0\rho_n\), and \(\alpha_0+\beta/\lambda\ne0\), the seed dominates noise and
-\[
-T_\epsilon=\log(1/\rho_n)/\log A+O_{\mathbb P}(1).
-\]
-To see this, use the same weighted conjugacy expansion normalized by \(\rho_n\): the noise is \(O_{\mathbb P}(n^{-1/2})=o_{\mathbb P}(\rho_n)\), the Taylor remainder is \(O_{\mathbb P}(n^{-1})\), and the initial seed is
-\((\alpha_0+\beta/\lambda)\rho_n+o(\rho_n)\). The sign is consequently deterministic in the limit. Leading-seed cancellation requires another scale analysis.
-
-Although \(s_\eta\sim s_0\sqrt{\eta/(2\lambda)}\) algebraically as \(\eta\downarrow0\), all probability limits above fix \(\eta>0\). They do not prove a joint limit with \(\eta=\eta_n\to0\). Likewise the logarithmic batch-size delay applies to balanced or critically rescaled families, not to every fixed nonzero prior.
-
-### Theorem 11. Inverse-batch tolerance gives finite-step AR exit
-
-Retain the critical scaling and let \(n\epsilon_n\to e\in[0,\infty)\). Define
-\[
-X_0=u,\qquad X_{t+1}=AX_t+\eta\beta c+\eta s_0Z_t,
-\qquad Z_t\overset{\rm iid}{\sim}N(0,1),
-\]
-and
-\[
-I_{c,u,e}=
-[k_0c-\sqrt{(u-k_0c)^2+2e/B},\
- k_0c+\sqrt{(u-k_0c)^2+2e/B}],
-\]
-where \(B=m\varphi(m/\sigma)/\sigma^3\).
-For \(\tau_{\rm AR}=\inf\{t\ge1:X_t\notin I_{c,u,e}\}\),
-\[
-T_{\epsilon_n}\Rightarrow\tau_{\rm AR},\qquad
-T_{\epsilon_n}=O_{\mathbb P}(1).
+\mathbb E A_\theta^{-2\tau}\le (nb_H^2)^{-1}\mathbb E|Y_\tau|^2\le C/n.
 \]
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
+There is no circular inference from a desired exit approximation to its own moment estimate.
 
-### Proposition 12. Zero tolerance and a limitation of shrinking the step
-
-If \(\rho=0,x_0=0,\epsilon=0\), then for every finite \(n\) and every \(\eta>0\),
+Before exit, \(H_\theta\)'>=m and bounded K also imply
 \[
-T_0=1\quad\text{almost surely}.
-\]
-For pure prior shift \(x_0=0,\sqrt n\rho_n\to c>0\), every deterministic sequence \(\eta_n>0\) satisfies
-\[
-\liminf_n\Pr(r_{\rho_n}(x_1)>r_{\rho_n}(0))
-\ge\Phi(-\beta c/s_0)>0.
-\]
-For fixed \(\eta>0\), the first-step improvement probability converges to
-\[
-\Phi\!\left(\frac{(2k_0-\eta\beta)c}{\eta s_0}\right)
--\Phi(-\beta c/s_0).
+E[\mathbf1_{j<\tau}|x_j-q_\theta|^2]\le C\min(A_\theta^{2j}/n,1).
+\tag{L.4}
 \]
 
-**Proof.** See [Gaussian proofs](gaussian_proofs.md), under the same result number.
-
-The limitation concerns unconditional execution of the empirical entropy direction. It does not exclude rejecting an update, using extra information, or a different unlabeled adaptation method. The probability of a strict risk increase also says nothing by itself about the size of that increase.
-
-## 10. Numerical evidence
-
-The experimental protocols, tables, ablations, censoring conventions, and numerical limitations are in [the experimental part](experiments.md). Sections 10.6–10.9 distinguish mixed-shift evidence, failed source-calibrated visual prediction, target empirical geometry diagnostics, and independent unlabeled field calibration.
-
-## 11. What would make a stopping rule observable?
-
-The risk boundaries used above depend on the target parameters and serve as analytical objects. They do not themselves define an implementable unlabeled rule.
-
-A generic certificate clarifies the additional requirement. Let
-\(\vartheta=(\delta,p)\), with known anchor parameters, and suppose label-free, nested confidence sets \(\mathcal C_t\) satisfy
+On the same infinite sample array introduce the frozen seed
 \[
-\Pr(\vartheta\in\mathcal C_t\text{ for all }t)\ge1-\alpha.
+W=\mu+\eta\sum_{j\ge0}A_\theta^{-j-1}\sqrt n\,\xi_j(q_\theta).
 \]
-For a proposed threshold \(b'\), accept only if
+The difference \(H_\theta\)'(\(G_\theta\)(\(x_j\)))\(\xi_j\)(\(x_j\))-\(\xi_j\)(\(q_\theta\)) has conditional mean zero and variance at most C|\(x_j\)-\(q_\theta\)|²/n, using \(H_\theta\)'(\(q_\theta\))=1 and (L.3). Consequently its stopped weighted sum has second moment at most
 \[
-\sup_{\vartheta\in\mathcal C_t}
-\{R_\vartheta(b')-R_\vartheta(b_0)\}\le\epsilon.
+C\sum_{j\ge0}A_\theta^{-2j}\min(A_\theta^{2j}/n,1)
+\le C(1+\log n)/n.
 \]
-On the coverage event every accepted iterate is safe, including data-dependent proposals. This follows directly from the supremum and is a generic baseline.
+Use the convention that batch j moves \(x_j\) to x_{j+1}. At \(\tau\), all batches with indices j>=\(\tau\) remain fresh. Conditional on F_tau, the frozen tail has mean zero and variance
 
-To become a useful algorithm, this construction needs a sequential confidence-set method under the stated observation model, accounting for repeated inspection and proposal dependence. It also needs a nontrivial acceptance and improvement guarantee. Ordinary fixed-time intervals repeatedly reused do not suffice. Anchor error, unknown component scales, orientation mistakes, and model misspecification require explicit treatment.
+\[
+\eta^2\sigma_\theta^2\sum_{j\ge\tau}A_\theta^{-2j-2}
+=s_\theta^2 A_\theta^{-2\tau}.
+\]
 
-Appropriate empirical comparators include frozen source, original entropy updates, logit-adjusted entropy updates, mean recentering, an oracle risk threshold, and one-time unlabeled calibration with a frozen plug-in estimate. Known anchors supply more information than strict weights-only source-free deployment. No universal claim about all unlabeled adaptation is implied.
+This proves the O(1/n) tail second moment in (L.5) below. It is a stopped-tail independence argument, not a claim that the stopped trajectory is independent of the full frozen seed.
 
-## 12. Limitations and falsifiable scope
+Together,
+\[
+E|Y_\tau-W|^2\le C(1+\log n)/n.
+\tag{L.5}
+\]
+Grouping W-\(\mu\) by sample column gives n^{-1/2}sum_i V_i with iid centered
+V_i=\(\eta\) sum_{j>=0} \(A_\theta\)^{-j-1}U(\(q_\theta\),Z_{j,i}). These variables have uniform absolute bounds \(\eta\) B_U/(\(A_{\min}\)-1), and variance \(s_\theta\)² bounded below. Berry–Esseen gives a uniform C/\(\sqrt n\) Kolmogorov error relative to N(\(\mu\),\(s_\theta\)²). In particular P(|W|<=\(\delta\))<=C \(\delta\)+C/\(\sqrt n\).
 
-The integrated extension supplies proofs for independent-geometry prediction error and regular boundary perturbations under explicit assumptions. Independent verification and alignment with visual events remain necessary. The expanded calibration grid now covers 144 cells with 20 repetitions, including nonbalanced priors and nonzero offsets, but omits offset +2 and does not exactly test target-centered critical limits. Noise ablations support continuing far-field noise as an important source of tail dispersion in three single-side-dominated settings; a combined early-seed and passage-noise prediction for mixed directions remains open. Unlabeled risk-boundary identification, the exact separation phase boundary, numerical approximation constants, and unknown-anchor robustness remain unresolved.
+The sign of \(Y_\tau\) is exactly the exit direction. Hence (L.5), Chebyshev, and the preceding anti-concentration bound give
+\[
+|\pi_n(Q_\theta)-\Phi(\mu/s_\theta)|
+\le C\{n^{-1/2}+\delta+(1+\log n)/(n\delta^2)\}\le C e_n,
+\]
+choosing \(\delta\)=((1+log n)/n)^{1/3}. This explicitly controls seeds near zero, rather than identifying their signs without an error bound. Finally normalization and the uniform \(C^2\) bound imply \(H_\theta\)(0)=-\(q_\theta\)+O(\(q_\theta\)²); smoothness gives \(s_\theta\)=s+O(|\(\theta\)|). Uniformly on |u|<=\(A_0\),
+\[
+\mu/s_\theta=cu+O(n^{-1/2}).
+\]
+The Lipschitz property of Phi proves (L.2). □
 
-The completed frozen-encoder study retains official train/test splits and controls projected translation and priors. It supplies useful conditional-oracle evidence, but the original independently calibrated prediction fails overall and the improved field-calibration study still uses labeled oracle risk endpoints for its strongest results. Neither full BN adaptation nor scale/LA comparisons have yet been validated by the available results. Image-space corruptions should not be claimed to satisfy a Gaussian projection model without checking that approximation. The general scalar theorem now states such geometric conditions; their validity on each visual exit domain remains to be checked.
 
-The model omits nonstationarity, batch reuse, temporal dependence, learning-rate schedules, momentum, joint feature learning, and multilayer normalization dynamics. A safe population basin is not permanent finite-batch safety. A high right-exit probability is not a safety probability. A fixed-tolerance logarithmic horizon is not an improvement guarantee, and a longer horizon under larger batch size is not universal at fixed prior.
+## 5. Information threshold and finite-information precision
 
-The contribution would be insufficient if its statements followed immediately from accepted entropy-drift results plus a generic unstable-exit theorem without a meaningful new risk prediction. The standard mechanisms are acknowledged explicitly. The case for a contribution must instead rest on the actual recursion, risk-defined boundary, finite-parameter predictions, and tolerance distinction, followed by a direct comparison with existing results.
+**Theorem 2 (Calibration threshold and low information; L.3–L.7).** Uniform consistency on any fixed positive local window is possible if and only if \(M/n\) tends to infinity. If eventually \(M/n\le C_0\) and
+\[
+0<a\le\min\{A_0,1/(4\sqrt{\max(C_0,1)})\},
+\]
+then
+\[
+\liminf_n\mathfrak R_{n,M}(A_0)\ge[2\Phi(ca)-1]/4>0.
+\]
+If \(M/n\) tends to zero, the exact limiting minimax MAE is \(\Phi(cA_0)-1/2\), attained by the constant forecast .5.
+
+For necessity compare \(\theta=\pm a/\sqrt n\). Product KL is at most \(8a^2M/n\) and total variation at most \(2a\sqrt{M/n}\). Directly integrating absolute loss over the density overlap gives maximum risk at least half the target separation times \(1-\mathrm{TV}\). This avoids the factor of two lost by reducing to a nearest-target testing error. Sufficiency uses \(E_\theta h_0=\theta\) and \(\operatorname{Var}_\theta h_0=1-\theta^2\): the raw moment forecast
+\[
+\widehat\pi^{\rm mom}=\Phi(c\sqrt n\,\overline h_0)
+\]
+has uniform error at most \(c\sqrt{n/M}/\sqrt{2\pi}+Ce_n\).
+
+**Theorem 3 (Finite-ratio minimax limit; L.9–L.10).** If \(M/n\) tends to \(\rho\) in (0,infinity), the entire local calibration experiment on the known tilt subfamily is asymptotically equivalent to \(Y=u+Z/\sqrt\rho\), uniformly for \(|u|\le A_0\). Consequently
+\[
+\mathfrak R_{n,M}(A_0)\longrightarrow V_G(K,r),\qquad
+K=cA_0,\quad r=c/\sqrt\rho,
+\]
+where
+\[
+V_G(K,r)=\inf_d\sup_{|t|\le K}E|d(t+rZ)-\Phi(t)|.
+\]
+
+The [complete experiment-level proof](../gaussian_decision/gaussian_decision_extension.md) constructs both Markov kernels. Under the baseline, transform the standardized sample moment \(S_M\) by \(T_M=\Phi^{-1}(F_M(S_M))\), with its known continuous baseline CDF \(F_M\). \(T_M\) is exactly standard normal. A uniform log-likelihood expansion and bounded exponential moments give uniform L1 approximation by \(\exp(\sqrt\rho uT_M-\rho u^2/2)\). A baseline conditional-distribution kernel reconstructs the auxiliary full sample from \(T_M\). The two deficiencies tend to zero. Transporting bounded absolute loss and replacing \(\pi_n\) by \(\Phi(cu)\) proves the minimax limit; a scalar CLT alone would not establish it.
+
+For comparison, L.8 proves that the raw moment rule has worst-window limiting risk \(\arctan(r)/\pi\). The constant rule has risk \(\Phi(K)-1/2\). Neither formula equals the general finite-ratio minimax value. Window projection improves the raw rule's loss against \(\Phi(t)\), but does not itself establish optimality.
+
+### 5.1. Proof of the information threshold
+
+Write \(r_n\) for the uniform error in Theorem 1, so \(r_n\)<=Ce_n. We retain source equation labels to connect each step to the complete proof chapters.
+
+ At \(\theta\)=+/-a/\(\sqrt n\), positivity gives
+\[
+D_{KL}(f_\theta\|f_{-\theta})\le\chi^2(f_\theta,f_{-\theta})
+=4\theta^2 E_0\frac{h_0^2}{1-\theta h_0}\le8\theta^2.
+\]
+Product KL is at most 8a²\(M/n\). Pinsker gives total variation at most 2a sqrt(\(M/n\))<=1/2. Lemma L.2 implies the target separation \(\Delta_n\) tends to Delta=2Phi(ca)-1>0. Let p_+,p_- be the calibration densities and t_+,t_- their true exit probabilities. For any forecast T, the triangle inequality on their common density overlap gives
+\[
+E_+|T-t_+|+E_-|T-t_-|
+\ge\int\min(p_+,p_-)(|T-t_+|+|T-t_-|)
+\ge\Delta_n(1-\operatorname{TV}).
+\]
+The maximum risk is at least half this sum, hence at least \(\Delta_n\)/4 when TV<=1/2. This proves (L.6). Common risk and fixed source information have identical values and cannot change this comparison. Independent randomization cannot improve the testing bound. □
+
+The matching consistency argument uses the raw moment estimator already defined above. Its exact variance is at most 1/M, so the Lipschitz bound gives risk at most c sqrt(n/M)/sqrt(2pi)+Ce_n. If the budget ratio does not diverge, a bounded-ratio subsequence and the two-point lower bound exclude consistency.
+
+### 5.2. Exact low-information minimax limit
+
+ Put \(B_0=\Phi(cA_0)-1/2\). For the upper bound, Theorem 1 and monotonicity of \(\Phi\) give
+
+\[
+\sup_{|u|\le A_0}|\tfrac12-\pi_n(Q_{u/\sqrt n})|
+\le B_0+r_n.
+\]
+
+For the lower bound take a=\(A_0\) in the density-overlap bound. The calibration TV bound tends to zero and the target separation tends to \(2B_0\), so liminf risk>=\(B_0\). These two bounds agree. If M=0 is allowed, use the identical no-observation experiment, with TV exactly zero. □
+
+The endpoint argument establishes the exact asymptotic constant in the regime \(M/n\to0\). The finite-ratio value is instead characterized by Theorem 3. The result strengthens the interpretation of the sample threshold: a best constant predictor may be optimal when information vanishes, while its nonzero worst-case error still prevents uniform consistency.
+
+### 5.3. Full-experiment equivalence: likelihoods and both kernels
+
+Within this likelihood proof put \(h=h_0\). Write \(P_{n,0}=Q_0^{\otimes M}\), \(\rho_n=M/n\), and
+
+\[
+S_n=M^{-1/2}\sum_{j=1}^M h(Z_j),\qquad
+V_n=M^{-1}\sum_{j=1}^M h(Z_j)^2.
+\]
+
+Let \(F_M\) be the CDF of \(S_n\) under \(P_{n,0}\). In the present family h is a nonconstant real-analytic function, so the preimage of any value is a Lebesgue-null set. Since \(f_0\) has a density, h(Z) has no atoms; the sum also has no atoms. Therefore \(F_M\) is continuous. Define
+
+\[
+T_n=\Phi^{-1}(F_M(S_n)).
+\]
+
+This parameter-independent statistic has the exact N(0,1) law under \(P_{n,0}\); events where the argument is zero or one have probability zero. The baseline law and the transform are known because the model family is known.
+
+The CLT and continuity of Phi give sup_x|\(F_M\)(x)-Phi(x)|->0. On a compact interval for \(S_n\) the inverse normal CDF is uniformly continuous after restricting to a slightly larger compact probability interval. Tightness of \(S_n\) then proves
+
+\[
+S_n-T_n\longrightarrow0\quad\text{in }P_{n,0}\text{-probability}.
+\tag{G.2}
+\]
+
+This use of a CLT is only one part of the proof. The essential next step controls the full likelihood ratios.
+
+Let \(\Lambda_n\)(u)=dP_{n,u}/dP_{n,0}. Boundedness of h and compactness of u allow a uniform Taylor expansion, valid for all sufficiently large n:
+
+\[
+\log\Lambda_n(u)
+=u\sqrt{\rho_n}S_n-\tfrac12u^2\rho_n V_n+R_n(u),
+\qquad
+\sup_{|u|\le A_0}|R_n(u)|\le C M n^{-3/2}.
+\tag{G.3}
+\]
+
+Under \(P_{n,0}\), \(V_n\)->1 in probability, and \(\rho_n\)->\(\rho\). Equations (G.2)–(G.3) imply
+
+\[
+\sup_{|u|\le A_0}
+\left|\log\Lambda_n(u)-\left(\sqrt\rho\,uT_n-\tfrac12\rho u^2\right)\right|
+\longrightarrow0
+\tag{G.4}
+\]
+
+in probability. Define g_u(t)=exp(sqrt(\(\rho\))u t-\(\rho\) u^2/2). We now strengthen convergence of log likelihoods to uniform L1 convergence of likelihoods.
+
+For any fixed p>1, \(\log(1+x)\le x\) gives
+
+\[
+\sup_{|u|\le A_0}\Lambda_n(u)
+\le\exp\left(A_0\left|\sum_jh(Z_j)\right|/\sqrt n\right).
+\]
+
+The centered bounded summands have a sub-Gaussian exponential-moment bound. Since \(M/n\) is bounded, the pth moments of the last display are uniformly bounded. Also sup_u g_u(\(T_n\))<=exp(sqrt(\(\rho\))\(A_0\)|\(T_n\)|), whose pth moment is bounded because \(T_n\) is exactly standard normal. Equation (G.4), tightness, and these bounds give uniform integrability and hence
+
+\[
+\varepsilon_n:=\tfrac12\mathbb E_{n,0}
+\sup_{|u|\le A_0}|\Lambda_n(u)-g_u(T_n)|\longrightarrow0.
+\tag{G.5}
+\]
+
+Define an auxiliary experiment on the original sample space by
+
+\[
+d\widetilde P_{n,u}=g_u(T_n)\,dP_{n,0}.
+\]
+
+These are probability measures, because E_{n,0}g_u(\(T_n\))=1 exactly. Equation (G.5) bounds sup_u TV(\(P_{n,u}\),\(\widetilde P_{n,u}\)) by \(\varepsilon_n\).
+
+Under \(\widetilde P_{n,u}\), \(T_n\) has law N(sqrt(\(\rho\))u,1). Conversely, use the regular conditional distribution \(P_{n,0}\)(d z|\(T_n\)=t) to turn such a normal observation back into a full calibration sample. This kernel is independent of u; tilting by a function of \(T_n\) leaves the conditional law unchanged. Regular conditional distributions exist on the Euclidean sample spaces, and arbitrary versions on baseline-null sets do not matter because all normal shifts are mutually absolutely continuous. Thus the auxiliary experiment is exactly equivalent to observing T~N(sqrt(\(\rho\))u,1), or Y=T/\(\sqrt\rho\).
+
+Applying the statistic \(T_n\) in one direction and this baseline conditional kernel in the other gives both deficiencies bounded by \(\varepsilon_n\). This proves the full-experiment equivalence in Theorem 3. □
+
+The proof supplies asymptotic equivalence on a fixed compact local parameter interval. It does not give a calibrated numerical value of \(\varepsilon_n\), nor global equivalence over an expanding parameter range. The conditional kernel is an existence construction; implementing it is not required to use a decision rule in the forward direction.
+
+### 5.4. Minimax risk transfer
+
+ Project all decision values to [0,1], which cannot increase loss. Absolute loss is then bounded by one, so transporting any randomized rule through either Markov kernel changes each parameterwise risk by at most \(\varepsilon_n\). Replacing the target \(\pi_n\) by \(\Phi(cu)\) changes each loss by at most \(r_n\). Taking supremum risks and then infima in both directions gives
+
+\[
+|\mathfrak R_{n,M}(A_0)-V(A_0,c,\rho)|\le\varepsilon_n+r_n.
+\]
+
+This reasoning does not require the minimax infimum to be attained: apply it to arbitrarily near-optimal rules. Under absolute loss, averaging any external decision randomization conditionally on the observation cannot worsen risk, by convexity. Thus restricting to deterministic rules leaves the values unchanged. □
+
+Standardize with
+
+\[
+t=cu,\qquad K=cA_0,\qquad X=cY=t+rZ,\qquad r=c/\sqrt\rho.
+\]
+
+The limiting decision problem depends only on (K,r):
+
+\[
+V_G(K,r)=\inf_d\sup_{|t|\le K}\mathbb E_t|d(X)-\Phi(t)|.
+\tag{G.7}
+\]
+
+Actions may be restricted further to [\(\Phi(-K)\),\(\Phi(K)\)]. Reflection and averaging permit a symmetric rule d(-x)=1-d(x) without increasing worst-case risk, although the certificates below do not require a proof that the candidate optimizer is minimax.
+
+### 5.5. Uniform risk of the raw moment predictor
+
+ By the exact calibration moment identities, the standardized calibration sum
+
+\[
+Z_{n,u}=\frac{\sqrt M(\widehat\theta-u/\sqrt n)}
+ {\sqrt{1-u^2/n}}
+\]
+
+has a uniform Berry–Esseen bound C/\(\sqrt M\) on the compact u-window: h is bounded and its variance is uniformly bounded away from zero for large n. Hence
+
+\[
+c\sqrt n\widehat\theta
+=cu+c\sqrt{n/M}\sqrt{1-u^2/n}\,Z_{n,u}.
+\]
+
+The coefficient of \(Z_{n,u}\) tends uniformly to r. This implies uniform convergence of the bounded loss expectations to \(D(cu,r)\). One direct justification is by subsequences: any alleged nonuniformity supplies u_n in the compact window; extract u_n->u_*, apply the triangular CLT and bounded continuous mapping along that subsequence, and use continuity of D. Replacing \(\Phi(cu)\) by the true \(\pi_n\) changes expected absolute loss by at most \(r_n\). This proves the uniform moment-risk convergence.
+
+Pair positive and negative Z to obtain
+
+\[
+D(t,r)=\int_0^\infty
+ [\Phi(t+rz)-\Phi(t-rz)]\varphi(z)\,dz.
+\tag{L.18}
+\]
+
+Symmetry makes this even in t. For t>0 and z>0,
+|t+rz|>|t-rz|, so differentiation under the integral gives a strictly negative derivative in t. Therefore the maximum over a window containing zero is \(D(0,r)\).
+
+Finally,
+
+\[
+\frac{\partial}{\partial r}D(0,r)
+=2\int_0^\infty z\varphi(rz)\varphi(z)\,dz
+=\frac1{\pi(1+r^2)}.
+\]
+
+Since D(0,0)=0, integration yields \(D(0,r)\)=arctan(r)/pi. Uniform convergence in the uniform moment-risk convergence allows passage to the supremum, proving (L.17). □
+
+The arctan expression remains a result for this specified predictor. It is now its worst-case local-window risk limit, rather than a universal lower bound. In this known family, the constant predictor has worst-case limiting risk \(B_0\); it can outperform the raw moment predictor for some combinations of window width and calibration ratio.
+
+
+## 6. Unknown local directions and nuisance
+
+The known-tilt subfamily already realizes the hardest first-order direction around its known baseline. Define the influence function
+\[
+\psi(z)=\frac{U(0,z)}{\lambda s},\qquad E_0\psi^2=c^2.
+\]
+For any bounded centered score h with \(I_h=E_0h^2>0\), differentiating the root equation gives normalized root sensitivity \(d_h=E_0[\psi h]\). Hence
+\[
+\frac{d_h^2}{I_h}\le c^2,
+\]
+with equality precisely for a nonzero multiple of the entropy gradient \(U(0,\cdot)\). The comparison fixes the seed window, not an arbitrary common parameter window with different attainable seeds.
+
+Consider all unknown measurable k in
+\[
+\mathcal K_{B,K}=\{k:E_0k=0,\ \|k\|_\infty\le B,\ |E_0\psi k|\le K\},
+\quad f_{n,k}=f_0(1+k/\sqrt n).
+\]
+The baseline, B and K are known; k is not. For large n, these densities preserve legality with the same signed density g and the same complete risk. State derivatives of U are bounded, so the whole class lies in a common shrinking smooth-field neighborhood. A repeated stopped-seed proof gives
+\[
+\sup_{k\in\mathcal K_{B,K}}|\pi_n(Q_{n,k})-\Phi(E_0\psi k)|\le Ce_n.
+\]
+
+**Theorem 4 (Unknown-direction minimax value; N.3).** Suppose \(B\ge K\|\psi\|_\infty/c^2\). For \(M/n\) tending to positive finite \(\rho\), the minimax prediction risk over this unknown-direction class converges to \(V_G(K,c/\sqrt\rho)\). Uniform consistency is possible exactly when \(M/n\) tends to infinity; for \(M/n\) tending to zero the value tends to \(\Phi(K)-1/2\).
+
+The lower bound restricts to \(k_t=t\psi/c^2\), \(|t|\le K\), which the envelope condition guarantees is contained in the class. For the upper bound use the direction-free statistic
+\[
+\widehat t=\frac{\sqrt n}{M}\sum_{j=1}^M\psi(\widetilde Z_j),
+\quad E\widehat t=E_0\psi k,
+\quad \operatorname{Var}_{n,k}\psi=c^2+O(n^{-1/2}).
+\]
+Its uniform CLT transfers any bounded Lipschitz Gaussian rule's risk. Gaussian smoothing approximates an arbitrary near-optimal bounded rule with no asymptotic loss, completing the upper bound. Fixed finite step rules also transfer because the limiting Gaussian puts vanishing probability near their thresholds.
+
+This is equality of minimax decision values, not scalar equivalence of the full infinite-dimensional experiment. Orthogonal directions may still contain additional information about nuisance. N.4 gives, for a finite score span with information matrix I and \(d=E_0[H\psi]\), the variance \(d^\top I^{-1}d/\rho=\|\Pi_{\operatorname{span}(H)}\psi\|_2^2/\rho\le c^2/\rho\). Root-preserving nuisance is orthogonal to \(\psi\); it causes no additional first-order penalty for the influence-aligned entropy tilt. These facts do not extend without a new argument to an unknown baseline or growing local envelope. Complete proofs and projection qualifications are in [N.1–N.4](../entropy_prediction_revision/contribution_precision/unknown_direction_theory.md).
+
+### 6.1. Root sensitivity and the information bound
+
+ Differentiate E_epsilon U(q_epsilon,Z)=0. At epsilon=0 the state derivative is \(\lambda\) and the distribution derivative is \(E_0\) U0 h, proving (N.2). Differentiating log f_epsilon at zero gives score h and information \(E_0\) h^2. Cauchy–Schwarz gives (\(E_0\) \(\psi\) h)^2<=\(E_0\) \(\psi\)^2 \(E_0\) h^2. Its equality condition proves the last assertion. □
+
+Thus the original \(h_0\)=U0/\(\sigma_g\) is not merely a convenient tilt: it maximizes normalized seed displacement for a given local statistical distinguishability. The term “least favorable” here concerns estimation of this target, after fixing the target window; it is not an ordering of all nonlinear environmental shifts.
+
+If \(\theta\)=u/\(\sqrt n\) and the score h is known, its limiting seed is \(d_h\) u, while the calibration information is \(\rho\) \(I_h\). At a fixed seed window t=\(d_h\) u in [-K,K], the resulting Gaussian noise standard deviation is
+
+\[
+r_h=\frac{|d_h|}{\sqrt{\rho I_h}}\le\frac c{\sqrt\rho}.
+\tag{N.4}
+\]
+
+For \(d_h\)=0 the first-order seed is zero, so this reparameterization is not applicable; a second-order analysis would be a different local problem. Comparing different h at a fixed u-window would change the attainable target window and would not be the same least-favorability comparison.
+
+### 6.2. Uniform exit over the unknown-direction class
+
+For sufficiently large n, all these fields have one root q_{n,k} on the same compact exit domain, and uniformly over k,
+
+\[
+q_{n,k}=-\frac{E_0[U_0 k]}{\lambda\sqrt n}+O(n^{-1}),
+\quad \lambda_{n,k}=\lambda+O(n^{-1/2}),
+\quad s_{n,k}=s+O(n^{-1/2}).
+\tag{N.6}
+\]
+
+Their true right risk-exit probabilities obey
+
+\[
+\boxed{\sup_{k\in\mathcal K_{B_{\rm loc},K}}
+|\pi_n(Q_{n,k})-\Phi(t(k))|\le C e_n,}
+\quad e_n=n^{-1/2}+((1+\log n)/n)^{1/3}.
+\tag{N.7}
+\]
+
+**Proof.** For every fixed derivative order j needed by the stopped-seed proof,
+
+\[
+\|v_{n,k}-v_0\|_{C^j}
+\le \frac{B_{\rm loc}}{\sqrt n}
+\max_{0\le l\le j}\sup_{x,z}|\partial_x^lU(x,z)|.
+\]
+
+Thus the entire class lies in one shrinking smooth-field neighborhood. No derivative of k with respect to z is needed. The baseline derivative lower bound and endpoint drift signs persist uniformly. Since v_{n,k}(0)=\(E_0\) U0 k/\(\sqrt n\), Taylor expansion at zero and the common positive derivative give q=O(n^{-1/2}) and the root expansion (N.6). Bounded derivatives and bounded U^2 give the remaining expansions. The baseline root noise is nonzero, so its uniform lower bound persists.
+
+For completeness, the probabilistic part can be repeated with exactly the uniform constants of L.2 rather than applying a fixed-law theorem. All maps have inverse contraction and \(C_2\) conjugacy bounds in the same smooth neighborhood; their root-to-boundary distances and conjugate exit magnitudes are bounded away from zero. Bounded U and its derivative give common batch second/fourth moments and the state-difference noise bound. For the stopped normalized conjugacy Y and frozen-root seed W, the same orthogonality and Taylor estimates yield
+
+\[
+\sup_{k,j}E|Y_j|^2\le C,\quad
+\sup_k E A_{n,k}^{-2\tau}\le C/n,\quad
+\sup_k E|Y_\tau-W|^2\le C(1+\log n)/n.
+\]
+
+Exit is finite for every member because f_{n,k}>=\(f_0\)/2 supplies a common positive mass in each of the fixed forcing intervals. Frozen seed columns have uniformly bounded third moments and variances bounded below, so Berry–Esseen and seed anti-concentration hold uniformly. Choosing the same anti-concentration cutoff as in L.2 bounds the error of identifying the final exit sign by Ce_n. Finally,
+
+\[
+\sqrt n H_{n,k}(0)/s_{n,k}=t(k)+O(n^{-1/2})
+\]
+
+uniformly by (N.6) and the normalized \(C^2\) bound. The global risk-safe interval is unchanged, so this is actual risk exit without a component-transfer correction. This proves (N.7). □
+
+The proof uses a uniform bounded envelope and a finite number of smooth U derivatives. It does not require entropy or covering-number control of the function class of directions, since no uniform empirical process over k is estimated.
+
+### 6.3. Upper and lower minimax arguments
+
+Here \(B_{\mathrm{loc}}\) denotes the envelope B used in the main statement, and the class has the same target window K.
+
+Define the scalar statistic from independent calibration scores
+
+\[
+\widehat t=\frac{\sqrt n}{M}\sum_{j=1}^M\psi(\widetilde Z_j).
+\tag{N.8}
+\]
+
+It is available without knowing k. Under \(Q_{n,k}\),
+
+\[
+E\widehat t=t(k),\qquad
+\operatorname{Var}(\psi(\widetilde Z))
+=c^2+n^{-1/2}E_0[\psi^2 k]-t(k)^2/n
+=c^2+O(n^{-1/2})
+\tag{N.9}
+\]
+
+uniformly. Boundedness of \(\psi\) gives a uniform triangular-array CLT. For \(M/n\to\rho\) in (0,infinity), the distribution of \(\widehat t\) is uniformly approximated in Kolmogorov distance by N(\(t(k)\),\(c^2\)/\(\rho\)).
+
+Let \(R^{\mathcal K}_{n,M}\) be the minimax expected absolute prediction loss over the declared unknown-direction class, using the exact \(\pi_n\) as the target. Let
+
+\[
+V_G(K,r)=\inf_d\sup_{|t|\le K}E|d(t+rZ)-\Phi(t)|.
+\]
+
+**Lower bound.** The unknown-direction class contains the subfamily
+
+\[
+k_t=(t/c^2)\psi=(t/c)h_0,\qquad |t|\le K,
+\]
+
+by the envelope condition of Theorem 4. Its seed coordinate is exactly t, and it is the original entropy-gradient tilt with \(\theta\)=t/(c \(\sqrt n\)). Restricting to this subfamily and even telling the predictor that this restriction holds can only reduce the minimax risk. The experiment-level Gaussian reduction already proved for that subfamily gives liminf R^K>=\(V_G\)(K,c/\(\sqrt\rho\)). This invokes a full-experiment lower bound, not a lower bound inferred from a moment CLT.
+
+**Proof of the upper bound.** Any fixed bounded Lipschitz Gaussian rule d, applied to \(\widehat t\), has uniformly convergent risk by (N.9), its uniform CLT, and (N.7). This suffices to approach \(V_G\) arbitrarily closely. To see why arbitrary measurable Gaussian rules do not create a gap, start with an epsilon-optimal rule valued in [0,1]. Smooth it by d_a(x)=E[d(x+aZ')], with independent standard-normal Z'. The smoothed rule is bounded Lipschitz. Jensen gives
+
+\[
+E_t|d_a(X)-\Phi(t)|
+\le E_t|d(X+aZ')-\Phi(t)|.
+\]
+
+The last expectation differs from that under X~N(t,\(r^2\)) by at most TV(N(0,\(r^2+a^2\)),N(0,\(r^2\))), uniformly in t. This tends to zero as a->0. Thus bounded Lipschitz rules are sufficient to approximate the Gaussian minimax value. Apply their uniform risk convergence, then let a and epsilon tend to zero. The upper and lower bounds agree.
+
+For sufficiency when \(M/n\to\infty\), use \(\Phi(\widehat t)\). Its error is bounded uniformly by
+
+\[
+\frac1{\sqrt{2\pi}}\sqrt{\frac nM}
+\sup_k\sqrt{\operatorname{Var}_{n,k}\psi}+Ce_n\to0.
+\]
+
+For necessity, a bounded-ratio subsequence contains the original nondegenerate least-favorable subfamily, to which the two-point lower bound applies. □
+
+This theorem equates a particular decision problem's minimax value. It does **not** assert that the entire infinite-dimensional experiment is equivalent to a scalar Gaussian observation: the full sample may contain information about orthogonal nuisance directions. The lower bound comes from a subexperiment and the upper bound from a direction-free rule.
+
+If \(M/n\to0\), the same subfamily lower bound and the constant forecast upper bound also give \(R^{\mathcal K}_{n,M}\)->\(\Phi(K)\)-1/2. This extends the earlier zero-information constant to the enlarged class, without characterizing the entire nuisance experiment.
+
+The fixed finite step rules already computed for the Gaussian problem also transfer uniformly: their finitely many discontinuities have vanishing neighborhood probability under the limiting normal densities. Consequently the existing numerical minimax brackets are relevant to the enlarged local class without rerunning the optimizer or knowing k.
+
+### 6.4. Tangent projection and target-preserving nuisance
+
+For a finite collection of bounded centered scores H=(h1,...,hd) with nonsingular information I=\(E_0\) \(HH^\top\), let d=\(E_0\)[H \(\psi\)]. The usual local variance associated with estimating the seed functional in this score span is
+
+\[
+\frac1\rho d^\top I^{-1}d
+=\frac1\rho\|\Pi_{\operatorname{span}(H)}\psi\|_2^2
+\le\frac{c^2}{\rho}.
+\tag{N.12}
+\]
+
+**Proof.** The projection has coefficients \(I^{-1}d\), so its squared L2 norm is \(d^\top I^{-1}d\). Projection contracts norm. Equivalently, an empirical mean of \(d^\top\) I^{-1}H estimates the derivative functional in this local model with that first-order variance. □
+
+For a closed admissible tangent space T, the corresponding sensitivity supremum is
+
+\[
+\sup_{h\in T,\,\|h\|_2>0}
+\frac{\langle\psi,h\rangle^2}{\|h\|_2^2}
+=\|\Pi_T\psi\|_2^2.
+\tag{N.13}
+\]
+
+Equality as an operational bounded density tilt requires that the maximizing direction be admissible and bounded, or be approximable by admissible bounded scores. Equation (N.13) alone does not supply the geometry and uniform exit proof for a new model class.
+
+If an interest score h is accompanied by nuisance scores spanning N, and those nuisance directions preserve the seed functional to first order, then N is orthogonal to \(\psi\). The efficient interest score is \(h_{\rm eff}=h-\Pi_Nh\) and
+
+\[
+\frac{\langle\psi,h\rangle^2}{\|h_{\rm eff}\|_2^2}
+=\frac{\langle\psi,h_{\rm eff}\rangle^2}{\|h_{\rm eff}\|_2^2}
+\le c^2.
+\tag{N.14}
+\]
+
+Thus nuisance can reduce information relative to a restricted one-direction model, but cannot exceed the full tangent variance \(c^2\) in this known-baseline first-order problem. In particular, for h=\(h_0\) proportional to \(\psi\) and root-preserving nuisance, \(h_{\rm eff}\)=\(h_0\): there is no additional first-order penalty.
+
+If a proposed nuisance direction has \(E_0\) \(\psi\) k nonzero, it changes the target and is not a target-preserving nuisance. It must be included in \(t(k)\), as in Theorem N.3, rather than projected out while keeping the target fixed. Moreover, a bounded multidimensional parameter window can permit decision improvements beyond a scalar variance comparison; (N.12) is an information calculation, not a general finite-window minimax formula.
+
+**Concrete nuisance example.** At the symmetric Gaussian baseline, let b(z)=cos(z)-\(E_0\) cos(Z). It is bounded, centered and even, whereas \(\psi\) and \(h_0\) are odd. Thus \(E_0\) \(\psi\) b=\(E_0\) \(h_0\) b=0. The two-direction perturbation k_{t,v}=(t/c)\(h_0\)+v b has seed t, with an unknown bounded v changing other aspects of the score distribution. It stays in the declared unknown-direction class whenever |t| H_*/c+|v| ||b||_infinity<=\(B_{\mathrm{loc}}\). This supplies a legal common-risk nuisance family with no additional first-order penalty. No new nuisance simulation is claimed in the present confirmation run.
+
+
+## 7. Gaussian certificates and real-SGD confirmation
+
+### 7.1. Gaussian decision certificates
+
+A finite prior supplies a Bayes lower bound, and its finite-decimal posterior-median step rule supplies an upper bound. The certificate encloses the true posterior crossings and normal probabilities with directed arithmetic. An interpolation remainder based on a risk-curvature bound controls the entire continuous parameter window between all loss kinks. It neither assumes the prior is exactly least favorable nor relies on optimizer convergence.
+
+| K | r | Certified minimax interval | Raw moment risk |
+|---:|---:|---:|---:|
+| 1 | 2 | [0.226230, 0.226386] | 0.352416 |
+| 1 | 1 | [0.164401, 0.164587] | 0.250000 |
+| 1 | 0.5 | [0.107333, 0.107539] | 0.147584 |
+| 2 | 2 | [0.244686, 0.244931] | 0.352416 |
+| 2 | 1 | [0.169889, 0.170268] | 0.250000 |
+| 2 | 0.5 | [0.108534, 0.109092] | 0.147584 |
+
+At \(K=r=1\), the candidate rule's certified worst risk is at most .164587, at least 34.16% below the raw moment rule's exact .25. This is a Gaussian worst-risk improvement, not pointwise dominance or a finite-n SGD certificate. The interval implementation trusts the stated Decimal runtime; it is not a proof-assistant verification. [Full numerical analysis and specifications](../gaussian_decision/gaussian_decision_extension.md).
+
+### 7.2. Independent fixed-rule confirmation
+
+The experiment keeps the pilot's selected rule and ten cells fixed, excludes pilot data, and uses actual sampled nonlinear entropy updates. Fix \(w=2\), \(\nu=1\), \(\eta=.1\), \(x_0=0\), \(b=.25\), \(\kappa=.5\), with \(\epsilon\) approximately .0060745243 and c approximately 9.1436882. For \(n\in\{128,512\}\), set \(M=\operatorname{round}(c^2n)\) and generate \(\theta=t/(c\sqrt n)\) at \(t\in\{-1,-.5,0,.5,1\}\). Predictors receive calibration scores and common constants only. The rule is not optimized again after seeing these trajectories.
+
+Each cell has 16,384 reference paths and 4,096 independent calibration repetitions. All four rules share calibration scores within a repetition; reference streams are independent. The fixed cap is 1,500 steps. All 163,840 paths exited, and the largest observed exit step was 720. Numerical geometry checks are diagnostic rather than interval-certified. No nuisance simulation is claimed.
+
+| n | Raw moment maximum MAE | Clipped maximum MAE | Optimized maximum MAE | Moment minus optimized, simultaneous 95% interval | Clipped minus optimized, simultaneous 95% interval |
+|---:|---:|---:|---:|---:|---:|
+| 128 | .2481 | .2238 | .1663 | [.0299, .1338] | [.0076, .1075] |
+| 512 | .2476 | .2228 | .1684 | [.0273, .1311] | [.0046, .1043] |
+
+These maxima are over five fixed parameter cells. The comparison subtracts maxima of expected losses, not a maximum of paired gains. Joint reference/calibration intervals show positive five-cell maximum-risk improvement over both baselines at both batch sizes. Clipping remains better at some endpoints, so there is no pointwise dominance claim.
+
+### 7.3. Two uncertainty layers
+
+Allocate .025 error to reference paths and .025 to calibration losses. At each cap, right-exit probability by the cap is below eventual \(\pi_n\), while the probability of not having exited left is above it. One-sided exact binomial bounds bracket these probabilities with a union bound over cells; possible population censoring is thus covered even when no sampled paths are censored.
+
+Conditional on the independent reference sample, losses lie in [0,1] and paired differences in [-1,1]. Two-sided empirical Bernstein bounds [8], with a union bound over 40 rule risks and 30 paired gains, control calibration error. Add the reference error to each rule-risk bound and twice that error to paired differences. Propagate cellwise risk intervals through maxima and differences. This provides simultaneous coverage at least 95% under the declared iid experiment, including both uncertainty layers. The beta quantiles use floating-point routines, so these statistical intervals are distinct from the directed Gaussian numerical certificate.
+
+Complete design, uncertainty formulas, cellwise tables and original raw arrays are in the [confirmation report](../entropy_prediction_revision/contribution_precision/precision_report.md). Results and code stay in their original directories. The earlier [pilot](../gaussian_decision/gaussian_decision_extension.md#72-actual-entropy-sgd-pilot) is exploratory and is not pooled into these intervals.
+
+### 7.4. Constructing a certified minimax bracket
+
+Choose any finite prior with ordered support t_1<...<t_m in [-K,K] and positive weights w_i. Its posterior median under absolute loss is a Bayes rule taking the values Phi(t_i). The boundary between actions k and k+1 solves
+
+\[
+\sum_{i\le k}w_i e^{x t_i/r^2-t_i^2/(2r^2)}
+=\sum_{i>k}w_i e^{x t_i/r^2-t_i^2/(2r^2)}.
+\tag{G.8}
+\]
+
+The ratio of the left sum to the right sum is strictly decreasing: its log derivative is the difference of two tilted means divided by \(r^2\), and every left support point is smaller than every right support point. Its limits are infinity and zero. Thus every crossing is unique; the ordered crossings define the posterior-median rule.
+
+For any step rule with thresholds b_j and action values a_j, its exact risk is
+
+\[
+R_d(t)=\sum_j |a_j-\Phi(t)|
+\left[\Phi\left(\frac{b_{j+1}-t}{r}\right)
+      -\Phi\left(\frac{b_j-t}{r}\right)\right],
+\tag{G.9}
+\]
+
+including b_0=-infinity and the last boundary +infinity. Therefore the full unbounded observation domain is integrated through CDF differences, with no omitted integration tail.
+
+The code optimizes a finite prior using floating-point quadrature only to find a candidate. It then rounds support points, prior numerators and rule thresholds to explicit finite decimals. These rounded quantities define the actual certified prior and rule.
+
+For each true crossing, directed interval arithmetic verifies opposite signs of (G.8) at endpoints l_j and u_j, with the candidate threshold inside the bracket. The candidate rule and exact Bayes rule can differ only on the union of these strips. Gaussian mixture density is at most 1/(r sqrt(2 pi)); loss differences are at most one. Hence
+
+\[
+\text{Bayes risk}\ge
+\sum_i w_i R_d(t_i)-\frac{\sum_j(u_j-l_j)}{r\sqrt{2\pi}}.
+\tag{G.10}
+\]
+
+A lower enclosure for the right side is a valid minimax lower bound. This does not assume that the candidate prior is least favorable, that the search objective was computed exactly, or that the optimizer converged.
+
+### 4.2. Continuous-window upper bound
+
+The candidate step rule itself gives an upper bound once sup_{|t|<=K} R_d(t) is bounded. Its action values are exactly Phi(t_i), so the only absolute-loss kinks are at the known support points t_i. Between successive kinks, differentiation under the Gaussian integral gives
+
+\[
+|R_d''(t)|\le C_2:=1+2/r+2/r^2.
+\tag{G.11}
+\]
+
+Indeed the target's first and second derivatives are bounded in absolute value by one; the sum of absolute bin-probability derivatives is bounded by E|Z|/r<=1/r, and that of second derivatives by E|Z^2-1|/\(r^2\)<=2/\(r^2\). All action losses are bounded by one. The bound is deliberately conservative.
+
+For a partition interval [a,b] with no kink in its interior, linear interpolation and (G.11) imply
+
+\[
+\sup_{t\in[a,b]}R_d(t)
+\le\max\{R_d(a),R_d(b)\}+C_2(b-a)^2/8.
+\tag{G.12}
+\]
+
+The partition includes every support point and both endpoints. Adaptive refinement produces an upper bound over the entire continuous window, not just the evaluated grid.
+
+### 4.3. Arithmetic and probability enclosures
+
+`certify.py` uses Python Decimal with 90-digit precision and outward rounding for interval operations. Correctly rounded Decimal exponentials and square roots are expanded by a representable value on each side. Pi is enclosed by Machin's identity and alternating arctangent remainders. Normal CDF values are enclosed by integrating the Taylor expansion of exp(-x^2/2), including a rigorous next-term remainder once the terms decrease. For |x|>=12 a Mills-ratio tail bound is used instead. Both negative and positive tails are retained in their intervals.
+
+The optimizer's normal CDF, integration grid, stopping tolerance and floating-point objective do not enter the validity of the final bounds. The certificate relies on the stated mathematical bounds, the correctness of the supplied implementation, and the documented Decimal arithmetic; it is not a proof-assistant verification of the runtime.
+
+The search gap and the certified gap are different quantities. The final upper-minus-lower interval accounts for an imperfect prior/rule pair as well as root, probability-evaluation and continuous-window errors.
+
+### 7.5. Using the fixed rule without the local parameter
+
+For an arbitrary measurable Gaussian rule, the direct risk-transfer construction applies it to c \(T_n\)/\(\sqrt\rho\). This uses the known baseline CDF \(F_M\), not the unknown environment parameter.
+
+For each of the fixed finite step rules produced here, a simpler implementation is also asymptotically justified: apply it to Xhat=c \(\sqrt n\) hat_theta, the raw empirical moment coordinate. Under the baseline, Xhat-c \(T_n\)/\(\sqrt\rho\) tends to zero in probability. The likelihood-ratio moment bounds used in (G.5) transfer this to the compact local family uniformly. The Gaussian statistic has a continuous density uniformly bounded on the local window, so the probability of lying near one of the finitely many thresholds tends to zero with the threshold neighborhood. Therefore the two implementations have uniformly vanishing risk difference.
+
+This argument is for a fixed finite rule. Refining the rule with n so that the number of thresholds diverges requires additional control. No finite-n risk certificate for the SGD experiment follows merely from the Gaussian numerical certificate.
+
+### 7.6. Simultaneous reference and calibration uncertainty
+
+At the fixed cap, let \(p_R\) be the probability of a right exit by the cap and \(p_{NL}\) the probability of not having exited left by the cap. The eventual right-exit probability satisfies
+
+\[
+p_R\le\pi_n\le p_{NL}.
+\]
+
+For each cell use a one-sided exact Clopper–Pearson lower bound on \(p_R\) and upper bound on \(p_{NL}\), each with error \(\alpha_{\rm ref}\)/(2C). Their endpoints [l_i,u_i] jointly cover every cell's eventual \(\pi_n\) with probability at least 1-\(\alpha_{\rm ref}\). This remains valid if a cell has censored paths; lack of an observed censor is not treated as proof that its population censoring probability is zero.
+
+Set \(\widehat p_i\)=\(N_R/N\) and \(e_i\)=max(\(\widehat p_i\)-l_i,u_i-\(\widehat p_i\)). On the reference event, |\(\widehat p_i\)-pi_i|<=\(e_i\).
+
+#### 2.2. Calibration loss uncertainty conditional on the reference sample
+
+For each rule and cell, score calibration repetition j by L_j=|forecast_j-\(\widehat p_i\)|. Conditional on the independent reference sample, these are iid in [0,1]. Paired baseline-minus-optimized loss differences are iid in [-1,1].
+
+For m observations taking values in an interval of width B, with unbiased sample variance \(S_m^2\), use the two-sided empirical Bernstein radius
+
+\[
+b_m(B,\delta)=\sqrt{\frac{2S_m^2\log(4/\delta)}m}
++\frac{7B\log(4/\delta)}{3(m-1)}.
+\]
+
+This follows by scaling and applying both tails of Maurer–Pontil (2009), Theorem 4. Allocate \(\delta\)=\(\alpha_{\rm cal}\)/(7C) to each of 40 rule-risk estimates and 30 paired gains. Their conditional coverage is at least 1-\(\alpha_{\rm cal}\) by a union bound; integration over the reference sample preserves that bound. Independence between the different rules is not required.
+
+For each rule risk, add \(e_i\) to its calibration radius. For a paired gain add 2\(e_i\), by the reverse triangle inequality. For the deterministic constant rule, propagate [l_i,u_i] through |.5-p| exactly instead of using an unnecessary calibration bound.
+
+The resulting risk and gain intervals have **simultaneous coverage at least 95%** over all reported cells and rules, under the declared iid simulation experiment. They include both uncertainty layers. They are not just conditional standard errors or pointwise normal intervals. Evaluation of \(\beta\) quantiles uses SciPy floating-point routines; these are statistical confidence statements, distinct from the previous directed-arithmetic Gaussian decision certificates.
+
+#### 2.3. Finite-grid maximum risks
+
+For each n let \(R_{\rm rule}^{\rm grid}\) be the maximum of the five true expected calibration losses at the fixed t cells. If cellwise intervals are [L_i,U_i], then
+
+\[
+\max_iL_i\le R_{\rm rule}^{\rm grid}\le\max_iU_i.
+\]
+
+For the improvement in grid maximum risk, subtract intervals: its lower bound is max_i L_baseline,i minus max_i U_optimized,i. The same simultaneous event covers all these derived comparisons. This is a five-cell statement, not a continuous-window maximum or finite-n minimax theorem.
+
+Reference: Andreas Maurer and Massimiliano Pontil, *Empirical Bernstein Bounds and Sample Variance Penalization*, COLT 2009, Theorem 4. https://www.cs.mcgill.ca/~colt2009/papers/012.pdf
+
+### 7.7. Cellwise confirmation and interpretation
+
+| n | t | Reference right probability | Simultaneous reference interval | Moment MAE | Clipped MAE | Optimized MAE |
+|---:|---:|---:|---:|---:|---:|---:|
+| 128 | -1 | 0.16321 | [0.1545, 0.1721] | 0.18038 | 0.12645 | 0.15757 |
+| 128 | -0.5 | 0.30817 | [0.2973, 0.3192] | 0.23400 | 0.20093 | 0.16552 |
+| 128 | 0 | 0.49817 | [0.4863, 0.5101] | 0.24813 | 0.22381 | 0.16306 |
+| 128 | 0.5 | 0.69037 | [0.6793, 0.7013] | 0.23015 | 0.19765 | 0.16299 |
+| 128 | 1 | 0.84259 | [0.8338, 0.8511] | 0.18340 | 0.13257 | 0.16626 |
+| 512 | -1 | 0.16205 | [0.1534, 0.1710] | 0.18425 | 0.13184 | 0.16259 |
+| 512 | -0.5 | 0.30695 | [0.2960, 0.3180] | 0.22602 | 0.19352 | 0.16187 |
+| 512 | 0 | 0.50385 | [0.4920, 0.5157] | 0.24760 | 0.22282 | 0.16288 |
+| 512 | 0.5 | 0.68506 | [0.6739, 0.6960] | 0.23076 | 0.19884 | 0.16429 |
+| 512 | 1 | 0.84711 | [0.8384, 0.8556] | 0.18185 | 0.13448 | 0.16837 |
+
+The interval construction supports positive paired improvements over the raw moment rule in 6/10 cells and over the clipped rule in 2/10 cells. At endpoint cells clipping is often better, so there is no claim of uniform pointwise improvement. At t=0 the target equals .5 exactly by symmetry in this family; for consistency of the primary analysis, that cell was scored with the independent reference estimate, without using the exact value to narrow its interval.
+
+The largest observed exit step was 720. Raw exit arrays, forecast arrays, fixed-design metadata and the frozen rule are retained. The aggregate counts and MAEs agree with the retained NPZ files.
+
+
+## 8. Related work and contribution boundary
+
+POEM [1, §3.2] already exhibits scalar Gaussian entropy collapse; imbalance-driven deterioration and stabilization are established [2]. Sequential risk monitoring [3] and unlabeled action identifiability [4] have different observation timing and targets. Our full risk function is identical across environments, while score marginals differ locally and the target is an independent future path probability. Merely changing assumptions is not the contribution; the quantitative shared-risk prediction result is.
+
+The random-seed amplification mechanism is classical unstable-exit theory [5]. Experiment comparison and bounded-loss transfer [6], influence-aligned least-favorable directions [7], and posterior medians under absolute loss are classical tools. The new model-specific objects are the legal common-risk family, the uniform real-SGD exit interface and the resulting information/precision characterization. The [focused literature table](../entropy_prediction_revision/contribution_precision/contribution_and_literature.md) records the comparisons and the limits of its source audit; it is not an exhaustive priority claim.
+
+## 9. Limitations and discussion
+
+The baseline and its constants are known. Unknown local direction does not mean unknown arbitrary target distribution. The envelope is uniformly bounded, perturbations are of order \(n^{-1/2}\), the seed window is fixed, and the least-favorable subfamily must fit in that envelope. Step size and risk tolerance stay fixed and positive. Momentum, schedules, temporal dependence, batch reuse, online trajectory information and feature learning require separate analysis.
+
+The minimax transfer is asymptotic, with no numerically usable bound on experiment deficiency or the exit remainder. The Gaussian intervals certify a limiting decision value; the confirmation intervals certify finite-grid comparisons in the stated simulation experiment. Neither certifies continuous-window finite-n minimax optimality. The confirmation does not experimentally test nuisance directions, and a known risk function is an analytical control, not an unlabeled risk-estimation method.
+
+The original Gaussian geometry and exit-time results remain in [gaussian_model.md](gaussian_model.md) and [gaussian_proofs.md](gaussian_proofs.md). Earlier frozen-feature studies and failed stopping tests remain in [experiments.md](experiments.md) with their individual limitations. They motivate calibration sensitivity but do not enlarge the scope to general neural-network adaptation. The present work supplies a prospective probability-prediction theory and a model-specific validation; it does not supply a general unlabeled stopping algorithm.
 
 ## References
 
-[1] T. Weerasinghe, R. Tennakoon, W. Chuah, and A. Bab-Hadiashar. *Logit-Adjusted Test-Time Adaptation under Partial Class Imbalance*. WACV, 2026. [Official paper](https://openaccess.thecvf.com/content/WACV2026/papers/Weerasinghe_Logit-Adjusted_Test-Time_Adaptation_under_Partial_Class_Imbalance_WACV_2026_paper.pdf).
+[1] Y. Bar, S. Shaer and Y. Romano. *Protected Test-Time Adaptation via Online Entropy Matching: A Betting Approach*. NeurIPS, 2024. [Paper](https://proceedings.neurips.cc/paper_files/paper/2024/file/9b35a0a20d617dc68ae98a7a57df2f51-Paper-Conference.pdf).
 
-[2] Hoang, Vo, and Do. *Persistent Test-time Adaptation in Recurring Testing Scenarios*. arXiv:2311.18193, v4, 2024. [Paper](https://arxiv.org/abs/2311.18193).
+[2] T. Weerasinghe et al. *Logit-Adjusted Test-Time Adaptation under Partial Class Imbalance*. WACV, 2026. [Paper](https://openaccess.thecvf.com/content/WACV2026/html/Weerasinghe_Logit-Adjusted_Test-Time_Adaptation_under_Partial_Class_Imbalance_WACV_2026_paper.html).
 
-[3] Sahoo et al. *A Layer Selection Approach to Test Time Adaptation*. arXiv:2404.03784, v2, 2025. Earlier version: *Layerwise Early Stopping for Test Time Adaptation*. [Paper](https://arxiv.org/abs/2404.03784).
+[3] M. Schirmer et al. *Monitoring Risks in Test-Time Adaptation*. NeurIPS, 2025. [Paper](https://proceedings.neurips.cc/paper_files/paper/2025/file/746960ad49ddb47248970a0e1404230c-Paper-Conference.pdf).
 
-[4] Shin et al. *STAG*. arXiv:2402.09004, v2, 2026. [Paper identifier](https://arxiv.org/abs/2402.09004).
+[4] K. Jhawar and L. Wang. *When Is Test-Time Adaptation Identifiable from Unlabeled Evidence?* arXiv:2609.11235, 2026. [Preprint](https://arxiv.org/html/2609.11235v1).
 
-[5] Zhou et al. *On the Learnability of Test-Time Adaptation: A Recovery Complexity Perspective*. arXiv:2605.28057, v2, 2026. [Paper](https://arxiv.org/abs/2605.28057).
+[5] Y. Bakhtin. *Exit asymptotics for small diffusion about an unstable equilibrium*. Stochastic Processes and their Applications, 118(5):839–851, 2008. [DOI](https://doi.org/10.1016/j.spa.2007.06.003).
 
-[6] Jhawar and Wang. *When is Test-Time Adaptation Identifiable From Unlabeled Evidence?* arXiv:2609.11235, v1, 2026. [Paper](https://arxiv.org/abs/2609.11235).
+[6] M. Nussbaum. *Asymptotic Equivalence of Statistical Experiments*. [Author manuscript](https://pi.math.cornell.edu/~nussbaum/papers/04-1-transl.pdf).
 
-[7] A. Saumard and J. A. Wellner. *Log-concavity and strong log-concavity: a review*. Statistics Surveys 8, 2014. [Paper](https://arxiv.org/abs/1404.5886).
+[7] M. van der Laan and S. Gruber. *One-Step Targeted Minimum Loss-based Estimation Based on Universal Least Favorable One-Dimensional Submodels*. International Journal of Biostatistics, 12(1):351–378, 2016. [DOI](https://doi.org/10.1515/ijb-2015-0054).
 
-[8] Y. Kifer. *The exit problem for small random perturbations of dynamical systems with a hyperbolic fixed point*. Israel Journal of Mathematics 40:74–96, 1981. [Publication record](https://cris.huji.ac.il/en/publications/the-exit-problem-for-small-random-perturbations-of-dynamical-syst/).
-
-[9] Y. Bakhtin. *Exit asymptotics for small diffusion about an unstable equilibrium*. arXiv:math/0701569, 2007. DOI: 10.1016/j.spa.2007.06.003. [Paper](https://arxiv.org/abs/math/0701569).
-
-[10] Y. Bakhtin and A. Gaál. *Exit time asymptotics for dynamical systems with fast random switching near an unstable equilibrium*. arXiv:1901.05513, 2019. [Paper](https://arxiv.org/abs/1901.05513).
+[8] A. Maurer and M. Pontil. *Empirical Bernstein Bounds and Sample Variance Penalization*. COLT, 2009. [Paper](https://www.cs.mcgill.ca/~colt2009/papers/012.pdf).

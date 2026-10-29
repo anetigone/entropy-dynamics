@@ -1,3 +1,14 @@
+\section{Supporting Gaussian model and exit-time
+results}\label{draft-supporting-gaussian-model-and-exit-time-results}
+
+Part of the \href{DRAFT.md}{manuscript}. This chapter retains the
+original Gaussian model, propositions 1--12, tolerance regimes and
+supporting discussion. Its original section numbers are retained for the
+proof references in \url{gaussian_proofs.md}. The independent prediction
+problem and current statistical results are defined in the main
+manuscript; these Gaussian mixture results are supporting geometry, not
+additional assumptions on the common-risk tilt family.
+
 \subsection{3. Model, information, and risk
 safety}\label{draft-model-information-and-risk-safety}
 
@@ -576,3 +587,141 @@ direction. It does not exclude rejecting an update, using extra
 information, or a different unlabeled adaptation method. The probability
 of a strict risk increase also says nothing by itself about the size of
 that increase.
+
+\subsection{10. Numerical evidence}\label{draft-numerical-evidence}
+
+The experimental protocols, tables, ablations, censoring conventions,
+and numerical limitations are in \href{experiments.md}{the experimental
+part}. Sections 10.6--10.9 distinguish mixed-shift evidence, failed
+source-calibrated visual prediction, target empirical geometry
+diagnostics, and independent unlabeled field calibration.
+
+\subsection{11. What would make a stopping rule
+observable?}\label{draft-what-would-make-a-stopping-rule-observable}
+
+The risk boundaries used above depend on the target parameters and serve
+as analytical objects. They do not themselves define an implementable
+unlabeled rule.
+
+A generic certificate clarifies the additional requirement. Let
+\(\vartheta=(\delta,p)\), with known anchor parameters, and suppose
+label-free, nested confidence sets \(\mathcal C_t\) satisfy \[
+\Pr(\vartheta\in\mathcal C_t\text{ for all }t)\ge1-\alpha.
+\] For a proposed threshold \(b'\), accept only if \[
+\sup_{\vartheta\in\mathcal C_t}
+\{R_\vartheta(b')-R_\vartheta(b_0)\}\le\epsilon.
+\] On the coverage event every accepted iterate is safe, including
+data-dependent proposals. This follows directly from the supremum and is
+a generic baseline.
+
+To become a useful algorithm, this construction needs a sequential
+confidence-set method under the stated observation model, accounting for
+repeated inspection and proposal dependence. It also needs a nontrivial
+acceptance and improvement guarantee. Ordinary fixed-time intervals
+repeatedly reused do not suffice. Anchor error, unknown component
+scales, orientation mistakes, and model misspecification require
+explicit treatment.
+
+Appropriate empirical comparators include frozen source, original
+entropy updates, logit-adjusted entropy updates, mean recentering, an
+oracle risk threshold, and one-time unlabeled calibration with a frozen
+plug-in estimate. Known anchors supply more information than strict
+weights-only source-free deployment. No universal claim about all
+unlabeled adaptation is implied.
+
+\subsection{12. Limitations and falsifiable
+scope}\label{draft-limitations-and-falsifiable-scope}
+
+The integrated extension supplies proofs for independent-geometry
+prediction error and regular boundary perturbations under explicit
+assumptions. Independent verification and alignment with visual events
+remain necessary. The expanded calibration grid now covers 144 cells
+with 20 repetitions, including nonbalanced priors and nonzero offsets,
+but omits offset +2 and does not exactly test target-centered critical
+limits. Noise ablations support continuing far-field noise as an
+important source of tail dispersion in three single-side-dominated
+settings; a combined early-seed and passage-noise prediction for mixed
+directions remains open. Unlabeled risk-boundary identification, the
+exact separation phase boundary, numerical approximation constants, and
+unknown-anchor robustness remain unresolved.
+
+The completed frozen-encoder study retains official train/test splits
+and controls projected translation and priors. It supplies useful
+conditional-oracle evidence, but the original independently calibrated
+prediction fails overall and the improved field-calibration study still
+uses labeled oracle risk endpoints for its strongest results. Neither
+full BN adaptation nor scale/LA comparisons have yet been validated by
+the available results. Image-space corruptions should not be claimed to
+satisfy a Gaussian projection model without checking that approximation.
+The general scalar theorem now states such geometric conditions; their
+validity on each visual exit domain remains to be checked.
+
+The model omits nonstationarity, batch reuse, temporal dependence,
+learning-rate schedules, momentum, joint feature learning, and
+multilayer normalization dynamics. A safe population basin is not
+permanent finite-batch safety. A high right-exit probability is not a
+safety probability. A fixed-tolerance logarithmic horizon is not an
+improvement guarantee, and a longer horizon under larger batch size is
+not universal at fixed prior.
+
+The contribution would be insufficient if its statements followed
+immediately from accepted entropy-drift results plus a generic
+unstable-exit theorem without a meaningful new risk prediction. The
+standard mechanisms are acknowledged explicitly. The case for a
+contribution must instead rest on the actual recursion, risk-defined
+boundary, finite-parameter predictions, and tolerance distinction,
+followed by a direct comparison with existing results.
+
+\subsection{References}\label{draft-references}
+
+{[}1{]} T. Weerasinghe, R. Tennakoon, W. Chuah, and A. Bab-Hadiashar.
+\emph{Logit-Adjusted Test-Time Adaptation under Partial Class
+Imbalance}. WACV, 2026.
+\href{https://openaccess.thecvf.com/content/WACV2026/papers/Weerasinghe_Logit-Adjusted_Test-Time_Adaptation_under_Partial_Class_Imbalance_WACV_2026_paper.pdf}{Official
+paper}.
+
+{[}2{]} Hoang, Vo, and Do. \emph{Persistent Test-time Adaptation in
+Recurring Testing Scenarios}. arXiv:2311.18193, v4, 2024.
+\href{https://arxiv.org/abs/2311.18193}{Paper}.
+
+{[}3{]} Sahoo et al.~\emph{A Layer Selection Approach to Test Time
+Adaptation}. arXiv:2404.03784, v2, 2025. Earlier version:
+\emph{Layerwise Early Stopping for Test Time Adaptation}.
+\href{https://arxiv.org/abs/2404.03784}{Paper}.
+
+{[}4{]} Shin et al.~\emph{STAG}. arXiv:2402.09004, v2, 2026.
+\href{https://arxiv.org/abs/2402.09004}{Paper identifier}.
+
+{[}5{]} Zhou et al.~\emph{On the Learnability of Test-Time Adaptation: A
+Recovery Complexity Perspective}. arXiv:2605.28057, v2, 2026.
+\href{https://arxiv.org/abs/2605.28057}{Paper}.
+
+{[}6{]} Jhawar and Wang. \emph{When is Test-Time Adaptation Identifiable
+From Unlabeled Evidence?} arXiv:2609.11235, v1, 2026.
+\href{https://arxiv.org/abs/2609.11235}{Paper}.
+
+{[}7{]} A. Saumard and J. A. Wellner. \emph{Log-concavity and strong
+log-concavity: a review}. Statistics Surveys 8, 2014.
+\href{https://arxiv.org/abs/1404.5886}{Paper}.
+
+{[}8{]} Y. Kifer. \emph{The exit problem for small random perturbations
+of dynamical systems with a hyperbolic fixed point}. Israel Journal of
+Mathematics 40:74--96, 1981.
+\href{https://cris.huji.ac.il/en/publications/the-exit-problem-for-small-random-perturbations-of-dynamical-syst/}{Publication
+record}.
+
+{[}9{]} Y. Bakhtin. \emph{Exit asymptotics for small diffusion about an
+unstable equilibrium}. arXiv:math/0701569, 2007. DOI:
+10.1016/j.spa.2007.06.003.
+\href{https://arxiv.org/abs/math/0701569}{Paper}.
+
+{[}10{]} Y. Bakhtin and A. Gaál. \emph{Exit time asymptotics for
+dynamical systems with fast random switching near an unstable
+equilibrium}. arXiv:1901.05513, 2019.
+\href{https://arxiv.org/abs/1901.05513}{Paper}.
+
+{[}11{]} Yarin Bar, Shalev Shaer and Yaniv Romano. \emph{Protected
+Test-Time Adaptation via Online Entropy Matching: A Betting Approach}.
+NeurIPS 2024.
+\href{https://proceedings.neurips.cc/paper_files/paper/2024/file/9b35a0a20d617dc68ae98a7a57df2f51-Paper-Conference.pdf}{Official
+paper}.

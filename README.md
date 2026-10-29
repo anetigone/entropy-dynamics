@@ -9,5 +9,5 @@
 - [临界 SGD 与容忍度标度](paper/notes/critical_sgd.md)：详细证明。
 - [相关工作](paper/RELATED_WORK.md)：文献对照与新颖性边界。
 - [实验导航与运行方式](experiments/README.md)。
-- [几何历史结果](experiments/results/geometry/README.md) 与 [临界 SGD 历史结果](experiments/results/critical/README.md)：原始输出及分析导航。
+- [结果导航](experiments/results/README.md)：各结果目录、原始输出及原处分析。
 - [历史记录](paper/notes/archive/)：导入的前序笔记副本与历史检索记录。

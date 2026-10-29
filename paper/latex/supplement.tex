@@ -1,22 +1,32 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 \usepackage[review]{cvpr}
-\usepackage{longtable,array,calc}
+\usepackage{longtable,array,calc,booktabs}
 \usepackage{microtype}
 \usepackage[breaklinks,colorlinks,allcolors=blue]{hyperref}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \providecommand{\passthrough}[1]{#1}
 \def\confName{CVPR}
 \def\confYear{2027}
-\title{When Does Entropy Adaptation Stop Helping?\\Supplementary Theory and Experimental Details}
+\title{Predicting Entropy-SGD Risk Exit:\\Complete Proofs and Experimental Details}
 \author{Anonymous authors}
+\let\section\cvprsection
+\let\subsection\cvprsubsection
+\let\subsubsection\cvprsubsubsection
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{1}
 \begin{document}
 \onecolumn
 \maketitle
-\noindent This supplement retains the detailed model statements, supplied proofs, and numerical protocols underlying the condensed main paper. Original proposition numbers 1--12, extension labels E.1--E.13, and original section references are retained inside the text; they refer to the source mathematical exposition, not the main paper's new numbering. The displayed claims are conditional on their stated assumptions. This assembly is not an independent proof verification. Current empirical conclusions are stated in the main paper; earlier experiments retain their individual scope.
+\noindent This supplement retains the statistical proofs before the supporting scalar-exit, calibration and Gaussian-mixture theory. Labels L.1--L.10, G.1--G.12 and N.1--N.14 refer to their original chapters and equations. The main paper's four summary theorems identify their source statements. Gaussian propositions 1--12 and extension results E.1--E.13 retain their original numbering. Numerical Gaussian certificates, finite-grid confirmation intervals and earlier exploratory evidence have distinct scopes. No page budget is imposed on this working version.
 \tableofcontents
 \clearpage
-\section{Gaussian model and result statements}
-\input{supplement/draft}
+\input{supplement/local_prediction}
+\clearpage
+\input{supplement/gaussian_decision}
+\clearpage
+\input{supplement/unknown_direction}
+\clearpage
+\input{supplement/confirmation}
 \clearpage
 \input{supplement/scalar_exit}
 \clearpage
@@ -24,7 +34,10 @@
 \clearpage
 \input{supplement/risk_boundaries}
 \clearpage
+\input{supplement/draft}
+\clearpage
 \input{supplement/gaussian_proofs}
 \clearpage
 \input{supplement/experiments}
+\clearpage
 \end{document}

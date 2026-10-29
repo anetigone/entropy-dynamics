@@ -11,7 +11,7 @@
 
 ## 当前状态与文档
 
-- 仓库根目录 `STATUS.md` 是当前研究状态、已完成工作和下一步安排的唯一入口。研究阶段完成或研究计划改变时更新它；`experiments/README.md` 负责实验导航，各实验目录的 README 说明用途、参数和运行方式；仅整理运行说明时更新对应 README，AGENTS.md 只保留工作约定及本机路径。不另建 CURRENT、PROGRESS、NEXT_EXPERIMENTS、收尾报告等同用途文件。
+- 仓库根目录 `STATUS.md` 只保存当前阶段的主线、必要状态与下一步；阶段改变时替换旧状态，不累积历史结果、运行检查或旧计划。历史结果由 `experiments/results/README.md` 导航，分析留在对应结果目录。`STATUS.md` 是当前研究状态和下一步安排的唯一入口。研究阶段完成或研究计划改变时更新它；`experiments/README.md` 负责实验导航，各实验目录的 README 说明用途、参数和运行方式；仅整理运行说明时更新对应 README，AGENTS.md 只保留工作约定及本机路径。自包含 Markdown 稿件可按长度拆为多个文件，由 `paper/DRAFT.md` 与 `paper/README.md` 提供连续阅读入口，不依赖状态日志才能理解论证。不另建 CURRENT、PROGRESS、NEXT_EXPERIMENTS、收尾报告等同用途文件。
 - 各级 `README.md` 只负责导航、用途和运行方式；当前结果与待办链接到 `STATUS.md`，不要复制多份会过时的状态摘要。
 - `paper/notes/` 保留当前理论核验、文献对照及仍由代码直接引用的记录；其它历史推导、审阅及临时工作记录放 `paper/notes/archive/`。讨论不默认生成新的日期笔记。
 - 参考文献 PDF 统一保存在 `paper/references/`，不留在仓库根目录；文件使用简短清楚的 snake_case，不另建文献文件登记表。

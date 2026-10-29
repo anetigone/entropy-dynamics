@@ -1,6 +1,9 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 \usepackage[review]{cvpr}
 \usepackage{amsthm}
+\usepackage{longtable,array,calc,booktabs}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
 \usepackage{microtype}
 \usepackage{pgfplots}
 \usepgfplotslibrary{groupplots}
@@ -14,13 +17,15 @@
 \newcommand{\E}{\mathbb E}
 \newcommand{\Prob}{\mathbb P}
 \newcommand{\Var}{\operatorname{Var}}
-\title{When Does Entropy Adaptation Stop Helping?\\Risk Exit, Calibration, and Noise under Mixed Shifts}
+\title{How Much Unlabeled Information Is Needed to Predict Entropy-SGD Risk Exit?}
 \author{Anonymous authors}
 \begin{document}
 \maketitle
 \input{sections/abstract}
 \input{sections/introduction}
 \input{sections/theory}
+\input{sections/decision}
+\input{sections/nuisance}
 \input{sections/experiments}
 \input{sections/discussion}
 {\small\bibliographystyle{ieeenat_fullname}\bibliography{references}}

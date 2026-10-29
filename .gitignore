@@ -6,6 +6,9 @@
 data/
 models/
 results/
+!/experiments/results/
+/experiments/results/*
+!/experiments/results/README.md
 __pycache__/
 *.png
 *.pdf
@@ -13,3 +16,5 @@ __pycache__/
 /experiments/pilot_summary.json
 author-kit-CVPR2027-v1-latex/
 /paper/latex/build/
+independent-bundles/
+*.zip

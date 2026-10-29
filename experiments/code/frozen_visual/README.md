@@ -2,6 +2,19 @@
 
 本实验检验独立校准的方向与时间预测，并比较阈值、尺度和 LA 更新。当前结果与待办见 [STATUS.md](../../../STATUS.md)，其它实验见 [实验导航](../../README.md)。数值计算依赖 NumPy、SciPy，绘图依赖 Matplotlib；特征提取另需 PyTorch、torchvision、Transformers。
 
+## 目标中心化校准尺度
+
+[centered_calibration.py](centered_calibration.py) 固定目标经验池及oracle初始化x0=q，检验独立经验根局部方向预测器。默认四类对、p=.5、n=32/128/512、eta=.1；每预算128次独立校准，每组256条新SGD，最多1500步。fixed_R对照取R=.5/1/2，按真实曲率选M正比n；vanishing_R对照使M正比n平方。预算设计只读取几何，不使用退出结果。
+
+```shell
+python experiments/code/frozen_visual/centered_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/centered_calibration
+python experiments/code/frozen_visual/centered_plot.py --input experiments/results/centered_calibration
+```
+
+支持 `--pairs`、`--batches`、`--ratios`、`--eta`、`--prior`、`--epsilon`、`--repeats`、`--paths`、`--steps`、`--seed`；不同参数用新输出目录。计算每完成类对保存 results.json 和 samples.npz，不支持续跑。绘图要求全部完成，生成 summary.json、analysis.md、scaling.png。513节点全区间根扫描后Brent细化，保持唯一不稳定根要求；根失败保留，汇总提供成功率与含失败的中心化MAE上下界。精确目标场与oracle风险端点仅用于实验控制，估计器只读取无标签分数及计数。
+
+实际预测为 `Phi(sqrt(n)*(q-qhat)/shat)`，是E.7下与共轭预测渐近等价的局部版本；本实验不直接验证完整共轭时间CDF。分别报告相对中心化极限.5的MAE，以及独立真实SGD的分量/风险退出方向。删失保留概率上下界，不将已退出路径的方向比例当总体概率。逐组Wilson区间不是多组同时区间。预算嵌套、同次校准跨n复用，相同M的设置复用同一估计，不当作新增重复。固定池M增长不增加独立图像。结果与下一步见根目录STATUS.md。
+
 ## 预测性停止闭环
 
 [stopping.py](stopping.py) 复用原初始化与协议，用新独立种子模拟逐步阈值和风险。默认四类对、p=.5、n=128、offset=-2/0/2，每组128路径、1500步；无标签场预算2048/131072，各4次校准重复。全部参数预定，不从退出数据拟合安全余量。

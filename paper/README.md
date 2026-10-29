@@ -1,36 +1,39 @@
 # 论文文件导航
 
-## 稿件阅读顺序
+## 主文与连续阅读
 
-CVPR 双栏英文初稿和完整证明补充材料的 LaTeX 入口见 [latex/README.md](latex/README.md)。下列 Markdown 文件保留详细理论与实验来源；当前主张、证据缺口和下一步见 [STATUS.md](../STATUS.md)。
+[主文 DRAFT.md](DRAFT.md)按共同风险下的独立事前预测问题组织：信息与损失 → 共同风险构造 → 统一真实 SGD 方向退出 → 样本门槛与有限信息精度 → 未知方向与 nuisance → 高斯证书和固定规则确认 → 文献与限制。
 
-本稿由多个文件共同组成，不要求 DRAFT.md 单独包含全部证明和实验。原高斯理论保留原命题编号，一般标量与校准扩展使用 E 编号；两套编号互不替代。
+可编译的英文双栏主文与完整补充材料见 [LaTeX 入口](latex/README.md)。工作稿暂不限制篇幅。当前研究安排统一见 [STATUS.md](../STATUS.md)。
+
+主文四个核心定理及其展开证明通过 L/G/N 编号连接源证明。正文展开统一退出、双向实验归约、未知方向上下界、证书与双层区间；补充材料保留完整源章节与支撑结果，不替代原证明编号：
 
 | 文件 | 内容 |
 |---|---|
-| [DRAFT.md](DRAFT.md) | 摘要、引言、模型、高斯理论陈述、§8A 扩展主线、讨论与参考文献 |
-| [scalar_exit.md](scalar_exit.md) | 扩展 §1–2；G1–G4、E.1–E.3，一般标量真实SGD及统一整数时间退出近似，含证明 |
-| [calibration.md](calibration.md) | 扩展 §3–5；E.4–E.8，共轭稳定性、独立场估计、预测误差及随机预测极限，含证明 |
-| [risk_boundaries.md](risk_boundaries.md) | 扩展 §6–9、§11；E.9–E.13，固定偏差、端点扰动、跨分量跳跃、经验池及校准初始化，含证明 |
-| [gaussian_proofs.md](gaussian_proofs.md) | 原命题1–12的证明，模型和陈述见 DRAFT.md |
-| [experiments.md](experiments.md) | §10 实验协议、表格、消融、删失及数值局限 |
+| [local_prediction.md](local_prediction.md) | L.1–L.8：共同风险构造、统一方向退出、信息门槛、低信息 minimax 常数和指定矩预测器风险 |
+| [Gaussian decision extension](../gaussian_decision/gaussian_decision_extension.md) | L.9–L.10、G 方程：完整统计实验等价、minimax 风险转移、高斯数值证书及早期 pilot |
+| [Unknown-direction theory](../entropy_prediction_revision/contribution_precision/unknown_direction_theory.md) | N.1–N.4：已知基准下未知有界局部方向、最不利熵倾斜、统一退出与 nuisance 投影 |
+| [Fixed-design confirmation](../entropy_prediction_revision/contribution_precision/precision_report.md) | 冻结规则的真实 SGD 确认、参考和校准双层同时区间；完整分析保留原位 |
+| [Contribution and literature](../entropy_prediction_revision/contribution_precision/contribution_and_literature.md) | 问题定位、信息设定和主要文献的精确比较 |
 
-扩展各部分保留连续章节号和公式 E 编号，各自附必要参考文献。正文先给出研究主线，再按链接查阅证明或实验。原高斯部分的更新幅度界用局部记号 M；扩展改用 B_U，把 M 留给校准样本量，跨部分使用时须区分。
+建议先读 DRAFT.md，再顺次阅读上表的完整证明和分析。所有理论定义与论证均在稿件部分中给出，不依赖状态日志。包中的 source_manuscript 与旧副本作为用户提供的原始材料保留，不另维护成主文。
 
-[RELATED_WORK.md](RELATED_WORK.md) 是中文文献对照，独立定义比较问题和贡献边界；不代替稿件证明。
+## 支撑理论与既有实验
 
-## 推导与原始材料
+| 文件 | 内容 |
+|---|---|
+| [gaussian_model.md](gaussian_model.md) | 原高斯混合模型、命题1–12陈述、rebound、容忍度和整数退出时间；保留原章节编号供证明引用 |
+| [gaussian_proofs.md](gaussian_proofs.md) | 原高斯命题1–12的完整证明 |
+| [scalar_exit.md](scalar_exit.md) | G1–G4、E.1–E.3：一般标量真实 SGD、共轭与整数时间退出近似 |
+| [calibration.md](calibration.md) | E.4–E.8：共轭稳定性、独立校准、经验根与随机预测极限 |
+| [risk_boundaries.md](risk_boundaries.md) | E.9–E.13：偏差、端点、跨分量跳跃、经验池与校准初始化 |
+| [experiments.md](experiments.md) | 既有实验及原处分析入口；§10.14链接固定规则确认 |
+| [RELATED_WORK.md](RELATED_WORK.md) | 原高斯风险与时间口径的详细比较；新增统计文献链接到上表原处对照 |
 
-[notes/entropy_geometry.md](notes/entropy_geometry.md) 和 [notes/critical_sgd.md](notes/critical_sgd.md) 保留前两轮推导及其局部编号；涉及尚未完成扩展的文字按原轮次阅读，当前扩展见上述稿件部分。[本轮扩展原件](notes/archive/entropy_exit_theory_extension.md) 原样归档，含作者合并说明，不作为另一份活跃稿件维护。
+支撑部分保留原数字与 E 编号，不与主文四个汇总定理混用。原高斯推导中的局部更新幅度记号 M 不代表校准样本量；统计主文统一使用 B_U 表示幅度界，M 表示校准预算。
 
-[notes/archive/](notes/archive/) 保存历史推导及检索记录；[references/](references/) 保存参考文献 PDF。
+[notes/entropy_geometry.md](notes/entropy_geometry.md)、[notes/critical_sgd.md](notes/critical_sgd.md)保留理论背景。[notes/archive/](notes/archive/)保存历史记录，[references/](references/)保存参考文献 PDF。
 
-## 结果材料
+## 实验入口
 
-逐项结果分析与原始输出保留在实验目录，稿件的实验部分汇总必要协议和数值：
-
-- [基础 pilot](../experiments/RESULTS.md)、[几何](../experiments/results/geometry/analysis.md)、[临界 SGD](../experiments/results/critical/analysis.md)。
-- [混合偏移](../experiments/results/mixed_shift/analysis.md)、[冻结视觉与几何诊断](../experiments/results/visual_shift/analysis.md)。
-- [独立校准](../experiments/results/calibration_pilot/analysis.md)、[高预算核对](../experiments/results/calibration_high/analysis.md)。
-
-当前研究状态、已完成范围和下一步统一见 [STATUS.md](../STATUS.md)。运行方式见 [实验导航](../experiments/README.md)，工作约定见 [AGENTS.md](../AGENTS.md)。
+[全部结果与原处分析](../experiments/results/README.md)及[代码运行导航](../experiments/README.md)。分析、证书与既有结果保持原位；本文件只负责导航。当前状态与待办只在 [STATUS.md](../STATUS.md)维护。

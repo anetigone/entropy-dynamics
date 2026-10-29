@@ -1,0 +1,841 @@
+\section{Local prediction with unknown entropy
+dynamics}\label{local_prediction-local-prediction-with-unknown-entropy-dynamics}
+
+Part of the \href{DRAFT.md}{manuscript}. This chapter gives an explicit
+common-risk family, a uniform direction-exit proof, and statistical
+necessity and sufficiency within that family. Numbering L.1--L.8 is
+local to this chapter. The model is scalar, the step size is fixed, and
+the calibration and future adaptation samples are independent.
+
+\subsection{8B.1. Observation
+experiment}\label{local_prediction-b.1.-observation-experiment}
+
+Write s(u)=(1+exp(-u))\^{}\{-1\}, a(u)=s(u)(1-s(u)), and \[
+U(x,z)=-w^2(z-x)a(w(z-x)),\quad
+x_{t+1}=x_t+\frac\eta n\sum_{i=1}^n U(x_t,Z_{t,i}),\quad x_0=0.
+\] Fix w\textgreater0. Future batches are fresh iid scores from an
+unknown environment Q. A predictor observes only M independent
+calibration scores, x0, the common model family and its constants, and,
+if desired, the entire common classification-risk function. Future SGD
+samples, trajectories, root, and environment identity are unavailable.
+Any source information is fixed across environments. Randomized
+predictors may use independent randomization.
+
+For a positive fixed tolerance epsilon define \[
+T_\epsilon=\inf\{t\ge0:R_Q(x_t)>R_Q(0)+\epsilon\}.
+\] Below the safe set is exactly {[}-b,b{]}, T\_epsilon is finite almost
+surely, and \[
+\pi_n(Q)=\Pr_Q(x_{T_\epsilon}>b).
+\] The probability integrates over independent future SGD; prediction
+loss averages over calibration randomness. Online trajectory prediction
+is a different experiment.
+
+Known exact centering admits the asymptotically correct constant
+forecast .5. Thus the centered plug-in error arctan(r)/pi in
+\href{calibration.md}{calibration} is not a universal lower bound. Here
+initialization stays fixed while the unknown environment moves the root.
+
+\subsection{8B.2. Explicit common-risk
+family}\label{local_prediction-b.2.-explicit-common-risk-family}
+
+\subsubsection{Proposition L.1. Legal environments and local
+geometry}\label{local_prediction-proposition-l.1.-legal-environments-and-local-geometry}
+
+Fix nu\textgreater0 and 0\textless kappa\textless1. Let f0 be the
+N(0,nu²) density, and put \[
+v_0(x)=E_0 U(x,Z),\quad \lambda=v_0'(0),\quad
+\sigma_g^2=E_0 U(0,Z)^2,\quad h(z)=U(0,z)/\sigma_g.
+\] Then \[
+\lambda=\frac{w^2}{\nu^2}E_0[Z^2a(wZ)]>0,\qquad \sigma_g>0,
+\quad E_0h=0,\quad E_0h^2=1,\quad H_*:=\|h\|_\infty<\infty.
+\] Choose a sufficiently small d\textgreater0 such that
+v0'(x)\textgreater=lambda/2 on K={[}-d,d{]}, and set b=d/2. Choose and
+then fix \[
+0<\eta<\min\{1/L_U,d/(4B_U)\},\quad B_U=w/4,\quad L_U=w^2/4.
+\] There exists bar\_theta\textgreater0 such that for
+\textbar theta\textbar\textless=bar\_theta the joint densities \[
+f_\theta=f_0(1+\theta h),\qquad g(z)=\kappa\tanh(z)f_0(z),
+\qquad p_\theta(z,\pm1)=(f_\theta(z)\pm g(z))/2
+\] are nonnegative and normalized, with equal class priors. The score
+law Q\_theta has density f\_theta. All environments share the entire
+risk function \[
+R(x)=\frac12+\int_{-\infty}^x g(z)\,dz,
+\quad R(x)-R(0)=\kappa\int_0^x\tanh(z)f_0(z)\,dz.
+\] In particular, with the fixed choice \[
+\epsilon=\kappa\int_0^b\tanh(z)f_0(z)\,dz>0,
+\quad \{x:R(x)\le R(0)+\epsilon\}=[-b,b].
+\] The field v\_theta has exactly one root q\_theta in K, with
+\textbar q\_theta\textbar\textless=b/2 and
+v\_theta'\textgreater=lambda/4 throughout K. Moreover, \[
+q_\theta=-\frac{\sigma_g}{\lambda}\theta+O(\theta^2).
+\tag{L.1}
+\] All constants and the remainder are uniform on a sufficiently small
+parameter interval.
+
+\textbf{Proof.} Symmetry makes U(0,z) odd and v0(0)=0. Since U(x,z) is a
+translate of U(0,z), Gaussian integration by parts gives
+v0'(0)=-E0{[}partial\_z U(0,Z){]}=-E0{[}Z U(0,Z){]}/nu², yielding the
+displayed positive formula. The variance is positive because U(0,Z) is
+not constant. Boundedness and smoothness follow from Lemma E.1 in
+\href{scalar_exit.md}{scalar exit}.
+
+Require bar\_theta H\_*\textless=min(1/2,1-kappa). Then
+f\_theta\textgreater=kappa f0\textgreater=\textbar g\textbar, and E0h=0
+normalizes f\_theta. Since g is odd, its integral is zero and each class
+has mass 1/2. Integrating the two misclassification regions gives the
+displayed risk. Its derivative g is negative on the negative half-line
+and positive on the positive half-line, so its even safe set is exactly
+the stated interval, globally. Thus risk exit equals interval exit path
+by path, including discrete overshoots; there is no second safe
+component.
+
+Write v\_theta=v0+theta k, k(x)=E0{[}U(x,Z)h(Z){]}. All fixed-order
+derivatives of k are bounded, and k(0)=sigma\_g. Shrinking bar\_theta
+gives v\_theta'\textgreater=lambda/4 on K and opposite signs at +/-b/2.
+The implicit-function theorem gives (L.1), with a bounded second
+derivative on the reduced closed parameter interval. Root noise variance
+is continuous and stays bounded below by a positive constant after
+another reduction. The full one-step overshoot interval {[}-b-eta
+B\_U,b+eta B\_U{]} lies in {[}-3d/4,3d/4{]}, inside K. These choices
+establish common geometry rather than assuming it. This family is a
+general scalar joint model; its label-conditionals are not the original
+Gaussian mixture. \(\square\)
+
+\subsection{8B.3. Uniform direction exit for actual entropy
+SGD}\label{local_prediction-b.3.-uniform-direction-exit-for-actual-entropy-sgd}
+
+Define \[
+\lambda_\theta=v_\theta'(q_\theta),\quad A_\theta=1+\eta\lambda_\theta,
+\quad \sigma_\theta^2=\operatorname{Var}_\theta U(q_\theta,Z),
+\quad s_\theta^2=\frac{\eta^2\sigma_\theta^2}{A_\theta^2-1}.
+\] At theta=0 write A=1+eta lambda, s=s0, and \[
+c=\frac{\sigma_g}{\lambda s}=\sqrt{\frac{2+\eta\lambda}{\eta\lambda}},
+\qquad e_n=n^{-1/2}+((1+\log n)/n)^{1/3}.
+\]
+
+\subsubsection{Lemma L.2. Uniform local direction
+law}\label{local_prediction-lemma-l.2.-uniform-local-direction-law}
+
+For every fixed finite A0\textgreater0 there are C and n0 such that \[
+\sup_{|u|\le A_0}|\pi_n(Q_{u/\sqrt n})-\Phi(cu)|\le C e_n
+\quad(n\ge n_0).
+\tag{L.2}
+\] This statement concerns fixed eta; its constants are not uniform as
+eta tends to zero.
+
+\textbf{Proof.} We supply the common constants and the stopped-seed
+argument, so this is not an application of a pointwise exit limit to
+changing laws.
+
+Construct normalized C² conjugacies H\_theta with H\_theta(q\_theta)=0,
+H\_theta'(q\_theta)=1 and H\_theta(G\_theta(x))=A\_theta H\_theta(x)
+whenever both arguments are in K. The uniform inverse construction is as
+follows.
+
+Let K={[}-d,d{]} and G\_theta(x)=x+eta v\_theta(x). The signs of
+v\_theta at the endpoints imply G\_theta(K) contains K. Thus
+F\_theta=G\_theta\^{}\{-1\} is defined on K, maps K into itself, and
+fixes q\_theta. Its derivative satisfies
+
+\[
+0<F_\theta'(x)\le \gamma:=(1+\eta\lambda/4)^{-1}<1.
+\]
+
+In centered coordinates write
+
+\[
+\widetilde F_\theta(y)=A_\theta^{-1}y+r_\theta(y),
+\qquad r_\theta(0)=r_\theta'(0)=0.
+\]
+
+On a common small neighborhood, uniform smoothness gives bounded third
+derivatives and a bound beta on the inverse derivative, with A\_max
+beta\^{}2\textless1. If y\_j=F\_tilde\_theta\^{}j(y), then, uniformly in
+theta,
+
+\[
+|y_j|\le C\beta^j|y|,\qquad
+|y_j'|\le C\beta^j,\qquad |y_j''|\le C\beta^j.
+\]
+
+For the second inequality use the derivative product. The third follows
+from
+
+\[
+y_{j+1}''=\widetilde F_\theta''(y_j)(y_j')^2
+             +\widetilde F_\theta'(y_j)y_j''.
+\]
+
+The successive differences in A\_theta\^{}j y\_j equal
+A\_theta\^{}\{j+1\} r\_theta(y\_j). Their functions, first derivatives
+and second derivatives have summable bounds C(A\_max
+beta\textsuperscript{2)}j. This proves local C\^{}2 convergence. To
+establish positivity of the limiting derivative, use its derivative
+product:
+
+\[
+\prod_{k=0}^{j-1} A_\theta\widetilde F_\theta'(y_k).
+\]
+
+Each factor is positive and differs from one by
+O(\textbar y\_k\textbar). On a sufficiently small common neighborhood
+the sum of these deviations is uniformly bounded, so the limiting
+product is bounded away from zero. A fixed number of inverse iterations
+maps all of K into that neighborhood, since F\_theta contracts by gamma.
+Finite composition gives uniform C\^{}2 bounds and a positive derivative
+lower bound on K. This also verifies the functional equation wherever
+its two arguments are in K.
+
+Thus, for constants independent of theta, \[
+\|H_\theta\|_{C^2(K)}\le C,\quad \inf_K H_\theta'\ge m>0,
+\quad 1<A_{\min}\le A_\theta\le A_{\max},\quad
+0<s_{\min}\le s_\theta\le s_{\max}.
+\tag{L.3}
+\] The inverse derivative bounds use the uniform smoothness of U and the
+positive derivative of G\_theta. The root-to-boundary distances are at
+least b/2. These facts also give uniform bounds above and below for the
+absolute conjugate boundary values.
+
+Let tau be exit from {[}-b,b{]} and xi\_j(x)=n\^{}\{-1\}sum\_i
+U(x,Z\_\{j,i\})-v\_theta(x). Each theta has finite tau almost surely:
+choose two fixed bounded score intervals respectively left and right of
+K. Their masses are uniformly positive since f\_theta\textgreater=f0/2.
+Repeated batches entirely in the left interval drive any state at least
+q\_theta rightward by a positive minimum speed until exit; the right
+interval does the converse. Compactness supplies a fixed finite block
+length N. The conditional chance of an appropriate exiting block is at
+least p\^{}\{nN\}\textgreater0; geometric blocking proves finiteness.
+This is not a bound on the typical exit time.
+
+For \textbar theta\textbar\textless=A0/sqrt(n), (L.1) implies
+\textbar q\_theta\textbar\textless=C/sqrt(n) and mu=sqrt(n)H\_theta(0)
+is bounded. Conditional batch moments give \[
+E[\xi_j(x)^2\mid\mathcal F_j]\le C/n,\quad
+E[\xi_j(x)^4\mid\mathcal F_j]\le C/n^2,\quad
+E[(\xi_j(x)-\xi_j(q_\theta))^2\mid\mathcal F_j]
+\le C|x-q_\theta|^2/n.
+\] All constants are distribution independent, by bounded U and
+partial\_x U. Taylor expansion on the established overshoot domain
+gives, for j\textless tau, \[
+H_\theta(x_{j+1})=A_\theta H_\theta(x_j)
+ +\eta H_\theta'(G_\theta(x_j))\xi_j(x_j)+r_j,
+\quad |r_j|\le C\xi_j(x_j)^2.
+\] Set Y\_t=sqrt(n) A\_theta\^{}\{-(t wedge tau)\}H\_theta(x\_\{t wedge
+tau\}).
+
+Let F\_j denote the history before batch j and write
+I\_j=1\_\{j\textless tau\}. With
+
+\[
+D_j=\sqrt n\,\eta A_\theta^{-j-1} I_j
+ H_\theta'(G_\theta(x_j))\xi_j(x_j),
+\]
+
+and
+
+\[
+E_j=\sqrt n A_\theta^{-j-1}I_j r_j,
+\]
+
+the stopped recursion gives
+
+\[
+Y_t=\mu+\sum_{j<t}D_j+\sum_{j<t}E_j.
+\]
+
+The indicator and the coefficient are F\_j-measurable. Thus D\_j are
+martingale differences and
+
+\[
+\sum_j\mathbb E D_j^2\le C\sum_j A_\theta^{-2j}\le C.
+\]
+
+The conditional fourth-moment bound gives
+
+\[
+\|E_j\|_2\le C n^{-1/2}A_\theta^{-j},
+\qquad \left\|\sum_{j<t}E_j\right\|_2\le Cn^{-1/2}.
+\]
+
+Therefore sup\_t E\textbar Y\_t\textbar\^{}2\textless=C without assuming
+a logarithmic exit-time estimate. Finite exit and Fatou then imply
+E\textbar Y\_tau\textbar\^{}2\textless=C. At exit, the uniform
+root-to-boundary separation and positive derivative of H imply
+\textbar H\_theta(x\_tau)\textbar\textgreater=b\_H\textgreater0.
+Consequently
+
+\[
+\mathbb E A_\theta^{-2\tau}\le (nb_H^2)^{-1}\mathbb E|Y_\tau|^2\le C/n.
+\]
+
+There is no circular inference from a desired exit approximation to its
+own moment estimate.
+
+Before exit, H\_theta'\textgreater=m and bounded K also imply \[
+E[\mathbf1_{j<\tau}|x_j-q_\theta|^2]\le C\min(A_\theta^{2j}/n,1).
+\tag{L.4}
+\]
+
+On the same infinite sample array introduce the frozen seed \[
+W=\mu+\eta\sum_{j\ge0}A_\theta^{-j-1}\sqrt n\,\xi_j(q_\theta).
+\] The difference H\_theta'(G\_theta(x\_j))xi\_j(x\_j)-xi\_j(q\_theta)
+has conditional mean zero and variance at most
+C\textbar x\_j-q\_theta\textbar²/n, using H\_theta'(q\_theta)=1 and
+(L.3). Consequently its stopped weighted sum has second moment at most
+\[
+C\sum_{j\ge0}A_\theta^{-2j}\min(A_\theta^{2j}/n,1)
+\le C(1+\log n)/n.
+\] Use the convention that batch j moves x\_j to x\_\{j+1\}. At tau, all
+batches with indices j\textgreater=tau remain fresh. Conditional on
+F\_tau, the frozen tail has mean zero and variance
+
+\[
+\eta^2\sigma_\theta^2\sum_{j\ge\tau}A_\theta^{-2j-2}
+=s_\theta^2 A_\theta^{-2\tau}.
+\]
+
+This proves the O(1/n) tail second moment in (L.5) below. It is a
+stopped-tail independence argument, not a claim that the stopped
+trajectory is independent of the full frozen seed.
+
+Together, \[
+E|Y_\tau-W|^2\le C(1+\log n)/n.
+\tag{L.5}
+\] Grouping W-mu by sample column gives n\^{}\{-1/2\}sum\_i V\_i with
+iid centered V\_i=eta sum\_\{j\textgreater=0\}
+A\_theta\^{}\{-j-1\}U(q\_theta,Z\_\{j,i\}). These variables have uniform
+absolute bounds eta B\_U/(A\_min-1), and variance s\_theta² bounded
+below. Berry--Esseen gives a uniform C/sqrt(n) Kolmogorov error relative
+to N(mu,s\_theta²). In particular
+P(\textbar W\textbar\textless=delta)\textless=C delta+C/sqrt(n).
+
+The sign of Y\_tau is exactly the exit direction. Hence (L.5),
+Chebyshev, and the preceding anti-concentration bound give \[
+|\pi_n(Q_\theta)-\Phi(\mu/s_\theta)|
+\le C\{n^{-1/2}+\delta+(1+\log n)/(n\delta^2)\}\le C e_n,
+\] choosing delta=((1+log n)/n)\^{}\{1/3\}. This explicitly controls
+seeds near zero, rather than identifying their signs without an error
+bound. Finally normalization and the uniform C² bound imply
+H\_theta(0)=-q\_theta+O(q\_theta²); smoothness gives
+s\_theta=s+O(\textbar theta\textbar). Uniformly on
+\textbar u\textbar\textless=A0, \[
+\mu/s_\theta=cu+O(n^{-1/2}).
+\] The Lipschitz property of Phi proves (L.2). \(\square\)
+
+\subsection{8B.4. Statistical threshold within the same
+family}\label{local_prediction-b.4.-statistical-threshold-within-the-same-family}
+
+Let \[
+\mathfrak R_{n,M}(A_0)=\inf_{\widehat\pi}
+\sup_{|u|\le A_0}E_{u/\sqrt n}
+|\widehat\pi-\pi_n(Q_{u/\sqrt n})|,
+\] where A0\textgreater0 and predictors have the information in §8B.1.
+The family and its constants are known; u is unknown.
+
+\subsubsection{Theorem L.3. Necessity with explicit
+constants}\label{local_prediction-theorem-l.3.-necessity-with-explicit-constants}
+
+If eventually M/n\textless=C0\textless infinity, choose \[
+0<a\le\min\{A_0,1/(4\sqrt{\max(C_0,1)})\}.
+\] Then \[
+\liminf_n\mathfrak R_{n,M}(A_0)\ge [2\Phi(ca)-1]/4>0.
+\tag{L.6}
+\]
+
+\textbf{Proof.} At theta=+/-a/sqrt(n), positivity gives \[
+D_{KL}(f_\theta\|f_{-\theta})\le\chi^2(f_\theta,f_{-\theta})
+=4\theta^2 E_0\frac{h^2}{1-\theta h}\le8\theta^2.
+\] Product KL is at most 8a²M/n.~Pinsker gives total variation at most
+2a sqrt(M/n)\textless=1/2. Lemma L.2 implies the target separation
+Delta\_n tends to Delta=2Phi(ca)-1\textgreater0. Let p\_+,p\_- be the
+calibration densities and t\_+,t\_- their true exit probabilities. For
+any forecast T, the triangle inequality on their common density overlap
+gives \[
+E_+|T-t_+|+E_-|T-t_-|
+\ge\int\min(p_+,p_-)(|T-t_+|+|T-t_-|)
+\ge\Delta_n(1-\operatorname{TV}).
+\] The maximum risk is at least half this sum, hence at least Delta\_n/4
+when TV\textless=1/2. This proves (L.6). Common risk and fixed source
+information have identical values and cannot change this comparison.
+Independent randomization cannot improve the testing bound. \(\square\)
+
+\subsubsection{Theorem L.4. Sufficiency and
+equivalence}\label{local_prediction-theorem-l.4.-sufficiency-and-equivalence}
+
+The predictor \[
+\widehat\theta=M^{-1}\sum_{j=1}^M h(\widetilde Z_j),\qquad
+\widehat\pi=\Phi(c\sqrt n\,\widehat\theta)
+\] satisfies, for M\textgreater=1 and large n, \[
+\sup_{|u|\le A_0} E_{u/\sqrt n}|\widehat\pi-\pi_n(Q_{u/\sqrt n})|
+\le \frac{c}{\sqrt{2\pi}}\sqrt{n/M}+Ce_n.
+\tag{L.7}
+\] Thus uniform consistency within this family is possible if and only
+if M/n tends to infinity.
+
+\textbf{Proof.} E\_theta h=theta exactly, and Var\_theta
+h=1-theta²\textless=1 by oddness of h (see L.5). Hence
+E\textbar hat\_theta-theta\textbar\textless=1/sqrt(M). Apply the global
+Lipschitz constant 1/sqrt(2pi) of Phi and (L.2). No clipping or root
+oracle is used. Conversely, if M/n does not diverge, some infinite
+subsequence has bounded M/n; Theorem L.3 on that subsequence excludes
+risk tending to zero. \(\square\)
+
+These consistency statements are specific to the known family and fixed
+eta. The following refinements distinguish minimax conclusions from the
+risk of an individual predictor.
+
+Retain the notation of L.1--L.4. Let A0\textgreater0 be fixed, let
+
+\[
+r_n=\sup_{|u|\le A_0}|\pi_n(Q_{u/\sqrt n})-\Phi(cu)|\le C e_n,
+\qquad B_0=\Phi(cA_0)-\tfrac12.
+\]
+
+The quantity r\_n is a deterministic approximation error, not an
+observable calibrated confidence bound.
+
+\subsubsection{Proposition L.5. Exact symmetry and calibration
+moments}\label{local_prediction-proposition-l.5.-exact-symmetry-and-calibration-moments}
+
+For every legal theta,
+
+\[
+\mathbb E_\theta h=\theta,\qquad
+\mathbb E_\theta h^2=1,\qquad
+\operatorname{Var}_\theta h=1-\theta^2.
+\tag{L.8}
+\]
+
+For every finite batch size n,
+
+\[
+\pi_n(Q_{-\theta})=1-\pi_n(Q_\theta),
+\qquad \pi_n(Q_0)=\tfrac12.
+\tag{L.9}
+\]
+
+In particular the moment predictor in L.4 satisfies the sharper bound
+
+\[
+\sup_{|u|\le A_0}\mathbb E_{u/\sqrt n}
+ |\widehat\pi-\pi_n(Q_{u/\sqrt n})|
+\le\frac{c}{\sqrt{2\pi}}\sqrt{n/M}+r_n.
+\tag{L.10}
+\]
+
+\textbf{Proof.} The function h is odd and f0 is even. Therefore E0
+h\^{}3=0, and E\_theta h\^{}2=E0 h\^{}2+theta E0 h\^{}3=1. The first
+identity was already established in L.4, giving the variance formula. In
+particular
+E\textbar hat\_theta-theta\textbar\textless=sqrt((1-theta\^{}2)/M)\textless=1/sqrt(M);
+apply the Lipschitz constant of Phi.
+
+For symmetry, f\_\{-theta\}(z)=f\_theta(-z) and U(-x,-z)=-U(x,z).
+Reflect every score in a future sample array. Starting at zero, the
+entire reflected path is the negative of the original path. The
+symmetric safe interval has the same exit time and the opposite exit
+side. Since exit is almost surely finite, the two directional
+probabilities sum to one. This proves (L.9). The exact equality at
+theta=0 belongs to this symmetric constructed family; it should not be
+transferred to asymmetric visual safe sets. \(\square\)
+
+\subsubsection{Proposition L.6. Stronger absolute-loss lower
+bound}\label{local_prediction-proposition-l.6.-stronger-absolute-loss-lower-bound}
+
+For all sufficiently large n and any 0\textless a\textless=A0, put
+
+\[
+\Delta_0(a)=2\Phi(ca)-1,\qquad \rho_n=M/n.
+\]
+
+Then
+
+\[
+\mathfrak R_{n,M}(A_0)
+\ge \frac{[\Delta_0(a)-2r_n]_+}{2}
+       [1-2a\sqrt{\rho_n}]_+.
+\tag{L.11}
+\]
+
+Consequently, under the eventual bound and choice of a in L.3, this
+recovers
+
+\[
+\liminf_n\mathfrak R_{n,M}(A_0)
+\ge [2\Phi(ca)-1]/4.
+\tag{L.12}
+\]
+
+\textbf{Proof.} Let P\_+,P\_- be the two calibration laws and t\_+,t\_-
+their true SGD direction probabilities. Their densities can be taken
+relative to a common measure. For any forecast T,
+
+\[
+\begin{aligned}
+\mathbb E_+|T-t_+|+\mathbb E_-|T-t_-|
+&\ge\int\min(p_+,p_-)\bigl(|T-t_+|+|T-t_-|\bigr)\\
+&\ge |t_+-t_-|\,[1-\operatorname{TV}(P_+,P_-)].
+\end{aligned}
+\]
+
+Independent randomization can be included in the common measure and
+leaves TV unchanged. The maximum of the two risks is at least half their
+sum. L.2 implies \textbar t\_+-t\_-\textbar\textgreater=Delta0(a)-2r\_n,
+and the KL/Pinsker calculation in L.3 gives TV\textless=2a sqrt(rho\_n).
+This proves (L.11). Under TV\textless=1/2 the bound is Delta\_n/4, as
+used in L.3. A nearest-target testing reduction would lose a factor of
+two. \(\square\)
+
+\textbf{Rate consequence with an explicit remainder.} Set
+a\_\emph{=min(A0,1/4) and t\_\{n,M\}=min(1,sqrt(n/M)) for
+M\textgreater=1. Apply (L.11) with a=a\_} t\_\{n,M\}. Since
+
+\[
+\Delta_0(a)\ge 2c\varphi(cA_0)a,
+\]
+
+we obtain
+
+\[
+\mathfrak R_{n,M}(A_0)
+\ge \frac{c\varphi(cA_0)a_*}{2}\,t_{n,M}-\frac{r_n}{2}.
+\tag{L.13}
+\]
+
+Together with (L.10) and the constant predictor,
+
+\[
+\mathfrak R_{n,M}(A_0)
+\le\min\left\{B_0+r_n,
+\frac{c}{\sqrt{2\pi}}\sqrt{n/M}+r_n\right\}.
+\tag{L.14}
+\]
+
+Thus matching order follows in sequences where e\_n=o(t\_\{n,M\}); this
+is not a global matching-rate theorem for arbitrarily large M. Once the
+estimation scale is below the exit-approximation remainder, these bounds
+no longer determine the rate.
+
+\subsubsection{Theorem L.7. Exact minimax limit when M/n tends to
+zero}\label{local_prediction-theorem-l.7.-exact-minimax-limit-when-mn-tends-to-zero}
+
+If M/n-\textgreater0, including bounded M, then
+
+\[
+\boxed{\lim_{n\to\infty}\mathfrak R_{n,M}(A_0)
+=\Phi(cA_0)-\tfrac12.}
+\tag{L.15}
+\]
+
+The constant forecast 1/2 is asymptotically minimax in this regime.
+
+\textbf{Proof.} For the upper bound, L.2 and monotonicity of Phi give
+
+\[
+\sup_{|u|\le A_0}|\tfrac12-\pi_n(Q_{u/\sqrt n})|
+\le B_0+r_n.
+\]
+
+For the lower bound take a=A0 in (L.11). The calibration TV bound tends
+to zero and the target separation tends to 2B0, so liminf
+risk\textgreater=B0. These two bounds agree. If M=0 is allowed, use the
+identical no-observation experiment, with TV exactly zero. \(\square\)
+
+This is an exact asymptotic constant only in the regime
+M/n-\textgreater0. It is not a solution of the positive finite-ratio
+minimax problem. The result strengthens the interpretation of the sample
+threshold: a best constant predictor may be optimal when information
+vanishes, while its nonzero worst-case error still prevents uniform
+consistency.
+
+\subsubsection{Theorem L.8. Uniform risk limit of the raw moment
+predictor}\label{local_prediction-theorem-l.8.-uniform-risk-limit-of-the-raw-moment-predictor}
+
+Suppose M/n-\textgreater rho in (0,infinity). Let
+
+\[
+\widehat\pi^{\rm mom}=\Phi(c\sqrt n\,\widehat\theta),
+\qquad r=c/\sqrt\rho.
+\]
+
+Define
+
+\[
+D(t,r)=\mathbb E|\Phi(t+rZ)-\Phi(t)|,
+\qquad Z\sim N(0,1).
+\]
+
+Then
+
+\[
+\sup_{|u|\le A_0}
+\left|\mathbb E_{u/\sqrt n}
+ |\widehat\pi^{\rm mom}-\pi_n(Q_{u/\sqrt n})|
+-D(cu,r)\right|\longrightarrow0.
+\tag{L.16}
+\]
+
+Moreover, D is even in t, is strictly decreasing for t\textgreater0 when
+r\textgreater0, and satisfies
+
+\[
+\boxed{\lim_n\sup_{|u|\le A_0}
+\mathbb E_{u/\sqrt n}
+ |\widehat\pi^{\rm mom}-\pi_n(Q_{u/\sqrt n})|
+=\frac{\arctan(c/\sqrt\rho)}{\pi}.}
+\tag{L.17}
+\]
+
+\textbf{Proof.} By (L.8), the standardized calibration sum
+
+\[
+Z_{n,u}=\frac{\sqrt M(\widehat\theta-u/\sqrt n)}
+ {\sqrt{1-u^2/n}}
+\]
+
+has a uniform Berry--Esseen bound C/sqrt(M) on the compact u-window: h
+is bounded and its variance is uniformly bounded away from zero for
+large n.~Hence
+
+\[
+c\sqrt n\widehat\theta
+=cu+c\sqrt{n/M}\sqrt{1-u^2/n}\,Z_{n,u}.
+\]
+
+The coefficient of Z\_\{n,u\} tends uniformly to r. This implies uniform
+convergence of the bounded loss expectations to D(cu,r). One direct
+justification is by subsequences: any alleged nonuniformity supplies
+u\_n in the compact window; extract u\_n-\textgreater u\_*, apply the
+triangular CLT and bounded continuous mapping along that subsequence,
+and use continuity of D. Replacing Phi(cu) by the true pi\_n changes
+expected absolute loss by at most r\_n.~This proves (L.16).
+
+Pair positive and negative Z to obtain
+
+\[
+D(t,r)=\int_0^\infty
+ [\Phi(t+rz)-\Phi(t-rz)]\varphi(z)\,dz.
+\tag{L.18}
+\]
+
+Symmetry makes this even in t. For t\textgreater0 and z\textgreater0,
+\textbar t+rz\textbar\textgreater\textbar t-rz\textbar, so
+differentiation under the integral gives a strictly negative derivative
+in t. Therefore the maximum over a window containing zero is D(0,r).
+
+Finally,
+
+\[
+\frac{\partial}{\partial r}D(0,r)
+=2\int_0^\infty z\varphi(rz)\varphi(z)\,dz
+=\frac1{\pi(1+r^2)}.
+\]
+
+Since D(0,0)=0, integration yields D(0,r)=arctan(r)/pi. Uniform
+convergence in (L.16) allows passage to the supremum, proving (L.17). \(\square\)
+
+The arctan expression remains a result for this specified predictor. It
+is now its worst-case local-window risk limit, rather than a universal
+lower bound. In this known family, the constant predictor has worst-case
+limiting risk B0; it can outperform the raw moment predictor for some
+combinations of window width and calibration ratio.
+
+\subsubsection{A window-aware
+alternative}\label{local_prediction-a-window-aware-alternative}
+
+When the parameter window is declared known, define
+
+\[
+\widehat u^{\rm clip}=\operatorname{proj}_{[-A_0,A_0]}(\sqrt n\widehat\theta),
+\qquad \widehat\pi^{\rm clip}=\Phi(c\widehat u^{\rm clip}).
+\]
+
+For each u in the window, projection onto the corresponding probability
+interval gives the pointwise inequality
+
+\[
+|\widehat\pi^{\rm clip}-\Phi(cu)|
+\le |\widehat\pi^{\rm mom}-\Phi(cu)|.
+\]
+
+For loss against the exact SGD probability, its expected risk is at most
+the raw predictor's risk plus 2r\_n.~It has the same sufficiency
+threshold, and is a useful additional comparator. This observation does
+not establish its minimax optimality.
+
+\subsection{8B.5. Empirical interpretation and contribution
+boundary}\label{local_prediction-b.5.-empirical-interpretation-and-contribution-boundary}
+
+Use the explicit family first. Keep x0=0, w, nu, eta, kappa, b and the
+tolerance fixed. Check the common compact geometry before selecting
+numerical constants; the phrase ``sufficiently small d'' must be
+instantiated for the chosen run.
+
+For an interpretable horizontal axis, choose a grid of seed coordinates
+t in {[}-K,K{]} and generate theta=t/(c sqrt(n)). Here the theoretical
+u-window is {[}-K/c,K/c{]}. The generator knows theta; the predictor
+receives only its calibration scores and common constants. Do not supply
+t, u, the true root, or the exact target pool to the predictor.
+
+Exact sampling is possible by proposing Z\textasciitilde f0 and
+accepting with probability (1+theta
+h(Z))/(1+\textbar theta\textbar H\_*). The proposal procedure is
+internal to generation and must not become side information for
+prediction.
+
+Use four predictors: constant .5; raw moment; window-clipped moment; and
+empirical-root with estimated scale. Define a fallback for every failed
+empirical root or scale fit, retaining all failures in the primary risk
+denominator. The moment predictor has no root-solving failure.
+
+Choose calibration budgets through the relative uncertainty r=c
+sqrt(n/M). For example r in \{2,1,.5,.25\} corresponds to M
+approximately c\^{}2 n/r\^{}2. Report both M/n and r. Because c\^{}2 can
+be large at a small fixed step size, modest nominal ratios M/n may all
+lie in a poor practical regime despite the asymptotic threshold.
+
+Use a separate sequence with M/n increasing to test consistency, and a
+sequence with M/n decreasing to test the approach to the
+constant-predictor benchmark. A fixed-r sequence tests L.8; it does not
+test consistency.
+
+Estimate each true pi\_n from independent future SGD paths. Record
+complete paths or at least reproducible random-stream state and exit
+records so capped paths can be continued without changing observed
+prefixes. With N paths, N\_R right exits and N\_C censored paths, the
+eventual right-exit fraction in that sample lies between N\_R/N and
+(N\_R+N\_C)/N. Report this censoring bracket separately from Monte Carlo
+uncertainty. If an interval for the population probability is needed,
+use simultaneous binomial bounds for the fixed-cap events ``right exit
+by cap'' and ``not left exit by cap''; the former lower bound and latter
+upper bound bracket pi\_n with the declared confidence level. Do not
+treat nonexit by the cap as a third permanent outcome.
+
+Use the same independent reference estimate for all predictors in a
+cell. If its error is at most delta, every estimated absolute
+probability loss differs from its true-target loss by at most delta, by
+the reverse triangle inequality. Thus reference Monte Carlo uncertainty
+must be smaller than the scale of predictor differences being
+interpreted. Conditional on a fixed reference sample, reuse across
+calibration repetitions is not additional independent evidence about
+pi\_n.
+
+Report the cellwise mean absolute error, calibration-repetition
+uncertainty, grid maximum error, root failure frequency, root error, and
+censoring. At finite n the moment predictor need not achieve its maximum
+exactly at u=0; L.17 is an asymptotic assertion. A finite grid does not
+certify uniformity over the continuum.
+
+No sequential stopping rule or gain-selection algorithm is required for
+this experiment.
+
+\subsection{8B.6. Contribution and open
+questions}\label{local_prediction-b.6.-contribution-and-open-questions}
+
+We study the independent information required to predict the direction
+of a future risk exit under entropy adaptation. We construct a scalar
+family with fixed initialization and an identical complete
+classification-risk function across environments, while the unknown
+unlabeled marginal moves an unstable entropy root on the mini-batch
+noise scale. A uniform approximation for the actual nonlinear SGD
+direction connects this dynamical sensitivity to a statistical
+estimation problem. Within this known family and at fixed positive step
+size, uniform consistency is possible exactly when the independent
+calibration size grows faster than the SGD batch size. When their ratio
+tends to zero, the exact limiting minimax risk is attained by the
+constant forecast one half. At positive finite ratios, an explicit
+moment predictor instead has a nonvanishing worst-case risk limit
+governed by an arctangent law; this predictor-specific limit is not a
+minimax lower bound.
+
+The finite-ratio problem is continued in §8B.7 below. Global sharp rates
+below the exit-approximation remainder, robustness to a misspecified
+tilt direction, broader unknown score families, joint vanishing-step
+limits and neural-network adaptation remain separate questions.
+Literature-priority assessment remains necessary.
+
+\subsection{8B.7. Finite-information minimax
+precision}\label{local_prediction-b.7.-finite-information-minimax-precision}
+
+Read the
+\href{../gaussian_decision/gaussian_decision_extension.md}{Gaussian
+decision extension} next as a continuation of this manuscript. It
+retains the full proofs of Theorem L.9 and Corollary L.10, with its own
+G-equation numbering, and the numerical analysis in its original
+location. The \href{../gaussian_decision/README.md}{reproduction entry}
+documents the scripts and evidence boundaries.
+
+Theorem L.9 constructs parameter-independent Markov kernels in both
+directions and proves asymptotic equivalence, uniformly over the fixed
+local window, between the full calibration experiment and
+Y=u+Z/sqrt(rho) when M/n tends to rho in (0,infinity). Its
+likelihood-ratio L1 control is stronger than the moment-statistic CLT in
+L.8. Corollary L.10 transfers bounded absolute loss and the uniform exit
+approximation to obtain \[
+\mathfrak R_{n,M}(A_0)\longrightarrow
+V_G(cA_0,c/\sqrt\rho),\qquad
+V_G(K,r)=\inf_d\sup_{|t|\le K} E_t|d(t+rZ)-\Phi(t)|.
+\] The extension gives finite-decimal prior lower bounds and
+continuous-window rule upper bounds for six Gaussian problems, with
+directed probability calculations and crossing brackets. For K=r=1 the
+outward six-decimal bracket is {[}0.164401,0.164587{]}, compared with
+the raw moment risk .25. The certified candidate rule therefore improves
+Gaussian worst-case MAE by at least 34.16\%; this is not pointwise
+dominance. It does not require the searched prior to be exactly least
+favorable.
+
+The independent entropy-SGD pilot contains ten cells, 10,240 reference
+paths and no censored paths. The largest empirical five-point MAEs for
+raw moment versus optimized rules are .253404 versus .167207 at n=128
+and .267974 versus .178871 at n=512. These empirical maxima support
+finite-batch relevance but are neither continuous-window bounds nor
+validation of the narrow Gaussian minimax brackets.
+Reference-probability uncertainty is additional to conditional paired
+calibration standard errors. The full tables and their interpretation
+remain in the
+\href{../gaussian_decision/gaussian_decision_extension.md\#7-results}{original
+analysis}.
+
+The minimax convergence is asymptotic: the proof does not numerically
+calibrate the experiment deficiency or the SGD exit remainder. The
+pilot's geometry quadrature is diagnostic, separate from the directed
+Gaussian certificate. Implementation details, prior/rule specifications,
+original outputs and raw pilot arrays stay in the original directory.
+
+\subsection{8B.8. Unknown local directions and fixed-design
+confirmation}\label{local_prediction-b.8.-unknown-local-directions-and-fixed-design-confirmation}
+
+Continue with
+\href{../entropy_prediction_revision/contribution_precision/unknown_direction_theory.md}{N.1--N.4
+and their complete proofs}. Around the same known baseline, let
+f\_\{n,k\}=f0(1+k/sqrt(n)), E0 k=0,
+\textbar\textbar k\textbar\textbar\_infinity\textless=B\_loc, and
+\textbar E0 psi k\textbar\textless=K, with psi=U(0,.)/(lambda s) and E0
+psi²=c². Provided B\_loc\textgreater=K
+\textbar\textbar psi\textbar\textbar\_infinity/c², the class contains
+k\_t=t psi/c² for every \textbar t\textbar\textless=K. Its finite-ratio
+minimax value is the same V\_G(K,c/sqrt(rho)), and its
+uniform-consistency threshold remains M/n tending to infinity.
+
+The lower bound restricts to the contained least-favorable subfamily.
+The upper bound applies Gaussian rules to the direction-free statistic
+sqrt(n) mean(psi). A uniform exit proof and uniform scalar CLT suffice
+for this upper bound; no equivalence of the entire infinite-dimensional
+experiment is asserted. The sensitivity bound
+\textless psi,h\textgreater²/E0 h²\textless=c² identifies the
+entropy-gradient direction as least favorable for a fixed seed window.
+Known baseline constants, a fixed bounded envelope and n\^{}(-1/2)
+locality are essential. The nuisance projection formulas and their
+admissibility qualifications remain in N.4.
+
+The
+\href{../entropy_prediction_revision/contribution_precision/precision_report.md}{independent
+confirmation analysis} supersedes the pilot as the precision evidence:
+it uses the frozen Gaussian rule and ten fixed cells, with simultaneous
+intervals that account for both reference trajectories and calibration
+repetitions. It tests the original tilt family, not the new
+unknown-direction or nuisance class. Its full tables and raw data remain
+at their original location. The
+\href{../entropy_prediction_revision/contribution_precision/contribution_and_literature.md}{contribution
+comparison} separates these results from prior entropy-collapse,
+monitoring and unlabeled action-selection results.

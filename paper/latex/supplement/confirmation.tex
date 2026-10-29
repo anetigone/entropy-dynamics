@@ -1,0 +1,271 @@
+\section{Fixed-design finite-batch confirmation with two-layer
+uncertainty}\label{confirmation-fixed-design-finite-batch-confirmation-with-two-layer-uncertainty}
+
+29 October 2026. This run increases precision at the ten previously
+selected parameter cells without changing the prediction rule, target
+window, batch sizes or step size. It is independent of the exploratory
+pilot; the pilot observations are excluded from the intervals below.
+
+\subsection{1. Fixed design}\label{confirmation-fixed-design}
+
+\begin{itemize}
+\tightlist
+\item
+  Actual entropy SGD: w=2, nu=1, eta=.1, x0=0, safe interval
+  {[}-.25,.25{]}, and the same common-risk construction.
+\item
+  Cells: n in \{128,512\}, t in \{-1,-.5,0,.5,1\}, with theta=t/(c
+  sqrt(n)).
+\item
+  Independent calibration budget M=round(c\^{}2 n): 10,702 and 42,807
+  respectively. The Gaussian comparison is K=r=1, up to integer budget
+  rounding.
+\item
+  Four frozen rules: constant .5, raw moment, window-clipped moment, and
+  the previously certified Gaussian step rule. The selected rule is
+  recorded verbatim and hashed in \texttt{frozen\_rule.json} and
+  \texttt{design.json}.
+\item
+  Per cell: 16,384 independent reference trajectories and 4,096
+  independent calibration repetitions. Calibration samples are shared
+  across rules within a repetition, permitting paired comparisons.
+  Reference and calibration random streams are independent.
+\item
+  The trajectory cap is fixed at 1,500 updates. No extension or
+  outcome-dependent stopping of simulation is used.
+\item
+  The design and error allocation were written before the new samples
+  were generated. This is a fixed-design confirmation following an
+  exploratory pilot, not an externally preregistered study.
+\end{itemize}
+
+All updates use sampled nonlinear entropy gradients. Samples are
+generated from the actual continuous tilted density by rejection
+sampling. The predictor receives only its calibration scores and common
+constants, never the generating t, theta, true root, future branch or
+reference sample.
+
+\subsection{2. Simultaneous uncertainty
+construction}\label{confirmation-simultaneous-uncertainty-construction}
+
+Let C=10 be the number of cells. Allocate alpha\_ref=.025 to reference
+trajectories and alpha\_cal=.025 to calibration repetitions.
+
+\subsubsection{2.1. Reference probability, including possible
+censoring}\label{confirmation-reference-probability-including-possible-censoring}
+
+At the fixed cap, let p\_R be the probability of a right exit by the cap
+and p\_NL the probability of not having exited left by the cap. The
+eventual right-exit probability satisfies
+
+\[
+p_R\le\pi_n\le p_{NL}.
+\]
+
+For each cell use a one-sided exact Clopper--Pearson lower bound on p\_R
+and upper bound on p\_NL, each with error alpha\_ref/(2C). Their
+endpoints {[}l\_i,u\_i{]} jointly cover every cell's eventual pi\_n with
+probability at least 1-alpha\_ref. This remains valid if a cell has
+censored paths; lack of an observed censor is not treated as proof that
+its population censoring probability is zero.
+
+Set phat\_i=N\_R/N and e\_i=max(phat\_i-l\_i,u\_i-phat\_i). On the
+reference event, \textbar phat\_i-pi\_i\textbar\textless=e\_i.
+
+\subsubsection{2.2. Calibration loss uncertainty conditional on the
+reference
+sample}\label{confirmation-calibration-loss-uncertainty-conditional-on-the-reference-sample}
+
+For each rule and cell, score calibration repetition j by
+L\_j=\textbar forecast\_j-phat\_i\textbar. Conditional on the
+independent reference sample, these are iid in {[}0,1{]}. Paired
+baseline-minus-optimized loss differences are iid in {[}-1,1{]}.
+
+For m observations taking values in an interval of width B, with
+unbiased sample variance S\_m\^{}2, use the two-sided empirical
+Bernstein radius
+
+\[
+b_m(B,\delta)=\sqrt{\frac{2S_m^2\log(4/\delta)}m}
++\frac{7B\log(4/\delta)}{3(m-1)}.
+\]
+
+This follows by scaling and applying both tails of Maurer--Pontil
+(2009), Theorem 4. Allocate delta=alpha\_cal/(7C) to each of 40
+rule-risk estimates and 30 paired gains. Their conditional coverage is
+at least 1-alpha\_cal by a union bound; integration over the reference
+sample preserves that bound. Independence between the different rules is
+not required.
+
+For each rule risk, add e\_i to its calibration radius. For a paired
+gain add 2e\_i, by the reverse triangle inequality. For the
+deterministic constant rule, propagate {[}l\_i,u\_i{]} through
+\textbar.5-p\textbar{} exactly instead of using an unnecessary
+calibration bound.
+
+The resulting risk and gain intervals have \textbf{simultaneous coverage
+at least 95\%} over all reported cells and rules, under the declared iid
+simulation experiment. They include both uncertainty layers. They are
+not just conditional standard errors or pointwise normal intervals.
+Evaluation of beta quantiles uses SciPy floating-point routines; these
+are statistical confidence statements, distinct from the previous
+directed-arithmetic Gaussian decision certificates.
+
+\subsubsection{2.3. Finite-grid maximum
+risks}\label{confirmation-finite-grid-maximum-risks}
+
+For each n let R\_rule\^{}grid be the maximum of the five true expected
+calibration losses at the fixed t cells. If cellwise intervals are
+{[}L\_i,U\_i{]}, then
+
+\[
+\max_iL_i\le R_{\rm rule}^{\rm grid}\le\max_iU_i.
+\]
+
+For the improvement in grid maximum risk, subtract intervals: its lower
+bound is max\_i L\_baseline,i minus max\_i U\_optimized,i. The same
+simultaneous event covers all these derived comparisons. This is a
+five-cell statement, not a continuous-window maximum or finite-n minimax
+theorem.
+
+Reference: Andreas Maurer and Massimiliano Pontil, \emph{Empirical
+Bernstein Bounds and Sample Variance Penalization}, COLT 2009, Theorem
+4. https://www.cs.mcgill.ca/\textasciitilde colt2009/papers/012.pdf
+
+\subsection{3. Results}\label{confirmation-results}
+
+The completed run's tables are appended below. No data-dependent
+refinement of the Gaussian rule or cell set is performed.
+
+\subsubsection{3.1. Grid maximum MAE}\label{confirmation-grid-maximum-mae}
+
+All 163,840 reference trajectories exited within the fixed cap; none
+were censored. There were 40,960 independent calibration repetitions in
+total, each evaluated by all four rules. The intervals below are derived
+from one simultaneous coverage event of at least 95\%, including both
+sampling layers, and are rounded outward.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}rlrr@{}}
+\toprule\noalign{}
+n & Rule & Estimated grid maximum MAE & Simultaneous interval \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+128 & constant & 0.3426 & {[}0.3338, 0.3511{]} \\
+128 & moment & 0.2481 & {[}0.2212, 0.2750{]} \\
+128 & clipped & 0.2238 & {[}0.1989, 0.2487{]} \\
+128 & optimized & 0.1663 & {[}0.1412, 0.1914{]} \\
+512 & constant & 0.3471 & {[}0.3384, 0.3556{]} \\
+512 & moment & 0.2476 & {[}0.2206, 0.2746{]} \\
+512 & clipped & 0.2228 & {[}0.1979, 0.2478{]} \\
+512 & optimized & 0.1684 & {[}0.1434, 0.1933{]} \\
+\end{longtable}
+}
+
+\subsubsection{3.2. Improvement in grid maximum
+risk}\label{confirmation-improvement-in-grid-maximum-risk}
+
+Positive values favor the optimized rule. These compare maxima of
+expected losses on the five fixed cells; they do not assert pointwise
+dominance.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}rlrr@{}}
+\toprule\noalign{}
+n & Baseline & Estimated reduction & Simultaneous interval \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+128 & constant & 0.1763 & {[}0.1425, 0.2099{]} \\
+128 & moment & 0.0819 & {[}0.0299, 0.1338{]} \\
+128 & clipped & 0.0576 & {[}0.0076, 0.1075{]} \\
+512 & constant & 0.1787 & {[}0.1451, 0.2121{]} \\
+512 & moment & 0.0792 & {[}0.0273, 0.1311{]} \\
+512 & clipped & 0.0545 & {[}0.0046, 0.1043{]} \\
+\end{longtable}
+}
+
+Every displayed reduction has a positive lower endpoint, including the
+comparisons with window clipping. The result remains model-specific and
+does not validate finite-n optimality over all predictors.
+
+\subsubsection{3.3. Cellwise results}\label{confirmation-cellwise-results}
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+t
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Reference right probability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Simultaneous reference interval
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Moment MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Clipped MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Optimized MAE
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+128 & -1 & 0.16321 & {[}0.1545, 0.1721{]} & 0.18038 & 0.12645 &
+0.15757 \\
+128 & -0.5 & 0.30817 & {[}0.2973, 0.3192{]} & 0.23400 & 0.20093 &
+0.16552 \\
+128 & 0 & 0.49817 & {[}0.4863, 0.5101{]} & 0.24813 & 0.22381 &
+0.16306 \\
+128 & 0.5 & 0.69037 & {[}0.6793, 0.7013{]} & 0.23015 & 0.19765 &
+0.16299 \\
+128 & 1 & 0.84259 & {[}0.8338, 0.8511{]} & 0.18340 & 0.13257 &
+0.16626 \\
+512 & -1 & 0.16205 & {[}0.1534, 0.1710{]} & 0.18425 & 0.13184 &
+0.16259 \\
+512 & -0.5 & 0.30695 & {[}0.2960, 0.3180{]} & 0.22602 & 0.19352 &
+0.16187 \\
+512 & 0 & 0.50385 & {[}0.4920, 0.5157{]} & 0.24760 & 0.22282 &
+0.16288 \\
+512 & 0.5 & 0.68506 & {[}0.6739, 0.6960{]} & 0.23076 & 0.19884 &
+0.16429 \\
+512 & 1 & 0.84711 & {[}0.8384, 0.8556{]} & 0.18185 & 0.13448 &
+0.16837 \\
+\end{longtable}
+}
+
+The interval construction supports positive paired improvements over the
+raw moment rule in 6/10 cells and over the clipped rule in 2/10 cells.
+At endpoint cells clipping is often better, so there is no claim of
+uniform pointwise improvement. At t=0 the target equals .5 exactly by
+symmetry in this family; for consistency of the primary analysis, that
+cell was scored with the independent reference estimate, without using
+the exact value to narrow its interval.
+
+The largest observed exit step was 720. Raw exit arrays, forecast
+arrays, fixed-design metadata and the frozen rule are retained. The
+checksum of the rule and the aggregate counts and MAEs were
+independently checked against the retained NPZ files.
+
+\subsection{4. Recommended use in the
+manuscript}\label{confirmation-recommended-use-in-the-manuscript}
+
+Use the grid-risk reduction table as finite-batch confirmation of a
+frozen prospective predictor. Keep the Gaussian minimax certificates in
+the theory/numerics section and the two-layer confidence construction in
+the experimental appendix. The new experiment does not test unknown
+nuisance directions; that extension is presently theoretical. Full
+visual adaptation, unknown-baseline geometry, and a finite-n
+continuous-window guarantee remain outside this evidence.

@@ -1,6 +1,6 @@
 # Gaussian-model proofs
 
-Proof appendix to [the main manuscript](DRAFT.md). Definitions, assumptions, and original result numbers are retained there; the general scalar extension has its own E-numbering.
+Proof appendix to the [supporting Gaussian model](gaussian_model.md), part of the [main manuscript](DRAFT.md). Definitions, assumptions, and original result numbers are retained in the supporting chapter; the general scalar extension has its own E-numbering.
 
 ## Proposition 1. Risk geometry and uniform update bounds
 

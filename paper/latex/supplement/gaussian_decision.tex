@@ -1,0 +1,585 @@
+\section{Finite-information prediction: Gaussian reduction and minimax
+certificates}\label{gaussian_decision-finite-information-prediction-gaussian-reduction-and-minimax-certificates}
+
+Extension of L.1--L.8 for the known scalar entropy-tilt family. Prepared
+29 October 2026.
+
+\subsection{1. Observation experiment and
+notation}\label{gaussian_decision-observation-experiment-and-notation}
+
+Let the calibration observations have density f\_theta=f0(1+theta h),
+with bounded h, E0 h=0 and E0 h\^{}2=1. In the explicit entropy
+construction, f0 is a centered Gaussian and h(z)=U(0,z)/sigma\_g. For
+each n the parameter is u in the fixed compact interval {[}-A0,A0{]},
+theta=u/sqrt(n), and the calibration experiment is
+
+\[
+\mathcal E_n=\{P_{n,u}=Q_{u/\sqrt n}^{\otimes M}:|u|\le A_0\}.
+\]
+
+Assume M/n-\textgreater rho in (0,infinity). The true target is the
+probability pi\_n(Q\_\{u/sqrt(n)\}) of right risk exit by a future,
+independent entropy-SGD trajectory. The supplied uniform exit lemma
+gives
+
+\[
+r_n:=\sup_{|u|\le A_0}|\pi_n(Q_{u/\sqrt n})-\Phi(cu)|\to0.
+\]
+
+Here c=sqrt((2+eta lambda)/(eta lambda)) is fixed. Define the Gaussian
+experiment
+
+\[
+\mathcal G_\rho=\{Y=u+\rho^{-1/2}Z:|u|\le A_0\},\qquad Z\sim N(0,1).
+\]
+
+Throughout this extension TV means sup\_B \textbar P(B)-Q(B)\textbar, or
+half the L1 distance of densities. Nussbaum's reference uses the full L1
+convention, so constants must be translated when comparing definitions.
+We use deficiency as the infimum over parameter-independent Markov
+kernels of the supremum TV approximation error, and Delta as the maximum
+of the two deficiencies.
+
+Reference: Michael Nussbaum, \emph{Asymptotic Equivalence of Statistical
+Experiments}, especially the definitions of deficiency and its
+decision-theoretic interpretation, pp.~4--6:
+https://pi.math.cornell.edu/\textasciitilde nussbaum/papers/04-1-transl.pdf
+. The proof below is specialized to the present bounded tilt family; the
+reference is not being cited as proving this model-specific result.
+
+\subsection{2. Theorem L.9: equivalence of the entire local
+experiment}\label{gaussian_decision-theorem-l.9-equivalence-of-the-entire-local-experiment}
+
+For the explicit family and every fixed A0\textless infinity,
+
+\[
+\boxed{\Delta(\mathcal E_n,\mathcal G_\rho)\to0.}
+\tag{G.1}
+\]
+
+The assertion supplies both directions of risk transfer, not merely a
+CLT for the empirical moment.
+
+\textbf{Proof.} Write P\_\{n,0\}=Q0\^{}\{otimes M\}, rho\_n=M/n, and
+
+\[
+S_n=M^{-1/2}\sum_{j=1}^M h(Z_j),\qquad
+V_n=M^{-1}\sum_{j=1}^M h(Z_j)^2.
+\]
+
+Let F\_M be the CDF of S\_n under P\_\{n,0\}. In the present family h is
+a nonconstant real-analytic function, so the preimage of any value is a
+Lebesgue-null set. Since f0 has a density, h(Z) has no atoms; the sum
+also has no atoms. Therefore F\_M is continuous. Define
+
+\[
+T_n=\Phi^{-1}(F_M(S_n)).
+\]
+
+This parameter-independent statistic has the exact N(0,1) law under
+P\_\{n,0\}; events where the argument is zero or one have probability
+zero. The baseline law and the transform are known because the model
+family is known.
+
+The CLT and continuity of Phi give
+sup\_x\textbar F\_M(x)-Phi(x)\textbar-\textgreater0. On a compact
+interval for S\_n the inverse normal CDF is uniformly continuous after
+restricting to a slightly larger compact probability interval. Tightness
+of S\_n then proves
+
+\[
+S_n-T_n\longrightarrow0\quad\text{in }P_{n,0}\text{-probability}.
+\tag{G.2}
+\]
+
+This use of a CLT is only one part of the proof. The essential next step
+controls the full likelihood ratios.
+
+Let Lambda\_n(u)=dP\_\{n,u\}/dP\_\{n,0\}. Boundedness of h and
+compactness of u allow a uniform Taylor expansion, valid for all
+sufficiently large n:
+
+\[
+\log\Lambda_n(u)
+=u\sqrt{\rho_n}S_n-\tfrac12u^2\rho_n V_n+R_n(u),
+\qquad
+\sup_{|u|\le A_0}|R_n(u)|\le C M n^{-3/2}.
+\tag{G.3}
+\]
+
+Under P\_\{n,0\}, V\_n-\textgreater1 in probability, and
+rho\_n-\textgreater rho. Equations (G.2)--(G.3) imply
+
+\[
+\sup_{|u|\le A_0}
+\left|\log\Lambda_n(u)-\left(\sqrt\rho\,uT_n-\tfrac12\rho u^2\right)\right|
+\longrightarrow0
+\tag{G.4}
+\]
+
+in probability. Define g\_u(t)=exp(sqrt(rho)u t-rho u\^{}2/2). We now
+strengthen convergence of log likelihoods to uniform L1 convergence of
+likelihoods.
+
+For any fixed p\textgreater1, log(1+x)\textless=x gives
+
+\[
+\sup_{|u|\le A_0}\Lambda_n(u)
+\le\exp\left(A_0\left|\sum_jh(Z_j)\right|/\sqrt n\right).
+\]
+
+The centered bounded summands have a sub-Gaussian exponential-moment
+bound. Since M/n is bounded, the pth moments of the last display are
+uniformly bounded. Also sup\_u
+g\_u(T\_n)\textless=exp(sqrt(rho)A0\textbar T\_n\textbar), whose pth
+moment is bounded because T\_n is exactly standard normal. Equation
+(G.4), tightness, and these bounds give uniform integrability and hence
+
+\[
+\varepsilon_n:=\tfrac12\mathbb E_{n,0}
+\sup_{|u|\le A_0}|\Lambda_n(u)-g_u(T_n)|\longrightarrow0.
+\tag{G.5}
+\]
+
+Define an auxiliary experiment on the original sample space by
+
+\[
+d\widetilde P_{n,u}=g_u(T_n)\,dP_{n,0}.
+\]
+
+These are probability measures, because E\_\{n,0\}g\_u(T\_n)=1 exactly.
+Equation (G.5) bounds sup\_u TV(P\_\{n,u\},Ptilde\_\{n,u\}) by
+epsilon\_n.
+
+Under Ptilde\_\{n,u\}, T\_n has law N(sqrt(rho)u,1). Conversely, use the
+regular conditional distribution P\_\{n,0\}(d z\textbar T\_n=t) to turn
+such a normal observation back into a full calibration sample. This
+kernel is independent of u; tilting by a function of T\_n leaves the
+conditional law unchanged. Regular conditional distributions exist on
+the Euclidean sample spaces, and arbitrary versions on baseline-null
+sets do not matter because all normal shifts are mutually absolutely
+continuous. Thus the auxiliary experiment is exactly equivalent to
+observing T\textasciitilde N(sqrt(rho)u,1), or Y=T/sqrt(rho).
+
+Applying the statistic T\_n in one direction and this baseline
+conditional kernel in the other gives both deficiencies bounded by
+epsilon\_n.~This proves (G.1). \(\square\)
+
+The proof supplies asymptotic equivalence on a fixed compact local
+parameter interval. It does not give a calibrated numerical value of
+epsilon\_n, nor global equivalence over an expanding parameter range.
+The conditional kernel is an existence construction; implementing it is
+not required to use a decision rule in the forward direction.
+
+\subsection{3. Corollary L.10: the finite-ratio minimax
+limit}\label{gaussian_decision-corollary-l.10-the-finite-ratio-minimax-limit}
+
+Let
+
+\[
+V(A_0,c,\rho)=\inf_\delta\sup_{|u|\le A_0}
+ \mathbb E_u|\delta(Y)-\Phi(cu)|.
+\]
+
+Then the original minimax risk for predicting the true future SGD
+direction probability satisfies
+
+\[
+\boxed{\mathfrak R_{n,M}(A_0)\longrightarrow V(A_0,c,\rho).}
+\tag{G.6}
+\]
+
+\textbf{Proof.} Project all decision values to {[}0,1{]}, which cannot
+increase loss. Absolute loss is then bounded by one, so transporting any
+randomized rule through either Markov kernel changes each parameterwise
+risk by at most epsilon\_n.~Replacing the target pi\_n by Phi(cu)
+changes each loss by at most r\_n.~Taking supremum risks and then infima
+in both directions gives
+
+\[
+|\mathfrak R_{n,M}(A_0)-V(A_0,c,\rho)|\le\varepsilon_n+r_n.
+\]
+
+This reasoning does not require the minimax infimum to be attained:
+apply it to arbitrarily near-optimal rules. Under absolute loss,
+averaging any external decision randomization conditionally on the
+observation cannot worsen risk, by convexity. Thus restricting to
+deterministic rules leaves the values unchanged. \(\square\)
+
+Standardize with
+
+\[
+t=cu,\qquad K=cA_0,\qquad X=cY=t+rZ,\qquad r=c/\sqrt\rho.
+\]
+
+The limiting decision problem depends only on (K,r):
+
+\[
+V_G(K,r)=\inf_d\sup_{|t|\le K}\mathbb E_t|d(X)-\Phi(t)|.
+\tag{G.7}
+\]
+
+Actions may be restricted further to {[}Phi(-K),Phi(K){]}. Reflection
+and averaging permit a symmetric rule d(-x)=1-d(x) without increasing
+worst-case risk, although the certificates below do not require a proof
+that the candidate optimizer is minimax.
+
+\subsection{4. Certified numerical brackets without claiming optimizer
+optimality}\label{gaussian_decision-certified-numerical-brackets-without-claiming-optimizer-optimality}
+
+\subsubsection{4.1. A prior produces a valid lower
+bound}\label{gaussian_decision-a-prior-produces-a-valid-lower-bound}
+
+Choose any finite prior with ordered support
+t\_1\textless\ldots\textless t\_m in {[}-K,K{]} and positive weights
+w\_i. Its posterior median under absolute loss is a Bayes rule taking
+the values Phi(t\_i). The boundary between actions k and k+1 solves
+
+\[
+\sum_{i\le k}w_i e^{x t_i/r^2-t_i^2/(2r^2)}
+=\sum_{i>k}w_i e^{x t_i/r^2-t_i^2/(2r^2)}.
+\tag{G.8}
+\]
+
+The ratio of the left sum to the right sum is strictly decreasing: its
+log derivative is the difference of two tilted means divided by r\^{}2,
+and every left support point is smaller than every right support point.
+Its limits are infinity and zero. Thus every crossing is unique; the
+ordered crossings define the posterior-median rule.
+
+For any step rule with thresholds b\_j and action values a\_j, its exact
+risk is
+
+\[
+R_d(t)=\sum_j |a_j-\Phi(t)|
+\left[\Phi\left(\frac{b_{j+1}-t}{r}\right)
+      -\Phi\left(\frac{b_j-t}{r}\right)\right],
+\tag{G.9}
+\]
+
+including b\_0=-infinity and the last boundary +infinity. Therefore the
+full unbounded observation domain is integrated through CDF differences,
+with no omitted integration tail.
+
+The code optimizes a finite prior using floating-point quadrature only
+to find a candidate. It then rounds support points, prior numerators and
+rule thresholds to explicit finite decimals. These rounded quantities
+define the actual certified prior and rule.
+
+For each true crossing, directed interval arithmetic verifies opposite
+signs of (G.8) at endpoints l\_j and u\_j, with the candidate threshold
+inside the bracket. The candidate rule and exact Bayes rule can differ
+only on the union of these strips. Gaussian mixture density is at most
+1/(r sqrt(2 pi)); loss differences are at most one. Hence
+
+\[
+\text{Bayes risk}\ge
+\sum_i w_i R_d(t_i)-\frac{\sum_j(u_j-l_j)}{r\sqrt{2\pi}}.
+\tag{G.10}
+\]
+
+A lower enclosure for the right side is a valid minimax lower bound.
+This does not assume that the candidate prior is least favorable, that
+the search objective was computed exactly, or that the optimizer
+converged.
+
+\subsubsection{4.2. Continuous-window upper
+bound}\label{gaussian_decision-continuous-window-upper-bound}
+
+The candidate step rule itself gives an upper bound once
+sup\_\{\textbar t\textbar\textless=K\} R\_d(t) is bounded. Its action
+values are exactly Phi(t\_i), so the only absolute-loss kinks are at the
+known support points t\_i. Between successive kinks, differentiation
+under the Gaussian integral gives
+
+\[
+|R_d''(t)|\le C_2:=1+2/r+2/r^2.
+\tag{G.11}
+\]
+
+Indeed the target's first and second derivatives are bounded in absolute
+value by one; the sum of absolute bin-probability derivatives is bounded
+by E\textbar Z\textbar/r\textless=1/r, and that of second derivatives by
+E\textbar Z\textsuperscript{2-1\textbar/r}2\textless=2/r\^{}2. All
+action losses are bounded by one. The bound is deliberately
+conservative.
+
+For a partition interval {[}a,b{]} with no kink in its interior, linear
+interpolation and (G.11) imply
+
+\[
+\sup_{t\in[a,b]}R_d(t)
+\le\max\{R_d(a),R_d(b)\}+C_2(b-a)^2/8.
+\tag{G.12}
+\]
+
+The partition includes every support point and both endpoints. Adaptive
+refinement produces an upper bound over the entire continuous window,
+not just the evaluated grid.
+
+\subsubsection{4.3. Arithmetic and probability
+enclosures}\label{gaussian_decision-arithmetic-and-probability-enclosures}
+
+\texttt{certify.py} uses Python Decimal with 90-digit precision and
+outward rounding for interval operations. Correctly rounded Decimal
+exponentials and square roots are expanded by a representable value on
+each side. Pi is enclosed by Machin's identity and alternating
+arctangent remainders. Normal CDF values are enclosed by integrating the
+Taylor expansion of exp(-x\^{}2/2), including a rigorous next-term
+remainder once the terms decrease. For \textbar x\textbar\textgreater=12
+a Mills-ratio tail bound is used instead. Both negative and positive
+tails are retained in their intervals.
+
+The optimizer's normal CDF, integration grid, stopping tolerance and
+floating-point objective do not enter the validity of the final bounds.
+The certificate relies on the stated mathematical bounds, the
+correctness of the supplied implementation, and the documented Decimal
+arithmetic; it is not a proof-assistant verification of the runtime.
+
+The search gap and the certified gap are different quantities. The final
+upper-minus-lower interval accounts for an imperfect prior/rule pair as
+well as root, probability-evaluation and continuous-window errors.
+
+\subsection{5. Using the computed Gaussian rule on calibration
+data}\label{gaussian_decision-using-the-computed-gaussian-rule-on-calibration-data}
+
+For an arbitrary measurable Gaussian rule, the direct risk-transfer
+construction applies it to c T\_n/sqrt(rho). This uses the known
+baseline CDF F\_M, not the unknown environment parameter.
+
+For each of the fixed finite step rules produced here, a simpler
+implementation is also asymptotically justified: apply it to Xhat=c
+sqrt(n) hat\_theta, the raw empirical moment coordinate. Under the
+baseline, Xhat-c T\_n/sqrt(rho) tends to zero in probability. The
+likelihood-ratio moment bounds used in (G.5) transfer this to the
+compact local family uniformly. The Gaussian statistic has a continuous
+density uniformly bounded on the local window, so the probability of
+lying near one of the finitely many thresholds tends to zero with the
+threshold neighborhood. Therefore the two implementations have uniformly
+vanishing risk difference.
+
+This argument is for a fixed finite rule. Refining the rule with n so
+that the number of thresholds diverges requires additional control. No
+finite-n risk certificate for the SGD experiment follows merely from the
+Gaussian numerical certificate.
+
+\subsection{6. Reproducible files and validation
+boundaries}\label{gaussian_decision-reproducible-files-and-validation-boundaries}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{solve.py}: exploratory prior optimization for six (K,r)
+  settings. A fixed support grid and observation quadrature generate
+  candidates; neither is treated as a minimax proof.
+\item
+  \texttt{certify.py}: independent outward interval evaluation of a
+  prior lower bound and a continuous-parameter rule upper bound.
+\item
+  \texttt{candidates.json}: floating-point search outputs.
+\item
+  \texttt{certificates.json}: exact finite-decimal prior/rule
+  specifications, crossing brackets, and outward risk bounds.
+\item
+  \texttt{sgd\_pilot.py}: independent calibration and actual entropy-SGD
+  comparison for a fixed selected rule.
+\item
+  \texttt{sgd\_results.json} and \texttt{pilot\_*.npz}: pilot summary,
+  exit directions/times, and all four forecast arrays.
+\end{itemize}
+
+Run with Python, NumPy and SciPy; Decimal is in the standard library.
+The checks in this run used NumPy 2.3.5 and SciPy 1.17.0.
+\texttt{OPENBLAS\_NUM\_THREADS=1\ OMP\_NUM\_THREADS=1} avoids
+unnecessary threaded overhead in the small optimizations.
+
+The formal progress is the experiment-level equivalence and the
+resulting minimax convergence, plus numerical brackets for the Gaussian
+limit. The pilot tests their relevance at finite n; its calibration and
+Monte Carlo errors are not part of those proofs.
+
+\subsection{7. Results}\label{gaussian_decision-results}
+
+Numerical tables and the actual-SGD pilot summary are appended below
+after validation.
+
+\subsubsection{7.1. Gaussian minimax
+intervals}\label{gaussian_decision-gaussian-minimax-intervals}
+
+Bounds below are rounded outward to six decimals. Raw-moment and
+constant risks have the analytic formulas arctan(r)/pi and Phi(K)-.5.
+The clipped-rule column is floating-point quadrature plus numerical
+maximization and is marked approximate; it is not needed for either
+minimax certificate.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+K
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+r
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Certified minimax interval
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Constant worst risk
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Raw moment worst risk
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Clipped worst risk (approx.)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & 2 & {[}0.226230, 0.226386{]} & 0.341345 & 0.352416 & 0.279891 \\
+1 & 1 & {[}0.164401, 0.164587{]} & 0.341345 & 0.250000 & 0.224829 \\
+1 & 0.5 & {[}0.107333, 0.107539{]} & 0.341345 & 0.147584 & 0.145865 \\
+2 & 2 & {[}0.244686, 0.244931{]} & 0.477250 & 0.352416 & 0.346916 \\
+2 & 1 & {[}0.169889, 0.170268{]} & 0.477250 & 0.250000 & 0.249482 \\
+2 & 0.5 & {[}0.108534, 0.109092{]} & 0.477250 & 0.147584 & 0.147583 \\
+\end{longtable}
+}
+
+For K=1,r=1, the certified optimized rule has worst-case risk at most
+0.164587, versus exactly 0.25 for the raw moment rule: at least a
+34.16\% reduction in Gaussian worst-case MAE. This is not a claim of
+pointwise dominance, and is not a finite-n guarantee for entropy SGD.
+
+\subsubsection{7.2. Actual entropy-SGD
+pilot}\label{gaussian_decision-actual-entropy-sgd-pilot}
+
+The pilot fixes w=2, nu=1, eta=.1, d=.5, b=.25, kappa=.5,
+epsilon=0.0060745243, and x0=0. Numerical integration gives
+lambda=0.2421101333, sigma\_g\^{}2=0.1078103527, and c=9.1436882021. The
+selected Gaussian rule has K=r=1; its prior and thresholds were
+determined entirely in the Gaussian experiment before viewing SGD
+results. Each n uses M=round(c\^{}2 n), and t in \{-1,-.5,0,.5,1\}, with
+theta=t/(c sqrt(n)).
+
+Each cell uses 1,024 independent true-SGD reference paths and 256
+independent calibration repetitions; the four rules share calibration
+samples within a repetition. Reference and calibration streams are
+independent. Rejection sampling draws from the actual tilted continuous
+density. Updates use sampled nonlinear entropy gradients, not a Gaussian
+autoregression or interpolated population field. The 1,500-step cap
+censored no paths in any cell. Raw exit directions/times and forecasts
+are retained.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+M
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Largest cell MAE: constant
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Raw moment
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Clipped
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Optimized
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Maximum exit step
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+128 & 10702 & 0.338867 & 0.253404 & 0.224829 & 0.167207 & 685 \\
+512 & 42807 & 0.352539 & 0.267974 & 0.238485 & 0.178871 & 534 \\
+\end{longtable}
+}
+
+These are maxima of empirical means over five parameter values, not
+continuous-window upper bounds. Calibration sampling uncertainty and
+reference-probability uncertainty remain. In particular, the exact
+target at t=0 is .5 by reflection symmetry; the table consistently uses
+the independent empirical reference in all cells, so the constant rule
+has a small nonzero reported center error. No claim is made that these
+runs verify the narrow Gaussian certificate.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+t
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Observed right probability
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Gaussian Phi(t)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Optimized MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Raw minus optimized MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Paired calibration SE
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+128 & -1 & 0.176758 & 0.158655 & 0.155629 & 0.027099 & 0.006051 \\
+128 & -0.5 & 0.303711 & 0.308538 & 0.161231 & 0.069069 & 0.004554 \\
+128 & 0 & 0.498047 & 0.500000 & 0.167207 & 0.086197 & 0.002743 \\
+128 & 0.5 & 0.687500 & 0.691462 & 0.166523 & 0.066868 & 0.004261 \\
+128 & 1 & 0.838867 & 0.841345 & 0.163469 & 0.028516 & 0.005741 \\
+512 & -1 & 0.147461 & 0.158655 & 0.163874 & 0.007559 & 0.005150 \\
+512 & -0.5 & 0.335938 & 0.308538 & 0.155958 & 0.072129 & 0.004199 \\
+512 & 0 & 0.494141 & 0.500000 & 0.176939 & 0.091036 & 0.002541 \\
+512 & 0.5 & 0.698242 & 0.691462 & 0.148184 & 0.059938 & 0.004745 \\
+512 & 1 & 0.851562 & 0.841345 & 0.178871 & 0.009024 & 0.005581 \\
+\end{longtable}
+}
+
+Paired standard errors condition on the common empirical reference
+probability; they do not include its uncertainty. The reference Wilson
+intervals, supplied in the JSON, are descriptive per-cell intervals
+rather than simultaneous certification. With 1,024 paths, center-cell
+reference uncertainty is about .03 at the usual 95\% scale, much larger
+than the Gaussian minimax bracket widths. A two-rule loss difference can
+change by up to twice the reference error.
+
+The geometry diagnostic evaluates v0 prime on a grid of spacing .005 in
+{[}-.5,.5{]}, giving a numerical minimum .19440797. The analytic bound
+\textbar v0 double-prime\textbar\textless=6 gives an
+interpolation-corrected lower value .17940797, above lambda/2=.12105507.
+An additional conservative tilt correction gives .16468778 over the
+pilot parameter range, above lambda/4=.06052753. The derivative bound
+follows from \textbar a prime\textbar\textless=a, \textbar a
+double-prime\textbar\textless=a and
+\textbar t\textbar a(t)\textless=1/4. The quadrature itself was not
+enclosed with directed intervals, so this is a diagnostic geometry
+check, separate from the certified Gaussian decision calculation.
+
+At the window endpoints, clipping can beat the optimized rule, while the
+optimized rule substantially reduces the central and worst-grid errors.
+That pattern is consistent with minimax balancing rather than pointwise
+domination. The next experimental priority is more calibration
+repetitions and reference paths at fixed predeclared cells if precise
+finite-n improvements are required; there is no reason yet to add
+stopping strategies.
