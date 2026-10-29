@@ -2,6 +2,38 @@
 
 本实验检验独立校准的方向与时间预测，并比较阈值、尺度和 LA 更新。当前结果与待办见 [STATUS.md](../../../STATUS.md)，其它实验见 [实验导航](../../README.md)。数值计算依赖 NumPy、SciPy，绘图依赖 Matplotlib；特征提取另需 PyTorch、torchvision、Transformers。
 
+## 未知局部视觉环境的事前方向预测
+
+[local_calibration.py](local_calibration.py)复用官方 train/test 冻结特征。train 只确定固定投影；每个类对在基准 test 经验分布上确定一次初始化 q0，所有后续未知环境均保持该初始化。以基准熵梯度方向 h0 对图片抽样权重作 1+theta*h0 倾斜，theta=t/(c*sqrt(n))。这是已知基准的条件有限池实验，不代表增加了独立图片；真实图片重加权一般会改变完整标签风险，不声称实现共同风险下界构造。
+
+```shell
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_visual
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_visual
+```
+
+默认四个原有类对，n=32/128/512，隐藏 t=-1/-.5/0/.5/1，相对校准噪声 r=.5/1/2；M=round(c²*n/r²)，每单元 1024 条参考路径、每预算 256 次校准重复、固定 4000 步上限。汽车/卡车同样保持至少 4000 步预算。`--paths`、`--repeats`、`--steps`、`--block`、`--eta`、`--epsilon`、`--prior`、`--seed`、`--pairs`、`--batches`、`--seeds`、`--ratios`、`--window`均可调整。`--seeds`是局部参数网格，随机种子另由`--seed`指定。
+
+五种预测器为常数 .5、独立经验根与经验尺度、原始影响函数矩、窗口裁剪矩及冻结 Gaussian 阶梯规则。估计器不接收 t、theta、真实目标根、标签、风险端点或参考退出结果。基准池及其 q0、影响函数和尺度为声明的已知实验条件；这不是训练侧基准迁移或未知基准实验。生成器和评分器可使用标签及真实环境。经验根扫描失败时预测 .5，记录原因并计入全部重复，不删掉失败重复。
+
+规则默认从原处 `independent-bundles/gaussian_decision.zip`直接读取，不解包、不重新优化、不计算哈希。`--rules`也可传入 certificates.json 或含唯一同名文件的 zip。只接受所提供规则中已有的 (K,r)，缺失时在计算前明确报错，不以另一规则冒充。实际 M 取整后的 r 另行保存；Gaussian 证书不是有限批量视觉风险证书。
+
+增加 M 正比 n² 的递减噪声对照：
+
+```shell
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_scaling --decreasing --decreasing-start 2
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_scaling
+```
+
+该选项同时保留固定 r 系列，并添加 r=2*sqrt(min(n)/n)；默认 n 网格对应 r=2/1/.5，均有已冻结规则。对同一环境的相同 M 复用相同校准前缀，不当作额外独立重复。递减序列在有限网格上比较误差趋势；只有矩/根估计的理论适用条件才支持一致性讨论，不能将有限个冻结阶梯规则推成一整条渐近最优序列。
+
+计算直接运行真实非线性熵梯度。每个环境使用独立参考路径流与校准流；五个估计器共享同次校准。同一环境的所有预算共享参考路径。风险按该环境完整加权经验标签分布精确计算。分别保存初始安全分量退出与实际风险退出；跳进另一安全分量的路径继续运行到实际退出或上限。分量的开闭端点与已有阈值分类约定一致；无界分量和非单一根等不适用性保留。目标根、根是否在安全分量、有限越界域上的网格外向漂移比仅用于诊断，不进入预测，也不是严格几何认证。
+
+每完成一个环境保存 results.json 及独立 cell_*.npz，保留所有参考退出时间、方向、五种逐重复预测与根拟合记录；不是所有中间迭代或实际校准图片序列。使用完整记录的参数和随机数设置可重建。已有输出目录直接拒绝覆盖；中断保留已完成环境，不实现续跑。绘图要求计算完整。
+
+[local_plot.py](local_plot.py)独立读取已保存文件，产生 summary.json、analysis.md、direction.png、各类对 risk_*.png 和 scaling_*.png。参考概率以 right-by-cap 与 not-left-by-cap 的精确单侧二项式界构造删失兼容区间；校准损失和配对差使用经验 Bernstein 界，联合分配误差覆盖全部单元、五种规则及四个配对改善。默认至少 95% 同时覆盖，同时计入参考和校准误差；`--alpha`控制总错误率。beta 分位数使用浮点 SciPy，不是 directed 数值证书。summary 提供逐单元及局部网格最大 MAE 区间、配对改善、根失败率和根误差。图中 MAE 曲线为经验点估计，区间以 summary/analysis 为准。图像有限网格、条件有限池和非共同风险的限制保留在分析中。
+
+不同预算和设置使用新输出目录；本地线程限制与解释器见根目录 AGENTS.md。当前安排见 [STATUS.md](../../../STATUS.md)。
+
 ## 目标中心化校准尺度
 
 [centered_calibration.py](centered_calibration.py) 固定目标经验池及oracle初始化x0=q，检验独立经验根局部方向预测器。默认四类对、p=.5、n=32/128/512、eta=.1；每预算128次独立校准，每组256条新SGD，最多1500步。fixed_R对照取R=.5/1/2，按真实曲率选M正比n；vanishing_R对照使M正比n平方。预算设计只读取几何，不使用退出结果。
