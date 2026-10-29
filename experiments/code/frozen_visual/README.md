@@ -34,6 +34,28 @@ python experiments/code/frozen_visual/local_plot.py --input experiments/results/
 
 不同预算和设置使用新输出目录；本地线程限制与解释器见根目录 AGENTS.md。当前安排见 [STATUS.md](../../../STATUS.md)。
 
+## 视觉独立精度确认
+
+复用上述计算与绘图入口；[固定设计与分析](../../results/local_confirmation/analysis.md)定义四类对、n=128、r=1、五点 t 网格和主比较。以下四条计算命令可在独立进程运行，不共享输出目录；本地运行前按 AGENTS.md 设置线程数。
+
+```shell
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_confirmation/cat_dog --pairs 3:5 --batches 128 --ratios 1 --paths 16384 --repeats 4096 --steps 4000 --seed 20261030
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_confirmation/car_truck --pairs 1:9 --batches 128 --ratios 1 --paths 16384 --repeats 4096 --steps 4000 --seed 20261031
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_confirmation/deer_horse --pairs 4:7 --batches 128 --ratios 1 --paths 16384 --repeats 4096 --steps 4000 --seed 20261032
+python experiments/code/frozen_visual/local_calibration.py --features experiments/results/visual_features/features.npz --output experiments/results/local_confirmation/plane_ship --pairs 0:8 --batches 128 --ratios 1 --paths 16384 --repeats 4096 --steps 4000 --seed 20261033
+```
+
+每类对计算完成后独立绘图，四类对分别分配 alpha=.0125，合起来至少 95% 同时覆盖：
+
+```shell
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_confirmation/cat_dog --alpha .0125
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_confirmation/car_truck --alpha .0125
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_confirmation/deer_horse --alpha .0125
+python experiments/code/frozen_visual/local_plot.py --input experiments/results/local_confirmation/plane_ship --alpha .0125
+```
+
+计算开始即保存声明协议，随后按环境更新。中断保留已完成环境，不支持续跑；不要在已有输出目录重启。当前结果与待办见 [STATUS.md](../../../STATUS.md)。
+
 ## 目标中心化校准尺度
 
 [centered_calibration.py](centered_calibration.py) 固定目标经验池及oracle初始化x0=q，检验独立经验根局部方向预测器。默认四类对、p=.5、n=32/128/512、eta=.1；每预算128次独立校准，每组256条新SGD，最多1500步。fixed_R对照取R=.5/1/2，按真实曲率选M正比n；vanishing_R对照使M正比n平方。预算设计只读取几何，不使用退出结果。

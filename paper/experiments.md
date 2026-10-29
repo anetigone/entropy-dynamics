@@ -4,7 +4,7 @@ Experimental part of [the manuscript](DRAFT.md). Section 10 numbering is retaine
 
 ## 10. Numerical evidence
 
-The experiments comprise Gaussian model checks, a mixed-shift scan, and controlled threshold adaptation on frozen visual features. Stochastic trajectories use the actual nonlinear entropy update with independent batches; Gaussian autoregressions are separately identified reference limits. Labels enter generators, risk evaluation, and the explicitly identified offline risk calibrations, not the entropy update. The target-geometry diagnostics and independent field-calibration study score existing visual trajectories. All results precede this manuscript revision; no new simulation is implied by the presentation below. Reported CDF errors are maximum absolute discrepancies over the observed integer-time budget; joint errors compare the left/right exit subdistributions.
+The experiments comprise Gaussian model checks, a mixed-shift scan, and controlled threshold adaptation on frozen visual features. Stochastic trajectories use the actual nonlinear entropy update with independent batches; Gaussian autoregressions are separately identified reference limits. Labels enter generators, risk evaluation, and the explicitly identified offline risk calibrations, not the entropy update. The target-geometry diagnostics and independent field-calibration study score existing visual trajectories. The legacy studies below are retained; Section 10.15 adds the unknown-local-environment visual study and its new independent confirmation. Reported CDF errors are maximum absolute discrepancies over the observed integer-time budget; joint errors compare the left/right exit subdistributions.
 
 ### 10.1. Population rebound and safe convergence
 
@@ -267,4 +267,52 @@ These runs do not show a stable utility advantage from treating a safety upper h
 
 ### 10.14. Fixed-rule finite-batch confirmation
 
-The [original confirmation report](../entropy_prediction_revision/contribution_precision/precision_report.md) gives the fixed design, two-layer simultaneous confidence construction, all cellwise and five-cell maximum-risk comparisons, and evidence boundaries. It excludes pilot observations and retains the previously selected Gaussian rule. The unknown-direction extension is theoretical; no nuisance simulation is claimed. The report and its raw outputs remain in their original directory.
+The [original confirmation report](../experiments/results/precision_confirmation/analysis.md) gives the fixed design, two-layer simultaneous confidence construction, all cellwise and five-cell maximum-risk comparisons, and evidence boundaries. It excludes pilot observations and retains the previously selected Gaussian rule. The unknown-direction extension is theoretical; no nuisance simulation is claimed. The report and its raw outputs remain in their original directory.
+
+
+### 10.15. Unknown local visual environments and independent confirmation
+
+**Setup and information.** We next test prospective probability prediction on real visual scores, using the frozen ImageNet-pretrained ResNet-18 features and four prespecified CIFAR-10 class pairs. Official training features determine a fixed projection. For each pair, the official test empirical baseline determines one root \(q_0\) and its constants; all environments retain \(x_0=q_0\). With centered, unit-variance baseline entropy velocity \(h_0(z)\), we draw images with weights proportional to \(1+\theta h_0(z)\), where \(\theta=t/(c\sqrt n)\) and \(c=\sigma_0/(\lambda_0s_0)\). The generator knows \(t\); predictors receive only independent unlabeled calibration scores and the declared baseline constants. They do not receive target roots, labels, generating coordinates or reference exits. Unlike the theoretical construction, reweighting labeled images changes the complete classification-risk function: risk is evaluated under each environment's actual weighted label law.
+
+**Exploration and independent confirmation.** The exploratory study covered four pairs, \(n\in\{32,128,512\}\) and \(t\in\{-1,-.5,0,.5,1\}\), with 1,024 reference paths per environment and 256 calibration repetitions per budget. Fixed relative calibration noise \(r=c\sqrt{n/M}\in\{.5,1,2\}\) gave an error plateau across batch sizes; the sequence \(r=2,1,.5\) gave decreasing error. These are finite-grid trends conditional on fixed image pools, not new independent images or a consistency theorem for a finite collection of frozen rules. All 36 fixed-ratio settings favored the optimized rule in maximum-MAE point estimates, but their simultaneous improvement intervals crossed zero. We therefore fixed a new confirmation design before generating its samples, rather than pooling exploration into confirmation.
+
+**Fixed design and scoring.** Confirmation retains all four pairs, fixes \(n=128\), \(K=r=1\), and uses the same five-point \(t\) grid. Each of the 20 environments has 16,384 fresh reference paths and 4,096 independent calibration repetitions, totaling 327,680 paths and 81,920 repetitions. We use \(\eta=.1\), slope \(w=2\), tolerance \(\epsilon=.02\), baseline prior \(.5\), \(M=\operatorname{round}(c^2n)\), and a fixed 4,000-update cap for every pair. Five predictors share each calibration repetition: constant \(.5\), empirical-root plug-in, raw influence-function moment, window-clipped moment, and the previously frozen Gaussian step rule. Root failures would fall back to \(.5\) and remain in the score. The primary comparison is clipped minus optimized five-point maximum expected MAE, separately for each pair.
+
+**Uncertainty and results.** We allocate error \(.0125\) to each pair, giving at least 95% simultaneous coverage across all four pairs, five rules and recorded paired comparisons by a union bound. Censor-compatible exact one-sided binomial reference bounds and conditional empirical-Bernstein calibration bounds account for both uncertainty layers. Maximum-risk differences are obtained by subtracting maximum-risk intervals, not by maximizing cellwise paired gains. The optimized rule has a lower grid maximum MAE in every pair. Its improvement over clipping has a positive interval in three pairs; automobile/truck remains unresolved, with interval \([-.0030,.1032]\). Comparisons with constant, empirical-root and raw-moment baselines have positive improvement intervals in all four pairs. These are finite-grid comparisons, with no claim of pointwise dominance.
+
+**Dynamics diagnostics and scope.** There are three censored reference paths and no empirical-root failures. The maximum point-estimate discrepancy between actual right-risk-exit probability and \(\Phi(t)\) is \(.01046\). Initial-safe-component exit and actual risk exit have different times on 18,378 paths, but no direction disagreement among paths with observed risk exits; censored paths remain in the bounds. The optimized rule trades endpoint accuracy for a smaller central peak. This confirms a reproducible prediction improvement on the declared finite visual grid. It does not validate shared risk on images, unknown-baseline robustness, corruption transfer, continuous-window finite-\(n\) minimax optimality or exit-time accuracy.
+
+| Pair | M | Moment | Clipped | Optimized | Clipped minus optimized | Simultaneous interval |
+|---|---:|---:|---:|---:|---:|---|
+| Cat/dog | 17625 | 0.2530 | 0.2266 | 0.1682 | 0.0585 | [0.0052, 0.1117] |
+| Automobile/truck | 48557 | 0.2552 | 0.2288 | 0.1787 | 0.0501 | [-0.0030, 0.1032] |
+| Deer/horse | 38254 | 0.2536 | 0.2276 | 0.1676 | 0.0600 | [0.0068, 0.1129] |
+| Airplane/ship | 20213 | 0.2502 | 0.2246 | 0.1680 | 0.0566 | [0.0036, 0.1095] |
+
+The four pair-specific random seeds are 20261030, 20261031, 20261032 and 20261033, respectively; the reference and calibration streams are independent within each pair. Sampling is with replacement conditional on the official test pool; it does not increase the number of distinct images. The reference and calibration error allocations are each \(.025\) across \(C=20\) environments. Each one-sided reference tail receives \(.05/(4C)\); each of five risk estimates and four paired gains per environment receives \(\delta=.05/(18C)\). These are the same two-layer formulas as the earlier confirmation, with nine rather than seven calibration quantities per environment. No exploration or timing samples enter these intervals.
+
+
+| Pair | t | Right exits | Censored | Root MAE | Moment MAE | Clipped MAE | Optimized MAE |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Cat/dog | -1 | 2662 | 0 | 0.18434 | 0.18434 | 0.13394 | 0.16584 |
+| Cat/dog | -0.5 | 5145 | 0 | 0.22452 | 0.22446 | 0.19203 | 0.15725 |
+| Cat/dog | 0 | 8280 | 0 | 0.25302 | 0.25300 | 0.22662 | 0.16644 |
+| Cat/dog | 0.5 | 11274 | 0 | 0.23200 | 0.23199 | 0.20005 | 0.16436 |
+| Cat/dog | 1 | 13818 | 0 | 0.18382 | 0.18382 | 0.13406 | 0.16817 |
+| Automobile/truck | -1 | 2428 | 2 | 0.18711 | 0.18720 | 0.14584 | 0.17871 |
+| Automobile/truck | -0.5 | 4974 | 0 | 0.23115 | 0.23121 | 0.19892 | 0.16575 |
+| Automobile/truck | 0 | 8156 | 0 | 0.25529 | 0.25524 | 0.22881 | 0.16799 |
+| Automobile/truck | 0.5 | 11161 | 1 | 0.22560 | 0.22558 | 0.19323 | 0.15735 |
+| Automobile/truck | 1 | 13714 | 0 | 0.18358 | 0.18359 | 0.13297 | 0.16499 |
+| Deer/horse | -1 | 2526 | 0 | 0.18295 | 0.18289 | 0.13437 | 0.16762 |
+| Deer/horse | -0.5 | 5021 | 0 | 0.23019 | 0.23015 | 0.19880 | 0.16501 |
+| Deer/horse | 0 | 8129 | 0 | 0.25361 | 0.25358 | 0.22760 | 0.16685 |
+| Deer/horse | 0.5 | 11303 | 0 | 0.22802 | 0.22801 | 0.19637 | 0.16172 |
+| Deer/horse | 1 | 13806 | 0 | 0.18272 | 0.18272 | 0.13153 | 0.16557 |
+| Airplane/ship | -1 | 2477 | 0 | 0.17882 | 0.17886 | 0.13311 | 0.16803 |
+| Airplane/ship | -0.5 | 5063 | 0 | 0.23066 | 0.23067 | 0.19842 | 0.16405 |
+| Airplane/ship | 0 | 8138 | 0 | 0.25027 | 0.25025 | 0.22461 | 0.16451 |
+| Airplane/ship | 0.5 | 11303 | 0 | 0.22784 | 0.22775 | 0.19617 | 0.16296 |
+| Airplane/ship | 1 | 13751 | 0 | 0.18414 | 0.18406 | 0.13305 | 0.16607 |
+
+All reference denominators are 16,384. Cellwise MAEs are point estimates; simultaneous intervals are in the original summaries. See [the complete visual confirmation analysis](../experiments/results/local_confirmation/analysis.md) and [the exploratory analysis](../experiments/results/local_scaling/analysis.md). The main text presents the risk figure and primary maximum-risk table.

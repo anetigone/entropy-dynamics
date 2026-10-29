@@ -4,8 +4,10 @@
 
 | 结果目录 | 用途 | 分析入口 |
 |---|---|---|
-| [precision confirmation](../../entropy_prediction_revision/contribution_precision/) | 冻结规则、独立双层精度确认 | [原处分析](../../entropy_prediction_revision/contribution_precision/precision_report.md) |
-| [gaussian_decision](../../gaussian_decision/) | 有限信息高斯 minimax 证书与真实熵 SGD pilot | [原处分析](../../gaussian_decision/gaussian_decision_extension.md) |
+| [precision confirmation](precision_confirmation) | 冻结规则、独立双层精度确认 | [原处分析](precision_confirmation/analysis.md) |
+| [gaussian_decision](gaussian_decision) | 有限信息高斯 minimax 证书与真实熵 SGD pilot | [原处分析](../../paper/gaussian_decision.md) |
+| [local_scaling](local_scaling/) | 固定初始化、未知局部视觉环境的独立预测与预算尺度 | [分析](local_scaling/analysis.md) |
+| [local_confirmation](local_confirmation/) | 视觉局部环境的独立精度确认 | [固定设计与分析](local_confirmation/analysis.md) |
 | [centered_calibration](centered_calibration/) | 目标中心化校准尺度、独立SGD与汽车/卡车删失定位 | [分析](centered_calibration/analysis.md) |
 | [stopping_pilot](stopping_pilot/) | 停止闭环初次筛选 | [分析](stopping_pilot/analysis.md) |
 | [stopping_repeat](stopping_repeat/) | 停止闭环独立随机种子重复 | [分析](stopping_repeat/analysis.md) |

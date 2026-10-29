@@ -11,12 +11,13 @@
 | 文件 | 内容 |
 |---|---|
 | [local_prediction.md](local_prediction.md) | L.1–L.8：共同风险构造、统一方向退出、信息门槛、低信息 minimax 常数和指定矩预测器风险 |
-| [Gaussian decision extension](../gaussian_decision/gaussian_decision_extension.md) | L.9–L.10、G 方程：完整统计实验等价、minimax 风险转移、高斯数值证书及早期 pilot |
-| [Unknown-direction theory](../entropy_prediction_revision/contribution_precision/unknown_direction_theory.md) | N.1–N.4：已知基准下未知有界局部方向、最不利熵倾斜、统一退出与 nuisance 投影 |
-| [Fixed-design confirmation](../entropy_prediction_revision/contribution_precision/precision_report.md) | 冻结规则的真实 SGD 确认、参考和校准双层同时区间；完整分析保留原位 |
-| [Contribution and literature](../entropy_prediction_revision/contribution_precision/contribution_and_literature.md) | 问题定位、信息设定和主要文献的精确比较 |
+| [Gaussian decision extension](gaussian_decision.md) | L.9–L.10、G 方程：完整统计实验等价、minimax 风险转移、高斯数值证书及早期 pilot |
+| [Unknown-direction theory](unknown_direction.md) | N.1–N.4：已知基准下未知有界局部方向、最不利熵倾斜、统一退出与 nuisance 投影 |
+| [Visual confirmation](../experiments/results/local_confirmation/analysis.md) | 已知视觉经验基准下的独立预测确认；Markdown 主文 §7.8 与实验 §10.15给出协议、结果和限制 |
+| [Fixed-design confirmation](../experiments/results/precision_confirmation/analysis.md) | 冻结规则的真实 SGD 确认、参考和校准双层同时区间；完整分析保留原位 |
+| [Contribution and literature](RELATED_WORK.md) | 问题定位、信息设定和主要文献的精确比较 |
 
-建议先读 DRAFT.md，再顺次阅读上表的完整证明和分析。所有理论定义与论证均在稿件部分中给出，不依赖状态日志。包中的 source_manuscript 与旧副本作为用户提供的原始材料保留，不另维护成主文。
+建议先读 DRAFT.md，再顺次阅读上表的完整证明和分析。所有理论定义与论证均在稿件部分中给出，不依赖状态日志。完整理论章节和当前文献对照均在 paper/；实验分析在 experiments/results/。原始包只作备份，不再作为阅读或运行依赖。
 
 ## 支撑理论与既有实验
 
@@ -27,7 +28,7 @@
 | [scalar_exit.md](scalar_exit.md) | G1–G4、E.1–E.3：一般标量真实 SGD、共轭与整数时间退出近似 |
 | [calibration.md](calibration.md) | E.4–E.8：共轭稳定性、独立校准、经验根与随机预测极限 |
 | [risk_boundaries.md](risk_boundaries.md) | E.9–E.13：偏差、端点、跨分量跳跃、经验池与校准初始化 |
-| [experiments.md](experiments.md) | 既有实验及原处分析入口；§10.14链接固定规则确认 |
+| [experiments.md](experiments.md) | 既有实验及原处分析入口；§10.14链接合成确认，§10.15给出视觉独立确认 |
 | [RELATED_WORK.md](RELATED_WORK.md) | 原高斯风险与时间口径的详细比较；新增统计文献链接到上表原处对照 |
 
 支撑部分保留原数字与 E 编号，不与主文四个汇总定理混用。原高斯推导中的局部更新幅度记号 M 不代表校准样本量；统计主文统一使用 B_U 表示幅度界，M 表示校准预算。

@@ -183,6 +183,7 @@ def run(args):
         (args.output/'results.json').write_text(
             json.dumps(result, indent=2, allow_nan=False), encoding='utf-8')
 
+    save()  # Record the declared protocol before generating reference paths.
     for pi, pair in enumerate(args.pairs):
         pp, nn, ep, en, anchor = project_pair(train, ty, test, vy, pair)
         scores = np.r_[ep, en]

@@ -1,8 +1,12 @@
 \section{Finite-information prediction: Gaussian reduction and minimax
 certificates}\label{gaussian_decision-finite-information-prediction-gaussian-reduction-and-minimax-certificates}
 
-Extension of L.1--L.8 for the known scalar entropy-tilt family. Prepared
-29 October 2026.
+Part of the \href{DRAFT.md}{manuscript}, continuing
+\href{local_prediction.md}{L.1--L.8}. This chapter contains L.9--L.10
+and the Gaussian decision certificate argument. Numerical results and
+pilot analysis are in
+\href{../experiments/results/gaussian_decision/analysis.md}{the result
+directory}.
 
 \subsection{1. Observation experiment and
 notation}\label{gaussian_decision-observation-experiment-and-notation}
@@ -363,223 +367,11 @@ that the number of thresholds diverges requires additional control. No
 finite-n risk certificate for the SGD experiment follows merely from the
 Gaussian numerical certificate.
 
-\subsection{6. Reproducible files and validation
-boundaries}\label{gaussian_decision-reproducible-files-and-validation-boundaries}
+\subsection{6. Numerical evidence}\label{gaussian_decision-numerical-evidence}
 
-\begin{itemize}
-\tightlist
-\item
-  \texttt{solve.py}: exploratory prior optimization for six (K,r)
-  settings. A fixed support grid and observation quadrature generate
-  candidates; neither is treated as a minimax proof.
-\item
-  \texttt{certify.py}: independent outward interval evaluation of a
-  prior lower bound and a continuous-parameter rule upper bound.
-\item
-  \texttt{candidates.json}: floating-point search outputs.
-\item
-  \texttt{certificates.json}: exact finite-decimal prior/rule
-  specifications, crossing brackets, and outward risk bounds.
-\item
-  \texttt{sgd\_pilot.py}: independent calibration and actual entropy-SGD
-  comparison for a fixed selected rule.
-\item
-  \texttt{sgd\_results.json} and \texttt{pilot\_*.npz}: pilot summary,
-  exit directions/times, and all four forecast arrays.
-\end{itemize}
-
-Run with Python, NumPy and SciPy; Decimal is in the standard library.
-The checks in this run used NumPy 2.3.5 and SciPy 1.17.0.
-\texttt{OPENBLAS\_NUM\_THREADS=1\ OMP\_NUM\_THREADS=1} avoids
-unnecessary threaded overhead in the small optimizations.
-
-The formal progress is the experiment-level equivalence and the
-resulting minimax convergence, plus numerical brackets for the Gaussian
-limit. The pilot tests their relevance at finite n; its calibration and
-Monte Carlo errors are not part of those proofs.
-
-\subsection{7. Results}\label{gaussian_decision-results}
-
-Numerical tables and the actual-SGD pilot summary are appended below
-after validation.
-
-\subsubsection{7.1. Gaussian minimax
-intervals}\label{gaussian_decision-gaussian-minimax-intervals}
-
-Bounds below are rounded outward to six decimals. Raw-moment and
-constant risks have the analytic formulas arctan(r)/pi and Phi(K)-.5.
-The clipped-rule column is floating-point quadrature plus numerical
-maximization and is marked approximate; it is not needed for either
-minimax certificate.
-
-{\def\LTcaptype{table} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1667}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedleft
-K
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-r
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Certified minimax interval
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Constant worst risk
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Raw moment worst risk
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Clipped worst risk (approx.)
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-1 & 2 & {[}0.226230, 0.226386{]} & 0.341345 & 0.352416 & 0.279891 \\
-1 & 1 & {[}0.164401, 0.164587{]} & 0.341345 & 0.250000 & 0.224829 \\
-1 & 0.5 & {[}0.107333, 0.107539{]} & 0.341345 & 0.147584 & 0.145865 \\
-2 & 2 & {[}0.244686, 0.244931{]} & 0.477250 & 0.352416 & 0.346916 \\
-2 & 1 & {[}0.169889, 0.170268{]} & 0.477250 & 0.250000 & 0.249482 \\
-2 & 0.5 & {[}0.108534, 0.109092{]} & 0.477250 & 0.147584 & 0.147583 \\
-\end{longtable}
-}
-
-For K=1,r=1, the certified optimized rule has worst-case risk at most
-0.164587, versus exactly 0.25 for the raw moment rule: at least a
-34.16\% reduction in Gaussian worst-case MAE. This is not a claim of
-pointwise dominance, and is not a finite-n guarantee for entropy SGD.
-
-\subsubsection{7.2. Actual entropy-SGD
-pilot}\label{gaussian_decision-actual-entropy-sgd-pilot}
-
-The pilot fixes w=2, nu=1, eta=.1, d=.5, b=.25, kappa=.5,
-epsilon=0.0060745243, and x0=0. Numerical integration gives
-lambda=0.2421101333, sigma\_g\^{}2=0.1078103527, and c=9.1436882021. The
-selected Gaussian rule has K=r=1; its prior and thresholds were
-determined entirely in the Gaussian experiment before viewing SGD
-results. Each n uses M=round(c\^{}2 n), and t in \{-1,-.5,0,.5,1\}, with
-theta=t/(c sqrt(n)).
-
-Each cell uses 1,024 independent true-SGD reference paths and 256
-independent calibration repetitions; the four rules share calibration
-samples within a repetition. Reference and calibration streams are
-independent. Rejection sampling draws from the actual tilted continuous
-density. Updates use sampled nonlinear entropy gradients, not a Gaussian
-autoregression or interpolated population field. The 1,500-step cap
-censored no paths in any cell. Raw exit directions/times and forecasts
-are retained.
-
-{\def\LTcaptype{table} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedleft
-n
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-M
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Largest cell MAE: constant
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Raw moment
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Clipped
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Optimized
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Maximum exit step
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-128 & 10702 & 0.338867 & 0.253404 & 0.224829 & 0.167207 & 685 \\
-512 & 42807 & 0.352539 & 0.267974 & 0.238485 & 0.178871 & 534 \\
-\end{longtable}
-}
-
-These are maxima of empirical means over five parameter values, not
-continuous-window upper bounds. Calibration sampling uncertainty and
-reference-probability uncertainty remain. In particular, the exact
-target at t=0 is .5 by reflection symmetry; the table consistently uses
-the independent empirical reference in all cells, so the constant rule
-has a small nonzero reported center error. No claim is made that these
-runs verify the narrow Gaussian certificate.
-
-{\def\LTcaptype{table} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1429}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedleft
-n
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-t
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Observed right probability
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Gaussian Phi(t)
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Optimized MAE
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Raw minus optimized MAE
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-Paired calibration SE
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-128 & -1 & 0.176758 & 0.158655 & 0.155629 & 0.027099 & 0.006051 \\
-128 & -0.5 & 0.303711 & 0.308538 & 0.161231 & 0.069069 & 0.004554 \\
-128 & 0 & 0.498047 & 0.500000 & 0.167207 & 0.086197 & 0.002743 \\
-128 & 0.5 & 0.687500 & 0.691462 & 0.166523 & 0.066868 & 0.004261 \\
-128 & 1 & 0.838867 & 0.841345 & 0.163469 & 0.028516 & 0.005741 \\
-512 & -1 & 0.147461 & 0.158655 & 0.163874 & 0.007559 & 0.005150 \\
-512 & -0.5 & 0.335938 & 0.308538 & 0.155958 & 0.072129 & 0.004199 \\
-512 & 0 & 0.494141 & 0.500000 & 0.176939 & 0.091036 & 0.002541 \\
-512 & 0.5 & 0.698242 & 0.691462 & 0.148184 & 0.059938 & 0.004745 \\
-512 & 1 & 0.851562 & 0.841345 & 0.178871 & 0.009024 & 0.005581 \\
-\end{longtable}
-}
-
-Paired standard errors condition on the common empirical reference
-probability; they do not include its uncertainty. The reference Wilson
-intervals, supplied in the JSON, are descriptive per-cell intervals
-rather than simultaneous certification. With 1,024 paths, center-cell
-reference uncertainty is about .03 at the usual 95\% scale, much larger
-than the Gaussian minimax bracket widths. A two-rule loss difference can
-change by up to twice the reference error.
-
-The geometry diagnostic evaluates v0 prime on a grid of spacing .005 in
-{[}-.5,.5{]}, giving a numerical minimum .19440797. The analytic bound
-\textbar v0 double-prime\textbar\textless=6 gives an
-interpolation-corrected lower value .17940797, above lambda/2=.12105507.
-An additional conservative tilt correction gives .16468778 over the
-pilot parameter range, above lambda/4=.06052753. The derivative bound
-follows from \textbar a prime\textbar\textless=a, \textbar a
-double-prime\textbar\textless=a and
-\textbar t\textbar a(t)\textless=1/4. The quadrature itself was not
-enclosed with directed intervals, so this is a diagnostic geometry
-check, separate from the certified Gaussian decision calculation.
-
-At the window endpoints, clipping can beat the optimized rule, while the
-optimized rule substantially reduces the central and worst-grid errors.
-That pattern is consistent with minimax balancing rather than pointwise
-domination. The next experimental priority is more calibration
-repetitions and reference paths at fixed predeclared cells if precise
-finite-n improvements are required; there is no reason yet to add
-stopping strategies.
+The \href{../experiments/results/gaussian_decision/analysis.md}{Gaussian
+certificate and pilot analysis} contains the numerical tables and
+evidence limits. The independent
+\href{../experiments/results/precision_confirmation/analysis.md}{fixed-rule
+confirmation} uses fresh samples. Continue with
+\href{unknown_direction.md}{unknown local directions} for N.1--N.4.

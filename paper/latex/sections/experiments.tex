@@ -198,3 +198,35 @@ $n$ & $t$ & Reference right probability & Simultaneous reference interval & Mome
 The interval construction supports positive paired improvements over the raw moment rule in 6/10 cells and over the clipped rule in 2/10 cells. At endpoint cells clipping is often better, so there is no claim of uniform pointwise improvement. At t=0 the target equals .5 exactly by symmetry in this family; for consistency of the primary analysis, that cell was scored with the independent reference estimate, without using the exact value to narrow its interval.
 
 The largest observed exit step was 720. Raw exit arrays, forecast arrays, fixed-design metadata and the frozen rule are retained. The aggregate counts and MAEs agree with the retained NPZ files.
+
+\subsection{Unknown local visual environments: independent confirmation}\label{visual-confirmation}
+
+\paragraph{Setup and information.} We next test prospective probability prediction on real visual scores, using the frozen ImageNet-pretrained ResNet-18 features and four prespecified CIFAR-10 class pairs. Official training features determine a fixed projection. For each pair, the official test empirical baseline determines one root $q_0$ and its constants; all environments retain $x_0=q_0$. With centered, unit-variance baseline entropy velocity $h_0(z)$, we draw images with weights proportional to $1+\theta h_0(z)$, where $\theta=t/(c\sqrt n)$ and $c=\sigma_0/(\lambda_0s_0)$. The generator knows $t$; predictors receive only independent unlabeled calibration scores and the declared baseline constants. They do not receive target roots, labels, generating coordinates or reference exits. Unlike the theoretical construction, reweighting labeled images changes the complete classification-risk function: risk is evaluated under each environment's actual weighted label law.
+
+\paragraph{Exploration and independent confirmation.} The exploratory study covered four pairs, $n\in\{32,128,512\}$ and $t\in\{-1,-.5,0,.5,1\}$, with 1,024 reference paths per environment and 256 calibration repetitions per budget. Fixed relative calibration noise $r=c\sqrt{n/M}\in\{.5,1,2\}$ gave an error plateau across batch sizes; the sequence $r=2,1,.5$ gave decreasing error. These are finite-grid trends conditional on fixed image pools, not new independent images or a consistency theorem for a finite collection of frozen rules. All 36 fixed-ratio settings favored the optimized rule in maximum-MAE point estimates, but their simultaneous improvement intervals crossed zero. We therefore fixed a new confirmation design before generating its samples, rather than pooling exploration into confirmation.
+
+\paragraph{Fixed design and scoring.} Confirmation retains all four pairs, fixes $n=128$, $K=r=1$, and uses the same five-point $t$ grid. Each of the 20 environments has 16,384 fresh reference paths and 4,096 independent calibration repetitions, totaling 327,680 paths and 81,920 repetitions. We use $\eta=.1$, slope $w=2$, tolerance $\epsilon=.02$, baseline prior $.5$, $M=\operatorname{round}(c^2n)$, and a fixed 4,000-update cap for every pair. Five predictors share each calibration repetition: constant $.5$, empirical-root plug-in, raw influence-function moment, window-clipped moment, and the previously frozen Gaussian step rule. Root failures would fall back to $.5$ and remain in the score. The primary comparison is clipped minus optimized five-point maximum expected MAE, separately for each pair.
+
+\paragraph{Uncertainty and results.} We allocate error $.0125$ to each pair, giving at least 95\% simultaneous coverage across all four pairs, five rules and recorded paired comparisons by a union bound. Censor-compatible exact one-sided binomial reference bounds and conditional empirical-Bernstein calibration bounds account for both uncertainty layers. Maximum-risk differences are obtained by subtracting maximum-risk intervals, not by maximizing cellwise paired gains. The optimized rule has a lower grid maximum MAE in every pair. Its improvement over clipping has a positive interval in three pairs; automobile/truck remains unresolved, with interval $[-.0030,.1032]$. Comparisons with constant, empirical-root and raw-moment baselines have positive improvement intervals in all four pairs. These are finite-grid comparisons, with no claim of pointwise dominance.
+
+\paragraph{Dynamics diagnostics and scope.} There are three censored reference paths and no empirical-root failures. The maximum point-estimate discrepancy between actual right-risk-exit probability and $\Phi(t)$ is $.01046$. Initial-safe-component exit and actual risk exit have different times on 18,378 paths, but no direction disagreement among paths with observed risk exits; censored paths remain in the bounds. The optimized rule trades endpoint accuracy for a smaller central peak. This confirms a reproducible prediction improvement on the declared finite visual grid. It does not validate shared risk on images, unknown-baseline robustness, corruption transfer, continuous-window finite-$n$ minimax optimality or exit-time accuracy.
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lrrrrrl}
+\toprule
+Pair & $M$ & Moment & Clipped & Optimized & Gain & Simultaneous interval \\
+\midrule
+Cat/dog & 17625 & 0.2530 & 0.2266 & 0.1682 & 0.0585 & [0.0052, 0.1117] \\
+Automobile/truck & 48557 & 0.2552 & 0.2288 & 0.1787 & 0.0501 & [-0.0030, 0.1032] \\
+Deer/horse & 38254 & 0.2536 & 0.2276 & 0.1676 & 0.0600 & [0.0068, 0.1129] \\
+Airplane/ship & 20213 & 0.2502 & 0.2246 & 0.1680 & 0.0566 & [0.0036, 0.1095] \\
+\bottomrule
+\end{tabular}
+\caption{Independent visual confirmation: five-point maximum MAE and clipped-minus-optimized gain. Intervals jointly account for reference paths, calibration randomness and all four pairs. All pairs remain in the report; automobile/truck's interval crosses zero.}\label{tab:visual-confirmation}
+\end{table*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=.94\textwidth]{../../experiments/results/local_confirmation/risk.png}
+\caption{Independent prediction on frozen visual scores, $n=128$, $r=1$. Curves are MAE point estimates. The optimized rule trades endpoint accuracy for a smaller central peak; root and moment curves nearly overlap. Table~\ref{tab:visual-confirmation} gives the simultaneous maximum-risk comparison.}\label{fig:visual-confirmation}
+\end{figure*}
