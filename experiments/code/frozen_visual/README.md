@@ -15,7 +15,7 @@ python experiments/code/frozen_visual/local_plot.py --input experiments/results/
 
 五种预测器为常数 .5、独立经验根与经验尺度、原始影响函数矩、窗口裁剪矩及冻结 Gaussian 阶梯规则。估计器不接收 t、theta、真实目标根、标签、风险端点或参考退出结果。基准池及其 q0、影响函数和尺度为声明的已知实验条件；这不是训练侧基准迁移或未知基准实验。生成器和评分器可使用标签及真实环境。经验根扫描失败时预测 .5，记录原因并计入全部重复，不删掉失败重复。
 
-规则默认从原处 `independent-bundles/gaussian_decision.zip`直接读取，不解包、不重新优化、不计算哈希。`--rules`也可传入 certificates.json 或含唯一同名文件的 zip。只接受所提供规则中已有的 (K,r)，缺失时在计算前明确报错，不以另一规则冒充。实际 M 取整后的 r 另行保存；Gaussian 证书不是有限批量视觉风险证书。
+规则和六组原始数值证书已整合在本目录的 [gaussian_rules.json](gaussian_rules.json)，脚本按自身位置读取，无需外部 ZIP、解包或重新优化。复制本实验源码目录时一并带上该 JSON 即可。运行命令不需要指定 `--rules`；该参数仅供替换自定义 JSON 规则时使用，不再读取 ZIP。只接受所提供规则中已有的 (K,r)，缺失时在计算前明确报错，不以另一规则冒充。实际 M 取整后的 r 另行保存；Gaussian 证书不是有限批量视觉风险证书。
 
 增加 M 正比 n² 的递减噪声对照：
 

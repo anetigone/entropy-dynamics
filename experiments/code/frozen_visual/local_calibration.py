@@ -6,7 +6,6 @@ this is not the exact common-risk construction or a population minimax test.
 import argparse
 import json
 from pathlib import Path
-from zipfile import ZipFile
 
 import numpy as np
 from scipy.optimize import brentq
@@ -17,7 +16,7 @@ from field_geometry import calibrate_peak
 from visual_calibration import UnlabeledField
 
 NAMES = ['constant', 'root', 'moment', 'clipped', 'optimized']
-RULES = Path(__file__).resolve().parents[3]/'independent-bundles/gaussian_decision.zip'
+RULES = Path(__file__).with_name('gaussian_rules.json')
 
 
 def velocity(x, z):
@@ -26,14 +25,7 @@ def velocity(x, z):
 
 
 def load_rules(path):
-    if path.suffix.lower() == '.zip':
-        with ZipFile(path) as archive:
-            names = [n for n in archive.namelist() if n.endswith('certificates.json')]
-            if len(names) != 1:
-                raise ValueError('Expected one certificates.json in rule archive')
-            records = json.loads(archive.read(names[0]))
-    else:
-        records = json.loads(path.read_text(encoding='utf-8-sig'))
+    records = json.loads(path.read_text(encoding='utf-8-sig'))
     for row in records:
         support = np.asarray(row['support'], float)
         thresholds = np.asarray(row['thresholds'], float)
@@ -48,7 +40,7 @@ def select_rule(rules, window, ratio):
     for row in rules:
         if np.isclose(float(row['K']), window) and np.isclose(float(row['r']), ratio):
             return row
-    raise ValueError(f'No frozen rule for K={window:g}, r={ratio:g}; supply --rules')
+    raise ValueError(f'No integrated rule for K={window:g}, r={ratio:g}; use a supported setting or a custom JSON via --rules')
 
 
 class WeightedRisk:
