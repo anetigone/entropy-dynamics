@@ -1,5 +1,12 @@
 # 工作纪律
 
+## 服务器路径
+
+- SSH：`ssh -p 16716 root@connect.bjb2.seetacloud.com`；项目目录：`/root/autodl-tmp/entropy-dynamics`。
+- 已有模型：项目内 `models/resnet-18`，为 Hugging Face ImageNet ResNet-18 backbone，无分类头；不是 CIFAR-10 十分类 checkpoint。
+- CIFAR-10-C：项目内 `data/CIFAR-10-C`；干净 CIFAR-10 官方数据：`data/cifar10/cifar-10-batches-py`。
+- 本轮服务器同步和实验运行由用户负责；助手仅只读检查服务器并修改本地代码和文档。
+
 - 实验代码保持简单直接，以运行、分析和修改实验为目的，不自行增加工程管理流程。
 - 不建立或恢复脚本登记清单、目录迁移清单、源码指纹清单；新增脚本应能直接运行，不要求同步额外登记文件。
 - 不默认计算、保存或比较源码、checkpoint、结果文件、缓存文件和数据文件的哈希，不以哈希一致性作为训练、评估、续跑或汇总的门槛。只有用户明确要求时才增加自定义哈希校验；第三方下载库自身的缓存实现无需额外包装。
