@@ -94,3 +94,22 @@ python experiments/code/corrupt_visual/corrupt_plot.py --input experiments/resul
 输出 `summary.json`、`analysis.md`、`budget.png` 和 `direction.png`。报告每环境/预算的七种 MAE、根失败、三项配对改善、删失及几何不适用；聚合按全部环境等权，clean 对照也计入且逐环境独立列出。`budget.png`比较每类对平均误差与 M；`direction.png`在最大 M 显示参考概率同时区间和各规则平均预测，平均预测不是评分对象，MAE 始终按逐重复预测计算。
 
 默认 alpha=.05，联合控制全部环境的参考和校准误差。参考为删失兼容的精确单侧二项式界；规则损失与配对差用条件经验 Bernstein 界。每设置七项风险、三项配对差共同分配校准误差；确定性预测直接传播参考区间。配对项为 source_root−target_root、source_moment−gaussian_transfer、source_clipped−gaussian_transfer，正值表示后者改善。失败以 .5 回退纳入全部评分，不仅报告成功重复；不声称连续窗口最优性、一般未知基准保证或完整 Tent 性能。
+
+## 独立确认
+
+[confirmation.py](confirmation.py)直接执行独立确认，不读取探索预测或轨迹。先读取相同特征与标签风险，枚举全部风险平台；以最大风险严格超过初始化风险加 epsilon 冻结评分集合，其余环境完整单列。保存 `design.json` 后才开始采样。默认三档 M=2048/16384/131072、n=128、eta=.1、epsilon=.02、4000 步、四类对及七环境，独立随机种子 73191。若更换特征或参数，评分集合重新由几何确定，不能仍称原来的 22 环境。
+
+`--paths` 和 `--repeats` 必须显式给出。下面 1024/256 只展示运行方式，不是已确定的确认精度预算；正式预算须按 [STATUS.md](../../../STATUS.md) 完成精度设计后指定：
+
+```shell
+python experiments/code/corrupt_visual/confirmation.py --clean-features experiments/results/visual_features/features.npz --corrupt-features experiments/results/corrupt_features --output experiments/results/corrupt_confirmation --paths 1024 --repeats 256 --workers 4
+python experiments/code/corrupt_visual/confirmation_plot.py --input experiments/results/corrupt_confirmation
+```
+
+其它参数沿用本目录原计算入口，另有 `--alpha`（默认 .05）和 `--strata`（默认 1 3）。冻结参数包括预算、路径数、重复数、种子、评分集合、分层边界及统计公式。输出存在即拒绝覆盖；不支持续跑，部分结果保留，汇总拒绝未完成计算。几何无退出单元不生成无意义的参考轨迹，但其风险门槛、全域最大风险及离线目标根诊断都保留于设计与汇总。
+
+[confirmation_plot.py](confirmation_plot.py)只读取完成结果，在独立进程中生成 summary.json、analysis.md、budget.png。唯一主比较是 target_root 的低 M 减高 M 等权平均 MAE。每个环境使用共享校准前缀形成配对损失差，再按重复编号对环境求平均；给这个 iid、取值在 [-1,1] 的重复序列使用经验 Bernstein 半径，分配 alpha/2。参考概率分配 alpha/2：每环境上下尾为 alpha/(4C)，使用删失兼容精确二项式界；向主比较半径加两倍平均参考误差。由并合界得到至少 1-alpha 覆盖，不要求环境间风险相同。
+
+正下界确认改善，区间跨零记未决，负上界表示反向结果。其它预测器、各预算 MAE 和分层均是描述性点估计，不共享主比较的置信声明。分层不使用参考退出概率；按完整目标池的标准化位移绝对值分为 ≤1、(1,3]、>3，几何诊断失败另列。目标噪声用经验根 delta method：`r=sqrt(n/M)*sigma_target/(lambda_target*s_target)`；同时输出 |t|/r。该坐标只作离线诊断，不输入预测器，不是已证明的大位移误差公式。
+
+统计目标始终是最终右侧实际风险退出事件；删失留在分母内，不改成已退出条件概率。几何允许退出不等于证明动力学几乎必然有限退出。更多解释及当前安排只见 [STATUS.md](../../../STATUS.md)。
