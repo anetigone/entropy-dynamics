@@ -12,8 +12,15 @@ def check_preprocessing(source, target):
     for key in ['do_resize', 'size', 'resample', 'crop_pct', 'do_center_crop',
                 'crop_size', 'do_rescale', 'rescale_factor', 'do_normalize',
                 'image_mean', 'image_std']:
-        if source.get(key) != target.get(key):
-            raise ValueError(f'Clean/corrupted preprocessing differs: {key}')
+        left, right = source.get(key), target.get(key)
+        if key in ['crop_pct', 'rescale_factor', 'image_mean', 'image_std'] and left is not None and right is not None:
+            left_array, right_array = np.asarray(left), np.asarray(right)
+            equal = left_array.shape == right_array.shape and np.allclose(
+                left_array, right_array, rtol=1e-7, atol=1e-8)
+        else:
+            equal = left == right
+        if not equal:
+            raise ValueError(f'Clean/corrupted preprocessing differs: {key}: clean={left!r}, corrupt={right!r}')
 
 
 def load_images(root, corruption, severity):
@@ -64,11 +71,16 @@ def main():
 
     import torch
     from PIL import Image
-    from transformers import AutoImageProcessor, ResNetModel
+    import transformers
+    from transformers import ResNetModel
     options = dict(local_files_only=not args.allow_download,
                    cache_dir=str(args.cache_dir) if args.cache_dir else None)
-    processor = AutoImageProcessor.from_pretrained(args.model, use_fast=False, **options)
     clean_protocol = json.loads(args.clean_protocol.read_text(encoding='utf-8'))
+    # The clean cache defines the preprocessing, not checkpoint defaults, which
+    # may differ across local model directories or Transformers versions.
+    config = clean_protocol['preprocessing']
+    processor_class = getattr(transformers, config['image_processor_type'])
+    processor = processor_class.from_dict(config)
     check_preprocessing(clean_protocol['preprocessing'], processor.to_dict())
     model = ResNetModel.from_pretrained(args.model, **options)
     model.requires_grad_(False).eval().to(args.device)

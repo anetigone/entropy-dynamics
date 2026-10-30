@@ -41,7 +41,7 @@ data/CIFAR-10-C/
 
 ## 1. 提取腐蚀特征
 
-[corrupt_features.py](corrupt_features.py)使用与干净缓存相同的冻结 ResNet-18 权重和预处理；必须提供同一个 checkpoint。默认只读本地/已缓存模型，`--allow-download`仅允许获取模型文件。预处理与干净缓存 `protocol.json` 的尺寸、插值、裁剪、缩放和归一化参数直接比较，不计算哈希。模型路径可以不同，使用者应确保选用同一组权重。
+[corrupt_features.py](corrupt_features.py)使用与干净缓存相同的冻结 ResNet-18 权重；必须提供同一个 checkpoint。图像处理器按干净缓存 `protocol.json` 中的类型及完整预处理配置重建，不采用 checkpoint 的默认预处理。默认只读本地/已缓存模型，`--allow-download`仅允许获取模型文件。重建后核对尺寸、插值、裁剪、缩放和归一化参数；浮点参数允许序列化精度差异，真实差异报出双方值，不计算哈希。模型路径可以不同，使用者应确保选用同一组权重。
 
 ```shell
 python experiments/code/corrupt_visual/corrupt_features.py --data-root data/CIFAR-10-C --model models/resnet-18 --clean-protocol experiments/results/visual_features/protocol.json --output experiments/results/corrupt_features --device cuda
