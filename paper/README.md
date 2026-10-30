@@ -15,6 +15,8 @@
 | [Unknown-direction theory](unknown_direction.md) | N.1–N.4：已知基准下未知有界局部方向、最不利熵倾斜、统一退出与 nuisance 投影 |
 | [Visual confirmation](../experiments/results/local_confirmation/analysis.md) | 已知视觉经验基准下的独立预测确认；Markdown 主文 §7.8 与实验 §10.15给出协议、结果和限制 |
 | [Fixed-design confirmation](../experiments/results/precision_confirmation/analysis.md) | 冻结规则的真实 SGD 确认、参考和校准双层同时区间；完整分析保留原位 |
+| [Corruption confirmation](../experiments/results/corrupt_confirmation/analysis.md) | 自然腐蚀方向校准的独立配对比较；主文 §7.9、实验 §10.16，主区间跨零 |
+| [Unknown-direction check](../experiments/results/unknown_directions/analysis.md) | 有限非对齐方向数值检查；主文 §7.10、实验 §10.17，不是 minimax 认证 |
 | [Contribution and literature](RELATED_WORK.md) | 问题定位、信息设定和主要文献的精确比较 |
 
 建议先读 DRAFT.md，再顺次阅读上表的完整证明和分析。所有理论定义与论证均在稿件部分中给出，不依赖状态日志。完整理论章节和当前文献对照均在 paper/；实验分析在 experiments/results/。原始包只作备份，不再作为阅读或运行依赖。

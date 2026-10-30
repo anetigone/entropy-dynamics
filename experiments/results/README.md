@@ -4,6 +4,8 @@
 
 | 结果目录 | 用途 | 分析入口 |
 |---|---|---|
+| [corrupt_confirmation](corrupt_confirmation/) | 自然腐蚀方向校准的独立预算比较 | [分析](corrupt_confirmation/analysis.md) |
+| [unknown_directions](unknown_directions/) | 共同风险下非对齐局部方向数值检查 | [分析](unknown_directions/analysis.md) |
 | [precision confirmation](precision_confirmation) | 冻结规则、独立双层精度确认 | [原处分析](precision_confirmation/analysis.md) |
 | [gaussian_decision](gaussian_decision) | 有限信息高斯 minimax 证书与真实熵 SGD pilot | [原处分析](../../paper/gaussian_decision.md) |
 | [local_scaling](local_scaling/) | 固定初始化、未知局部视觉环境的独立预测与预算尺度 | [分析](local_scaling/analysis.md) |
