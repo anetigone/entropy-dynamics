@@ -1,16 +1,18 @@
 \section{Unknown local directions, nuisance, and the least favorable
 entropy
-tilt}\label{unknown_direction-unknown-local-directions-nuisance-and-the-least-favorable-entropy-tilt}
+tilt}\label{unknown-local-directions-nuisance-and-the-least-favorable-entropy-tilt}
 
 Part of the \href{DRAFT.md}{manuscript}, continuing
 \href{local_prediction.md}{the common-risk construction} and
 \href{gaussian_decision.md}{the Gaussian decision reduction}. These are
 supplied proofs for a known baseline and uniformly bounded local
-perturbations. They do not cover an unknown baseline, arbitrary fixed
-distribution shifts, or joint vanishing-step limits.
+perturbations. Sections 1--5 concern a known baseline. Section 6 extends
+the analysis to a finite baseline sample in a fixed regular density
+neighborhood; arbitrary distribution shifts and joint vanishing-step
+limits remain outside scope.
 
 \subsection{1. The model-specific influence
-function}\label{unknown_direction-the-model-specific-influence-function}
+function}\label{the-model-specific-influence-function}
 
 Use the same baseline Q0, fixed x0=0, safe interval {[}-b,b{]}, fixed
 positive eta, and entropy update U as in L.1--L.4. Write
@@ -30,7 +32,7 @@ in U. It is the influence function of the normalized root displacement
 -q(Q)/s at Q0, where s is its fixed baseline value.
 
 \subsubsection{Proposition N.1. Root sensitivity per unit Fisher
-information}\label{unknown_direction-proposition-n.1.-root-sensitivity-per-unit-fisher-information}
+information}\label{proposition-n.1.-root-sensitivity-per-unit-fisher-information}
 
 Let h be any bounded, mean-zero score with I\_h=E0 h\^{}2\textgreater0.
 Along f\_epsilon=f0(1+epsilon h),
@@ -83,7 +85,7 @@ attainable target window and would not be the same least-favorability
 comparison.
 
 \subsection{2. An infinite-dimensional family with an unknown
-direction}\label{unknown_direction-an-infinite-dimensional-family-with-an-unknown-direction}
+direction}\label{an-infinite-dimensional-family-with-an-unknown-direction}
 
 Fix finite B\_loc\textgreater0 and K\textgreater0, and define
 
@@ -118,7 +120,7 @@ also remain unchanged. The fixed source information and initialization
 remain identical across the enlarged class.
 
 \subsubsection{Lemma N.2. Uniform real-SGD exit law over unknown
-directions}\label{unknown_direction-lemma-n.2.-uniform-real-sgd-exit-law-over-unknown-directions}
+directions}\label{lemma-n.2.-uniform-real-sgd-exit-law-over-unknown-directions}
 
 For sufficiently large n, all these fields have one root q\_\{n,k\} on
 the same compact exit domain, and uniformly over k,
@@ -193,7 +195,7 @@ the function class of directions, since no uniform empirical process
 over k is estimated.
 
 \subsection{3. A direction-free estimator and the minimax
-value}\label{unknown_direction-a-direction-free-estimator-and-the-minimax-value}
+value}\label{a-direction-free-estimator-and-the-minimax-value}
 
 Define the scalar statistic from independent calibration scores
 
@@ -224,7 +226,7 @@ V_G(K,r)=\inf_d\sup_{|t|\le K}E|d(t+rZ)-\Phi(t)|.
 \]
 
 \subsubsection{Theorem N.3. Unknown-direction local minimax
-equivalence}\label{unknown_direction-theorem-n.3.-unknown-direction-local-minimax-equivalence}
+equivalence}\label{theorem-n.3.-unknown-direction-local-minimax-equivalence}
 
 Assume
 
@@ -310,10 +312,10 @@ Consequently the existing numerical minimax brackets are relevant to the
 enlarged local class without rerunning the optimizer or knowing k.
 
 \subsection{4. What nuisance changes, and what it does
-not}\label{unknown_direction-what-nuisance-changes-and-what-it-does-not}
+not}\label{what-nuisance-changes-and-what-it-does-not}
 
 \subsubsection{Proposition N.4. Tangent-space
-projection}\label{unknown_direction-proposition-n.4.-tangent-space-projection}
+projection}\label{proposition-n.4.-tangent-space-projection}
 
 For a finite collection of bounded centered scores H=(h1,\ldots,hd) with
 nonsingular information I=E0 HH\^{}T, let d=E0{[}H psi{]}. The usual
@@ -386,7 +388,7 @@ first-order penalty. No new nuisance simulation is claimed in the
 present confirmation run.
 
 \subsection{5. Contribution and
-boundary}\label{unknown_direction-contribution-and-boundary}
+boundary}\label{contribution-and-boundary}
 
 The Cauchy--Schwarz and tangent-space projection principles are
 classical semiparametric efficiency geometry. The added model-specific
@@ -408,3 +410,1371 @@ Favorable One-Dimensional Submodels}, discusses scores aligned with
 efficient influence curves. This manuscript does not claim that
 principle or TMLE methodology as a new contribution.
 https://doi.org/10.1515/ijb-2015-0054
+
+\subsection{6. Finite baseline information and conditional
+prediction}\label{finite-baseline-information-and-conditional-prediction}
+
+The actual baseline is now unknown within a fixed regular density
+neighborhood of a known reference. An independent baseline sample
+selects the initialization; the target conditions on that realized
+initialization. The complete common risk is retained. Results F.1--F.11
+and their proofs follow. Their Gaussian checks do not constitute
+actual-SGD or BN/Tent confirmation.
+
+\paragraph{1. An unknown-baseline class with a common
+risk}\label{an-unknown-baseline-class-with-a-common-risk}
+
+Use the entropy velocity from the main manuscript:
+
+\[
+U(x,z)=-w^2(z-x)a(w(z-x)),\qquad
+a(u)=s(u)(1-s(u)),\qquad s(u)=(1+e^{-u})^{-1}.
+\]
+
+The confidence slope \(w>0\) and step size \(\eta>0\) are fixed. Write
+\(B_U,L_U\) for uniform bounds on \(|U|\) and \(|\partial_xU|\). All
+fixed-order state derivatives are uniformly bounded.
+
+Let \(f_\star\) be the centered Gaussian reference density used in the
+existing construction. The reference density is known; the actual
+baseline is not. Fix \(0<\kappa<1\) and, throughout this chapter, fix
+
+\[
+g(z)=\kappa\tanh(z)f_\star(z).
+\]
+
+For a sufficiently small fixed \(\delta>0\), let
+
+\[
+\mathcal P_\delta
+=\left\{P:f_P=f_\star(1+b),\
+ E_\star b=0,\ \|b\|_\infty\le\delta\right\}.
+\tag{F.1}
+\]
+
+The unknown measurable function \(b\) need not be smooth. Smoothness of
+the drift comes from \(U\), not from smoothness of \(b\).
+
+For \(P\in\mathcal P_\delta\), define
+
+\[
+v_P(x)=E_PU(x,Z),\quad
+v_P(q_P)=0,\quad
+\lambda_P=v_P'(q_P),\quad
+\sigma_P^2=E_PU(q_P,Z)^2,
+\]
+
+\[
+A_P=1+\eta\lambda_P,\qquad
+s_P^2=\frac{\eta^2\sigma_P^2}{A_P^2-1},\qquad
+\psi_P(z)=\frac{U(q_P,z)}{\lambda_Ps_P},\qquad
+c_P^2=E_P\psi_P^2
+      =\frac{2+\eta\lambda_P}{\eta\lambda_P}.
+\tag{F.2}
+\]
+
+The selected root \(q_P\) is the unique root in a known small interval
+specified below. The parameter \(s_P\) is the amplified future-noise
+scale, not the logistic function \(s(\cdot)\).
+
+For fixed \(B<\infty\) and \(K\ge0\), let
+
+\[
+\mathcal K_{B,K}(P)
+=\left\{k:E_Pk=0,\ \|k\|_\infty\le B,\
+ |t_P(k)|\le K\right\},\qquad
+t_P(k)=E_P[\psi_Pk].
+\tag{F.3}
+\]
+
+The target marginal is
+
+\[
+f_{Q_{n,P,k}}=f_P(1+k/\sqrt n).
+\tag{F.4}
+\]
+
+For all sufficiently large \(n\), define the labeled target environment
+by
+
+\[
+p_{n,P,k}(z,\pm1)
+=\tfrac12\{f_{Q_{n,P,k}}(z)\pm g(z)\}.
+\tag{F.5}
+\]
+
+The same construction with \(f_P\) defines a labeled baseline if one is
+desired; baseline labels are not observed.
+
+\subparagraph{Lemma F.1. Uniform geometry and legal common
+risk}\label{lemma-f.1.-uniform-geometry-and-legal-common-risk}
+
+There exist \(d>0\), \(0<r<d/8\), \(\delta>0\), a fixed admissible step
+size, and positive constants independent of \(P,k,n\), such that:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Every \(P\in\mathcal P_\delta\) has a unique root
+  \(q_P\in[-r/2,r/2]\), and \(v_P'\) has a uniform positive lower bound
+  on \([-d,d]\).
+\item
+  The quantities \(\lambda_P,\sigma_P,s_P,c_P\) are bounded above and
+  away from zero. The same root and derivative bounds, with slightly
+  enlarged constants, hold for \(Q_{n,P,k}\).
+\item
+  The densities (F.5) are legal, have equal class priors, and share the
+  entire classification-risk function \[
+  R(x)=\tfrac12+\int_{-\infty}^{x}g(z)\,dz.
+  \tag{F.6}
+  \]
+\item
+  Put \(b_0=d/2\) and \(\varepsilon=R(b_0)-R(0)\). For every
+  initialization \(x\in[-r,r]\), the risk-safe set relative to that
+  initialization is \[
+  \{y:R(y)\le R(x)+\varepsilon\}
+  =[-b(x),b(x)],\qquad b_0\le b(x)<3d/4.
+  \tag{F.7}
+  \] The root is uniformly separated from both boundaries. Choose \[
+  0<\eta<\min\{1/L_U,\ d/(8B_U)\}.
+  \tag{F.8}
+  \] Every one-step overshoot from the safe interval remains in
+  \([-d,d]\).
+\item
+  Uniformly over \(P,k\), \[
+  q_{Q_{n,P,k}}
+  =q_P-\frac{s_Pt_P(k)}{\sqrt n}+O(n^{-1}),\qquad
+  s_{Q_{n,P,k}}=s_P+O(n^{-1/2}).
+  \tag{F.9}
+  \]
+\end{enumerate}
+
+\textbf{Proof.} At \(f_\star\), the root is zero and the root derivative
+is strictly positive. Choose \(d\) so the reference drift derivative is
+positive throughout \([-d,d]\). For \(j=0,1,2,3\),
+
+\[
+\sup_x|v_P^{(j)}(x)-v_\star^{(j)}(x)|
+\le\delta\sup_{x,z}|\partial_x^jU(x,z)|.
+\]
+
+Choose \(r<d/8\) and then \(\delta\) small enough that the drift is
+strictly increasing on \([-d,d]\), its signs at \(\pm r/2\) are
+opposite, and its derivative has a uniform positive lower bound. This
+gives the unique selected root. Bounded derivatives and the
+density-ratio bound give continuity of root noise variance at the
+reference law; reduce \(\delta\) to keep it uniformly positive. Formula
+(F.2) gives the other bounds.
+
+Choose \(\delta<\min\{1/4,1-\kappa\}\). For large \(n\),
+
+\[
+f_Q\ge(1-\delta)(1-B/\sqrt n)f_\star
+     \ge |g|.
+\]
+
+Thus (F.5) is nonnegative. Since \(\int g=0\), both class priors equal
+\(1/2\). The threshold-classification error has derivative \(g\),
+proving (F.6). This risk is even and strictly increasing in \(|x|\).
+Reduce \(r\), if necessary, until
+
+\[
+R(r)-R(0)<R(3d/4)-R(d/2).
+\]
+
+If this last step reduces r, reduce delta once more so that the signs at
+the new endpoints \(\pm r/2\) still bracket the root; all previous
+strict bounds persist on the smaller density class. This fixes the order
+of choosing the state and density neighborhoods. This proves (F.7).
+Since \(|x_{j+1}-x_j|\le\eta B_U\), (F.8) gives the overshoot statement.
+
+Finally,
+
+\[
+v_Q(q_P)=n^{-1/2}E_P[U(q_P,Z)k(Z)]
+        =n^{-1/2}\lambda_Ps_Pt_P(k).
+\]
+
+The derivative of \(v_Q-v_P\) is uniformly \(O(n^{-1/2})\). A uniform
+Taylor expansion of the root equation gives the first part of (F.9); the
+root, variance and slope expansions give the second. \(\square\)
+
+\textbf{Information distinction.} The known risk identifies the fixed
+signed density \(g\), and may identify the known reference \(f_\star\).
+It does not identify the unknown multiplier \(b\) in (F.1). In
+particular, \(g\) must not be redefined as \(\kappa\tanh(z)f_P(z)\) when
+\(P\) changes.
+
+\paragraph{2. Observations, initialization and conditional
+target}\label{observations-initialization-and-conditional-target}
+
+The predictor receives independent samples
+
+\[
+B_L=(B_1,\ldots,B_L)\sim P^{\otimes L},\qquad
+C_M=(C_1,\ldots,C_M)\sim Q_{n,P,k}^{\otimes M}.
+\tag{F.10}
+\]
+
+Both samples are independent of all future SGD batches. The predictor
+knows the declared class, \(U,\eta,w,R,B,K\), and the initialization
+rule, but not \(P,k,q_P,q_Q\), or their exact dynamical constants.
+
+Define
+
+\[
+\widehat v_L(x)=L^{-1}\sum_{i=1}^{L}U(x,B_i).
+\]
+
+If \(\widehat v_L\) has a strictly positive derivative throughout
+\([-r,r]\), bounded below by half a known uniform drift-derivative lower
+bound, and has opposite signs at the endpoints, let \(x_L\) be its
+unique root in that interval. Otherwise set \(x_L=0\). This is a
+measurable, specified fallback rule; failed root estimation is not
+discarded.
+
+Future adaptation is
+
+\[
+x_0=x_L,\qquad
+x_{j+1}=x_j+\frac{\eta}{n}\sum_{i=1}^{n}U(x_j,Z_{j,i}),
+\qquad Z_{j,i}\stackrel{\mathrm{iid}}{\sim}Q_{n,P,k}.
+\tag{F.11}
+\]
+
+Let
+
+\[
+T_\varepsilon
+=\inf\{j\ge0:R(x_j)>R(x_L)+\varepsilon\}.
+\]
+
+By Lemma F.1 this is exactly exit from \([-b(x_L),b(x_L)]\), including
+overshoots. Define the conditional forecast target
+
+\[
+\pi_n(P,k;B_L)
+=\Pr_{Q_{n,P,k}}\{x_{T_\varepsilon}>b(x_L)\mid B_L\}.
+\tag{F.12}
+\]
+
+The expectation in (F.12) is only over the future trajectory.
+Conditional on \(B_L,C_M\), the future probability is the same number
+because the calibration sample is independent of the future.
+
+The minimax MAE is
+
+\[
+\mathfrak R_{n,L,M}
+=\inf_{\widehat\pi}
+ \sup_{\substack{P\in\mathcal P_\delta\\k\in\mathcal K_{B,K}(P)}}
+ E_{P,Q}\left|\widehat\pi(B_L,C_M)-\pi_n(P,k;B_L)\right|.
+\tag{F.13}
+\]
+
+Actions can be restricted to \([0,1]\). Independent randomization cannot
+improve this convex loss.
+
+\paragraph{3. Root estimation and actual-SGD
+exit}\label{root-estimation-and-actual-sgd-exit}
+
+\subparagraph{Lemma F.2. Uniform initialization expansion and scale
+estimation}\label{lemma-f.2.-uniform-initialization-expansion-and-scale-estimation}
+
+Uniformly over \(P\in\mathcal P_\delta\), the fallback probability is at
+most \(C e^{-cL}\), and
+
+\[
+x_L-q_P
+=-\frac1{\lambda_PL}\sum_{i=1}^{L}U(q_P,B_i)+R_{L,P},
+\qquad
+\sup_P E_P|R_{L,P}|\le C/L,
+\tag{F.14}
+\]
+
+\[
+\sup_P E_P|x_L-q_P|^2\le C/L,\qquad
+\sup_P E_P|x_L-q_P|^4\le C/L^2.
+\tag{F.15}
+\]
+
+Use the baseline sample to estimate
+
+\[
+\widehat\lambda=\widehat v_L'(x_L),\qquad
+\widehat\sigma^2=L^{-1}\sum_i
+\{U(x_L,B_i)-\widehat v_L(x_L)\}^2,
+\]
+
+and truncate these estimates to fixed positive compact intervals
+containing their true ranges in their interiors. Define
+\(\widehat s,\widehat c\) through (F.2). Then these estimates are
+uniformly consistent, and their squared errors are \(O(L^{-1})\).
+
+\textbf{Proof.} Bounded \(U\) gives exponential concentration at both
+bracket endpoints. Bounded \(\partial_x^2U\) permits a fixed finite grid
+on \([-r,r]\) for testing a fixed positive derivative margin; Hoeffding
+bounds on that grid give the uniform exponential bound for derivative
+failure.
+
+On the good event, the empirical inverse derivative is bounded. The mean
+value theorem gives
+
+\[
+|x_L-q_P|\le C|\widehat v_L(q_P)|.
+\]
+
+The centered bounded sample mean has second moment \(O(L^{-1})\) and
+fourth moment \(O(L^{-2})\). The fallback contributes exponentially
+small terms because \(x_L,q_P\) are bounded. Taylor expansion gives
+
+\[
+0=\widehat v_L(q_P)+\lambda_P(x_L-q_P)
+ +\{\widehat v_L'(q_P)-\lambda_P\}(x_L-q_P)
+ +O(|x_L-q_P|^2).
+\]
+
+Cauchy--Schwarz and the preceding moment bounds give (F.14). For the
+squared remainder, write the derivative fluctuation at \(q_P\) as
+\(D_L\). Its fourth moment is \(O(L^{-2})\); hence
+\(E[D_L^2(x_L-q_P)^2]=O(L^{-2})\) by Cauchy--Schwarz and (F.15). The
+quadratic Taylor term has the same squared bound. The bad event has
+exponential probability and all relevant quantities are bounded, so
+\(E|R_{L,P}|^2=O(L^{-2})\) uniformly as well. For scale estimates, first
+evaluate the empirical moments at \(q_P\), then use bounded derivatives
+to replace \(q_P\) by \(x_L\). Smoothness of (F.2) on the fixed positive
+compact ranges completes the proof. \(\square\)
+
+\subparagraph{Lemma F.3. Uniform exit law with a varying initial
+point}\label{lemma-f.3.-uniform-exit-law-with-a-varying-initial-point}
+
+For each fixed finite \(H\), uniformly over \(P,k\) and deterministic
+starting points \(x\in[-r,r]\) satisfying
+
+\[
+\sqrt n\,|x-q_Q|\le H,
+\]
+
+the actual fresh-batch dynamics satisfy
+
+\[
+\left|
+\Pr_Q\{x_{T_\varepsilon}>b(x)\mid x_0=x\}
+-\Phi\!\left(\frac{\sqrt n(x-q_Q)}{s_Q}\right)
+\right|\le C_H e_n,
+\tag{F.16}
+\]
+
+where
+
+\[
+e_n=n^{-1/2}+\left(\frac{1+\log n}{n}\right)^{1/3}.
+\]
+
+The constants are uniform over the full bounded density class; no
+differentiability in the distribution parameter is needed.
+
+\textbf{Proof.} Here \(Q=Q_{n,P,k}\). All laws have a common density
+lower bound relative to \(f_\star\). A fixed bounded score interval
+strictly to the left of \([-d,d]\) gives a uniformly positive entropy
+velocity throughout the state interval. A fixed number of consecutive
+batches whose scores all fall in that interval forces exit. The block
+probability is positive for each \(n\), uniformly in the state, so
+\(T_\varepsilon<\infty\) almost surely. This argument does not supply a
+typical exit-time estimate.
+
+Put \(G_Q(y)=y+\eta v_Q(y)\), \(A_Q=1+\eta v_Q'(q_Q)\). The inverse map
+contracts on \([-d,d]\). The inverse-iteration construction gives a
+normalized increasing \(C^2\) conjugacy \(H_Q\) such that
+
+\[
+H_Q(q_Q)=0,\quad H_Q'(q_Q)=1,\quad
+H_Q(G_Q(y))=A_QH_Q(y)
+\]
+
+where both arguments lie in the interval. Uniform bounds are
+
+\[
+\|H_Q\|_{C^2}\le C,\quad \inf H_Q'\ge m>0,\quad
+1<A_{\min}\le A_Q\le A_{\max}.
+\tag{F.17}
+\]
+
+For completeness, center the inverse map at \(q_Q\), write it as
+\(A_Q^{-1}y+O(y^2)\), and construct \(H_Q\) as the limit of
+\(A_Q^j(G_Q^{-j}(y)-q_Q)\). Reduce the fixed density neighborhood and
+the common state neighborhood so that the centered inverse derivatives
+are bounded by a common \(\beta\) with \(A_{\max}\beta^2<1\). This is
+possible because at the reference root
+\(A_\star(A_\star^{-1})^2=A_\star^{-1}<1\), and roots and derivatives
+vary uniformly continuously under the density envelope. The differences
+of successive normalized inverse iterates and their first two
+derivatives are then bounded by a summable geometric sequence. The
+second-derivative difference is controlled by the uniform third
+derivative of the inverse and the contraction of the iterates. Uniform
+bounded third derivatives of the drift supply the second-derivative
+control. The derivative product has positive factors
+\(1+O(|G_Q^{-j}(y)-q_Q|)\); the sum of deviations is bounded, so its
+limit is bounded away from zero. A fixed number of inverse iterations
+covers the full compact interval. This proves (F.17) uniformly. These
+are exactly the ingredients used in the original actual-SGD argument,
+now uniform in \(P,k\) and in the initial point.
+
+Let \(\tau=T_\varepsilon\),
+\(\xi_j(y)=n^{-1}\sum_iU(y,Z_{j,i})-v_Q(y)\), and \[
+Y_t=\sqrt n A_Q^{-(t\wedge\tau)}H_Q(x_{t\wedge\tau}),\quad
+\mu=\sqrt nH_Q(x).
+\]
+
+Taylor expansion before exit yields a martingale increment plus a
+remainder bounded by \(C\xi_j(x_j)^2\). Conditional batch second and
+fourth moments are bounded by \(C/n\) and \(C/n^2\). Since
+\(|\mu|\le C_H\), the stopped recursion gives
+
+\[
+\sup_t E|Y_t|^2\le C_H.
+\]
+
+The root-to-boundary distance and \(\inf H_Q'>0\) imply \[
+EA_Q^{-2\tau}\le C_H/n,\qquad
+E[1_{\{j<\tau\}}|x_j-q_Q|^2]
+\le C_H\min(A_Q^{2j}/n,1).
+\tag{F.18}
+\]
+
+Introduce the frozen-root seed on the same infinite sample array, \[
+W=\mu+\eta\sum_{j\ge0}A_Q^{-j-1}\sqrt n\,\xi_j(q_Q).
+\]
+
+The conditional variance of \[
+H_Q'(G_Q(x_j))\xi_j(x_j)-\xi_j(q_Q)
+\] is at most \(C|x_j-q_Q|^2/n\). The weighted sum and (F.18) therefore
+contribute \(C_H(1+\log n)/n\) to the squared approximation error.
+Taylor remainders contribute \(C/n\). The frozen tail after \(\tau\),
+conditional on the stopping history, has variance \(s_Q^2A_Q^{-2\tau}\).
+Consequently \[
+E|Y_\tau-W|^2\le C_H(1+\log n)/n.
+\tag{F.19}
+\]
+
+Grouping \(W-\mu\) by sample column gives a normalized sum of \(n\) iid
+centered variables with uniform bounded third moments and variance
+\(s_Q^2\) bounded away from zero. Berry--Esseen gives a uniform
+\(C/\sqrt n\) Gaussian approximation and \[
+\Pr(|W|\le u)\le Cu+C/\sqrt n.
+\]
+
+The sign of \(Y_\tau\) is exactly the exit side. Apply (F.19), Chebyshev
+and this anti-concentration bound with \(u=((1+\log n)/n)^{1/3}\).
+Finally, \[
+\sqrt nH_Q(x)=\sqrt n(x-q_Q)+O_H(n^{-1/2}).
+\] This proves (F.16). \(\square\)
+
+\subparagraph{Theorem F.4. Conditional exit and the two-sample
+interface}\label{theorem-f.4.-conditional-exit-and-the-two-sample-interface}
+
+Assume \(L/n\to\ell\in(0,\infty]\). Define
+
+\[
+S_n=\frac{\sqrt n(x_L-q_Q)}{s_P},\qquad
+\widehat D_n=
+\frac{\sqrt n}{\widehat\lambda\,\widehat s}\,
+\frac1M\sum_{j=1}^{M}U(x_L,C_j).
+\tag{F.20}
+\]
+
+Then
+
+\[
+\sup_{P,k}E_B
+\left|\pi_n(P,k;B_L)-\Phi(S_n)\right|\longrightarrow0.
+\tag{F.21}
+\]
+
+If also \(M/n\to\rho\in(0,\infty)\), the joint law of
+\((S_n,\widehat D_n)\) converges, uniformly in bounded-Lipschitz
+distance over \(P,k\), to
+
+\[
+S=t+a_PZ_L,\qquad D=S+b_PZ_C,\qquad
+a_P=\frac{c_P}{\sqrt\ell},\quad
+b_P=\frac{c_P}{\sqrt\rho},
+\tag{F.22}
+\]
+
+where \(t=t_P(k)\), \(Z_L,Z_C\) are independent standard normals, and
+\(a_P=0\) when \(\ell=\infty\). If \(M/n\to\infty\), then
+
+\[
+\widehat D_n-S_n\longrightarrow0
+\]
+
+uniformly in probability, and \(\Phi(\widehat D_n)\) is uniformly
+consistent for the conditional target (F.12).
+
+\textbf{Proof.} Lemmas F.1--F.2 give
+
+\[
+S_n
+=t_P(k)-\frac{\sqrt n}{L}\sum_{i=1}^{L}\psi_P(B_i)+o_P(1),
+\tag{F.23}
+\]
+
+uniformly. In particular, \(\sup_{P,k}E S_n^2\le C\). On \(|S_n|\le H\),
+Lemma F.3 applies conditionally on \(B_L\), since future batches are
+independent. On the complement use the bound one. The replacement of
+\(s_Q\) by \(s_P\) costs \(o(1)\). First send \(n\) to infinity for
+fixed \(H\), then send \(H\) to infinity using the uniform second
+moment. This proves (F.21). It is an average bound on errors in
+conditional probabilities; it does not replace the conditional target by
+its average.
+
+For the calibration statistic, Taylor expansion at \(q_P\) gives, when
+\(M/n\) stays bounded away from zero,
+
+\[
+\widehat D_n
+=t_P(k)-\frac{\sqrt n}{L}\sum_i\psi_P(B_i)
+ +\frac{\sqrt n}{M}\sum_j
+ \{\psi_P(C_j)-E_Q\psi_P(C_j)\}
+ +o_P(1).
+\tag{F.24}
+\]
+
+To verify the remainder, \(x_L-q_P=O_P(L^{-1/2})\),
+\(E_QU_x(q_P)=\lambda_P+O(n^{-1/2})\), and the calibration derivative
+fluctuation is \(O_P(M^{-1/2})\). The Taylor quadratic term is
+\(O_P(\sqrt n/L)=o_P(1)\). Replacing the denominator by the consistent
+estimated denominator is valid because the unstudentized statistic is
+tight. All statements are uniform. The two leading centered sums in
+(F.24) are independent; their variances are \(c_P^2n/L\) and
+\(c_P^2n/M+o(1)\). Uniform boundedness of \(\psi_P\), a uniform positive
+variance, and Berry--Esseen give (F.22). If \(L/n\to\infty\), the first
+centered sum vanishes.
+
+For \(M/n\to\infty\), conditional calibration variance at \(x_L\) is at
+most \(C/M\). The same Taylor bounds give \(\widehat D_n-S_n=o_P(1)\).
+Boundedness and the Lipschitz property of \(\Phi\), together with
+(F.21), prove consistency. \(\square\)
+
+\textbf{Cancellation.} The realized baseline-root error occurs in both
+\(S_n\) and \(\widehat D_n\). Thus the leading error of the direct
+predictor relative to its \emph{conditional} target has calibration
+variance \(c_P^2n/M\), not \(c_P^2n(1/L+1/M)\). The latter is the
+variance of a root-difference statistic around the deterministic shift
+\(t\), which is a different estimand.
+
+\paragraph{4. Exact limiting risk of the raw feasible
+rule}\label{exact-limiting-risk-of-the-raw-feasible-rule}
+
+Define \[
+\mathcal D(u,v)
+=E|\Phi(u+vZ)-\Phi(u)|
+=\int_0^\infty\{\Phi(u+vz)-\Phi(u-vz)\}\phi(z)\,dz.
+\tag{F.25}
+\]
+
+\subparagraph{Corollary F.5. Raw-rule risk and nonmonotone baseline
+effects}\label{corollary-f.5.-raw-rule-risk-and-nonmonotone-baseline-effects}
+
+Under the finite-ratio assumptions of Theorem F.4,
+
+\[
+\sup_{P,k}\left|
+E|\Phi(\widehat D_n)-\pi_n(P,k;B_L)|
+-
+\mathcal D\!\left(
+\frac{t_P(k)}{\sqrt{1+a_P^2}},
+\frac{b_P}{\sqrt{1+a_P^2}}
+\right)
+\right|\longrightarrow0.
+\tag{F.26}
+\]
+
+For each fixed \(P\), the maximum limiting risk over the declared
+direction class is
+
+\[
+\frac1\pi\arctan\!\left(
+\frac{b_P}{\sqrt{1+a_P^2}}\right),
+\tag{F.27}
+\]
+
+attained at \(t=0\), which the class contains.
+
+\textbf{Proof.} Apply Theorem F.4 to the bounded Lipschitz loss
+\(|\Phi(D)-\Phi(S)|\). Conditional on \(S\), its expectation is
+\(\mathcal D(S,b_P)\). Integrating over \(S=t+a_PZ_L\) uses \[
+E\Phi(t+a_PZ_L+y)
+=\Phi\!\left(\frac{t+y}{\sqrt{1+a_P^2}}\right),
+\] which proves (F.26). The function \(\mathcal D(u,v)\) is even and
+decreasing in \(|u|\); pairing \(z\) and \(-z\) and differentiating
+proves this directly. At zero, \(\mathcal D(0,v)=\arctan(v)/\pi\),
+obtained by differentiating the integral in \(v\) and integrating from
+zero. \(\square\)
+
+For fixed calibration noise \(b_P\), increasing initialization noise
+\(a_P\) decreases this average raw-rule risk. This is not evidence that
+a poorer initialization is beneficial: the conditional probability is
+more often near zero or one. The data-generating target changes with
+\(L\).
+
+Also, \[
+E_B\pi_n(P,k;B_L)
+-\Phi\!\left(\frac{t_P(k)}{\sqrt{1+a_P^2}}\right)\longrightarrow0
+\tag{F.28}
+\] uniformly. This marginal probability is not the target in (F.13).
+
+\paragraph{5. The Gaussian problem with a random
+target}\label{the-gaussian-problem-with-a-random-target}
+
+For \(a,b>0\), let
+
+\[
+S=t+aZ_L,\qquad D=S+bZ_C,
+\qquad |t|\le K,
+\]
+
+with independent standard normals. Define
+
+\[
+V_{\mathrm{FB}}(K;a,b)
+=\inf_{d:\mathbb R\to[0,1]}
+ \sup_{|t|\le K}E_t|d(D)-\Phi(S)|.
+\tag{F.29}
+\]
+
+Both the observation and the target contain \(Z_L\). The parameter
+restriction is on \(t\), not on the realized \(S\).
+
+The corresponding experiment with an unknown baseline position is
+
+\[
+X=\beta+aZ_L,\qquad Y=\beta-t+bZ_C,\qquad
+\text{target}=\Phi(X-\beta+t).
+\tag{F.30}
+\]
+
+Let \(V_H(K;a,b)\) be its minimax risk when \(|\beta|\le H\), and let
+\(V_\infty\) allow every real \(\beta\).
+
+\subparagraph{Proposition F.6. Removing the unrestricted baseline
+position}\label{proposition-f.6.-removing-the-unrestricted-baseline-position}
+
+For \(a,b>0\),
+
+\[
+V_\infty(K;a,b)=V_{\mathrm{FB}}(K;a,b),
+\tag{F.31}
+\]
+
+and, for \(H>0\),
+
+\[
+0\le V_{\mathrm{FB}}(K;a,b)-V_H(K;a,b)
+\le E\min\!\left(\frac{|aZ|}{2H},1\right)
+\le\frac{a}{H\sqrt{2\pi}}.
+\tag{F.32}
+\]
+
+Thus discarding the absolute coordinate is justified in the
+unrestricted-location minimax problem, or after taking \(H\to\infty\).
+It need not be optimal for a fixed bounded location window.
+
+\textbf{Proof.} For any rule \(d\), use \(\delta(X,Y)=d(X-Y)\). With
+\(S=X-\beta+t\), the pair \((S,X-Y)\) has the law in (F.29), up to the
+irrelevant sign of \(Z_C\). Hence \(V_H,V_\infty\le V_{\mathrm{FB}}\).
+
+For the reverse bound, let \(\mu\) be any prior on \([-K,K]\),
+independently assign \(\beta\) the uniform prior on \([-H,H]\), and
+write \(D=X-Y\), \(\epsilon_L=S-t\). Conditional on \((t,S,D)\), the
+observed \(X\) is uniform on \([-H+\epsilon_L,H+\epsilon_L]\).
+
+Compare this joint distribution to one with an auxiliary observation
+\(X'\), uniform on \([-H,H]\) and independent of \((t,S,D)\). The total
+variation distance is at most \[
+E\min(|\epsilon_L|/(2H),1).
+\] In the auxiliary problem \(X'\) cannot reduce Bayes risk: averaging a
+randomized action over \(X'\) improves or preserves absolute loss by
+Jensen. Therefore the original Bayes risk is at least the Bayes risk for
+observing \(D\) alone, minus this TV bound.
+
+Taking the supremum over priors \(\mu\) gives (F.32). The minimax
+equality between rules and priors is justified below. Letting
+\(H\to\infty\), and using the upper bound, proves (F.31). \(\square\)
+
+\subparagraph{Proposition F.7. Bayes characterization, exact subcase and
+checks}\label{proposition-f.7.-bayes-characterization-exact-subcase-and-checks}
+
+The following properties hold.
+
+\textbf{(a) Minimax/Bayes characterization.} Let \(\phi_a\) denote the
+\(N(0,a^2)\) density. Then
+
+\[
+V_{\mathrm{FB}}(K;a,b)
+=\sup_{\mu\in\mathcal P([-K,K])}
+\int_{\mathbb R}\inf_{p\in[0,1]}
+\int_{-K}^{K}\int_{\mathbb R}
+|p-\Phi(s)|\phi_a(s-t)\phi_b(d-s)\,ds\,\mu(dt)\,dd.
+\tag{F.33}
+\]
+
+A least-favorable prior exists. For a given prior, a Bayes rule is the
+posterior median of \(\Phi(S)\), equivalently \(\Phi\) of the posterior
+median of \(S\).
+
+Put \[
+\alpha=\frac{a^2}{a^2+b^2},\qquad
+v^2=\frac{a^2b^2}{a^2+b^2}.
+\] Conditional on \(D=d,t\), \[
+S\mid D=d,t\sim
+N\{\alpha d+(1-\alpha)t,\ v^2\},
+\] and the posterior mixing weights for \(t\) are proportional to
+\(\phi_{\sqrt{a^2+b^2}}(d-t)\mu(dt)\). These formulas specify the
+posterior median by a one-dimensional monotone equation.
+
+\textbf{(b) No root displacement.} For \(K=0\), \[
+d_0^\star(d)=\Phi\!\left(\frac{a^2}{a^2+b^2}d\right)
+\tag{F.34}
+\] is minimax, and \[
+V_{\mathrm{FB}}(0;a,b)
+=\frac1\pi\arctan
+\left(\frac{ab}{\sqrt{a^2+b^2+a^4}}\right).
+\tag{F.35}
+\]
+
+In particular, \(V_{\mathrm{FB}}(0;1,1)=1/6\), although the marginal
+probability \(E\Phi(S)\) is exactly \(1/2\).
+
+\textbf{(c) General-window bounds.} For \(K\ge0\), \[
+\frac1\pi\arctan
+\left(\frac{ab}{\sqrt{a^2+b^2+a^4}}\right)
+\le V_{\mathrm{FB}}(K;a,b)
+\le \frac1\pi\arctan\left(\frac{b}{\sqrt{1+a^2}}\right).
+\tag{F.36}
+\] The upper bound is the raw rule \(d(d)=\Phi(d)\). The lower bound
+restricts to \(t=0\).
+
+\textbf{(d) Known-baseline recovery and perfect calibration.} Defining
+the degenerate cases directly, \[
+V_{\mathrm{FB}}(K;0,b)=V_G(K,b),\qquad
+V_{\mathrm{FB}}(K;a,0)=0.
+\tag{F.37}
+\] Moreover, \(V_{\mathrm{FB}}(K;a,b)\to V_G(K,b)\) as \(a\downarrow0\)
+for fixed \(b>0\), and \(V_{\mathrm{FB}}(K;a,b)\to0\) as
+\(b\downarrow0\).
+
+\textbf{(e) Continuity and finite-grid control.} On compact subsets of
+\(a,b>0\), \(V_{\mathrm{FB}}\) is continuous in \((K,a,b)\). For every
+rule \(d\), \[
+|R_t(d)-R_u(d)|
+\le 2\Phi\!\left(\frac{|t-u|}{2a}\right)-1
+\le \frac{|t-u|}{a\sqrt{2\pi}}.
+\tag{F.38}
+\] Consequently a grid with maximum distance \(h\) to \([-K,K]\) gives
+\[
+\sup_{|t|\le K}R_t(d)
+\le\max_{t\in\mathrm{grid}}R_t(d)
+     +h/(a\sqrt{2\pi}).
+\tag{F.39}
+\] This is a continuous-window risk bound; numerical quadrature and tail
+errors must still be controlled separately.
+
+\textbf{Proof.} For (a), rule risks are convex in the action function.
+Use a common Gaussian reference measure on the observation line. The set
+of \([0,1]\)-valued rules is weak-* compact in \(L^\infty\), and
+integral convexity makes each risk lower semicontinuous in this
+topology. Risks are continuous in \(t\), uniformly over rules, by the TV
+bound (F.38). Convex minimax therefore interchanges the rule and prior
+optimizations. The prior space is weakly compact, and Bayes risk is an
+upper semicontinuous infimum of continuous affine functions of the
+prior, giving a least-favorable prior. Pointwise minimization under
+absolute loss gives a posterior median. For \(a,b>0\), the posterior
+density of \(S\) is strictly positive, so its median is unique.
+
+For (b), \(t=0\) is known in (F.29); Gaussian conditioning gives the
+posterior median \(\alpha D\). Write \[
+S=m+vZ,\qquad m=\alpha D,\qquad
+\operatorname{Var}(m)=d_m^2=\frac{a^4}{a^2+b^2},
+\] where \(m\) and \(Z\) are independent centered normals. The risk is
+\[
+E|\Phi(m+vZ)-\Phi(m)|
+=\frac1\pi\arctan\!\left(\frac{v}{\sqrt{1+d_m^2}}\right)
+\] by the calculation in Corollary F.5. Simplifying gives (F.35). At
+\(a=b=1\), the arctangent argument is \(1/\sqrt3\), giving \(1/6\).
+
+Part (c) follows from restriction to \(t=0\) and Corollary F.5.
+
+For (d), when \(a=0\), \(S=t\) is deterministic and the experiment is
+exactly the original Gaussian problem. When \(b=0\), \(S=D\) is
+observed. To prove recovery as \(a\downarrow0\), replace the target
+\(\Phi(S)\) by \(\Phi(t)\), at a risk cost at most \[
+E|\Phi(t+aZ)-\Phi(t)|\le a/\pi.
+\] After this replacement, \(D\mid t\sim N(t,a^2+b^2)\), so the minimax
+value is \(V_G(K,\sqrt{a^2+b^2})\). Gaussian TV continuity gives
+convergence to \(V_G(K,b)\). The raw upper bound proves the
+\(b\downarrow0\) statement.
+
+For (e), changing \(t\) changes only the mean in \(S\sim N(t,a^2)\); the
+conditional law \(D\mid S\) and the bounded payoff are unchanged. TV
+contraction gives (F.38). Gaussian covariance continuity gives uniform
+TV continuity in \((a,b)\) away from zero. These bounds pass through the
+minimax optimizations and give continuity, including variation of the
+compact endpoint \(K\). \(\square\)
+
+\textbf{Why the old window projection fails.} For \(a>0\), \(S\) has
+positive probability outside \([-K,K]\). A rule whose outputs stay in
+\([\Phi(-K),\Phi(K)]\) retains truncation error even as
+\(b\downarrow0\). For instance, at \(t=0,a=1,K=1\), the best rule
+subject to that output range has limiting risk \[
+E|\Phi(\operatorname{clip}(S,-1,1))-\Phi(S)|
+=(1-\Phi(1))^2\approx0.02517149.
+\tag{F.40}
+\] Here \(\Phi(S)\) is uniform on \([0,1]\), so the identity follows by
+integrating the two clipped tails. This is a Gaussian calculation, not
+an actual-SGD experiment.
+
+\paragraph{6. A marked two-sample experiment: keeping the
+initialization}\label{a-marked-two-sample-experiment-keeping-the-initialization}
+
+Fix an interior baseline \(P_0\in\mathcal P_\delta\), meaning its
+density multiplier has norm strictly less than \(\delta\). Write
+\(q_0,s_0,c_0,\psi_0\) for its constants.
+
+For finite \(H\) and a seed window \(K'<K\), define, relative to
+\(P_0\),
+
+\[
+f_{P_{n,\beta}}
+=f_{P_0}\left(1-\frac{\beta\psi_0}{c_0^2\sqrt n}\right),
+\] \[
+f_{Q_{n,\beta,t}}
+=f_{P_0}\left(1-\frac{(\beta-t)\psi_0}{c_0^2\sqrt n}\right),
+\quad |\beta|\le H,\quad |t|\le K'.
+\tag{F.41}
+\]
+
+Both integrate to one. The baseline moves its root to first order by
+\(s_0\beta/\sqrt n\); the target root is moved by
+\(s_0(\beta-t)/\sqrt n\).
+
+Relative to \(P_{n,\beta}\), the target perturbation is
+
+\[
+k_{n,\beta,t}(z)
+=
+\frac{t\psi_0(z)/c_0^2}
+ {1-\beta\psi_0(z)/(c_0^2\sqrt n)}.
+\tag{F.42}
+\]
+
+Its baseline mean is exactly zero. Its seed parameter is
+\(t+O(n^{-1/2})\), uniformly on the compact parameter rectangle. Thus it
+belongs to the declared class for large \(n\), provided the envelope has
+slack for \(K'\). For \(K=0\), take \(t=0\), \(k=0\), without needing an
+interior seed window.
+
+\subparagraph{Lemma F.8. Compact marked-experiment minimax
+convergence}\label{lemma-f.8.-compact-marked-experiment-minimax-convergence}
+
+Assume \(L/n\to\ell\in(0,\infty)\) and \(M/n\to\rho\in(0,\infty)\). On
+the submodel (F.41), the full two-sample prediction problem converges in
+minimax value to (F.30) restricted to \(|\beta|\le H,|t|\le K'\), with
+\[
+a=c_0/\sqrt\ell,\qquad b=c_0/\sqrt\rho.
+\tag{F.43}
+\]
+
+The transfer preserves the observed initialization in the loss. A CLT
+for \(X-Y\) alone is insufficient for this conclusion.
+
+\textbf{Proof.} Put \(h_0=\psi_0/c_0\), so \(E_0h_0=0\), \(E_0h_0^2=1\),
+and \(h_0\) is bounded. At the product baseline
+\(P_0^{\otimes L}\otimes P_0^{\otimes M}\), define independent
+standardized score sums \[
+S_L=L^{-1/2}\sum_i h_0(B_i),\qquad
+S_M=M^{-1/2}\sum_j h_0(C_j).
+\]
+
+Their distributions are atomless: \(U(q_0,\cdot)\) is a nonconstant
+analytic function and \(P_0\) has a density. Let \(F_L,F_M\) be their
+known baseline CDFs in this fixed submodel, and set \[
+T_L=\Phi^{-1}(F_L(S_L)),\qquad
+T_M=\Phi^{-1}(F_M(S_M)).
+\]
+
+Under the product baseline, these are exactly independent standard
+normals. Berry--Esseen, tightness and uniform integrability give
+\(S_L-T_L\to0\), \(S_M-T_M\to0\) in probability and in every fixed
+\(L^p\) needed here. Exponential moments of the score sums are bounded
+uniformly at each fixed exponent, by bounded-score concentration.
+
+The log likelihood on the parameter rectangle has expansion \[
+\log\Lambda_{n,\beta,t}
+=-\frac{\beta\sqrt{L/n}}{c_0}S_L
+ -\frac{(\beta-t)\sqrt{M/n}}{c_0}S_M
+ -\frac{\beta^2L/n+(\beta-t)^2M/n}{2c_0^2}
+ +o_{P_0}(1),
+\tag{F.44}
+\] uniformly in \((\beta,t)\). The deterministic third-order Taylor
+remainder is \(O((L+M)n^{-3/2})=o(1)\); the empirical quadratic terms
+converge uniformly since the parameter rectangle is compact.
+
+Replace the score sums by \(T_L,T_M\) in the exponential of (F.44), and
+call the resulting exact Gaussian likelihood \(g_{n,\beta,t}\). Its
+baseline expectation is one. Uniform exponential moments and the uniform
+log-likelihood remainder imply \[
+E_0\sup_{\beta,t}
+|\Lambda_{n,\beta,t}-g_{n,\beta,t}(T_L,T_M)|
+\longrightarrow0.
+\tag{F.45}
+\]
+
+One direct uniform-integrability justification is to bound the supremum
+of either likelihood by a constant times \(\exp\{C(|S_L|+|S_M|)\}\) or
+\(\exp\{C(|T_L|+|T_M|)\}\), whose moments of any fixed order greater
+than one are uniformly bounded. Uniform convergence in probability then
+yields (F.45).
+
+The auxiliary full-sample measures with densities
+\(g_{n,\beta,t}(T_L,T_M)\) relative to the product baseline are
+therefore uniformly close in TV to the actual measures. Under the
+auxiliary experiment, \[
+X_n^G=-c_0\sqrt{n/L}\,T_L,\qquad
+Y_n^G=-c_0\sqrt{n/M}\,T_M
+\] have exactly the independent Gaussian laws \[
+X_n^G\sim N(\beta,c_0^2n/L),\qquad
+Y_n^G\sim N(\beta-t,c_0^2n/M).
+\tag{F.46}
+\] The baseline conditional distribution of the full samples given
+\((T_L,T_M)\) reconstructs the auxiliary full-sample experiment and is
+parameter independent.
+
+It remains to preserve the loss, since its target is sample dependent.
+Let \[
+X_n^I=\frac{\sqrt n(x_L-q_0)}{s_0}.
+\] Lemma F.2 gives \[
+X_n^I=-c_0\sqrt{n/L}\,S_L+o_{P_0}(1)
+      =X_n^G+o_{P_0}(1).
+\tag{F.47}
+\] Uniform likelihood moment bounds transfer the bounded effect of
+(F.47) to every parameter on the compact rectangle. Root expansions and
+Theorem F.4 give \[
+\sup_{\beta,t}E_{\beta,t}
+\left|\pi_n(P_{n,\beta},k_{n,\beta,t};B_L)
+ -\Phi(X_n^G-\beta+t)\right|\longrightarrow0.
+\tag{F.48}
+\]
+
+After replacing the target by the right side of (F.48), conditioning any
+full-sample action on \((T_L,T_M)\) under the auxiliary experiment
+cannot increase risk, by convexity. Its conditional law is parameter
+independent. Conversely, every Gaussian rule can be applied to the
+observable \((X_n^G,Y_n^G)\) in the original experiment. More
+explicitly, let \(\epsilon_n\) be the uniform TV error in (F.45), and
+let \(r_n\) be the supremum of the expected target-replacement error in
+(F.48). For every {[}0,1{]}-valued full-sample rule, replacing its
+target and its law changes each risk by at most \(r_n+\epsilon_n\).
+Under the auxiliary law the conditional distribution of the original
+samples given the Gaussian pair is the baseline conditional kernel; its
+conditional mean action therefore defines one parameter-independent
+Gaussian rule. Jensen lowers risk because the replacement target is a
+function of that Gaussian pair and the parameter. In the other
+direction, composing any Gaussian rule with the Gaussian pair gives a
+full-sample rule, with the same \(r_n+\epsilon_n\) bound. Thus the
+absolute difference of the two minimax values tends to zero. This
+argument transfers the observation together with the initialization mark
+in the loss, not only the distribution of the difference statistic.
+Equations (F.45) and (F.48) transfer both minimax inequalities. Finally,
+covariance continuity replaces the finite ratios in (F.46) by their
+positive limits. This proves the asserted convergence. \(\square\)
+
+\paragraph{7. Minimax prediction over the unknown-baseline
+class}\label{minimax-prediction-over-the-unknown-baseline-class}
+
+For the lower bound, assume the direction envelope contains the complete
+aligned subfamily:
+
+\[
+B\ge K\sup_{P\in\mathcal P_\delta}
+\frac{\|\psi_P\|_\infty}{c_P^2}.
+\tag{F.49}
+\]
+
+The right side is finite by Lemma F.1. For \(K=0\), the lower bound uses
+\(k=0\) and needs no additional envelope condition.
+
+\subparagraph{Theorem F.9. Finite-baseline minimax
+limit}\label{theorem-f.9.-finite-baseline-minimax-limit}
+
+Under the model and initialization above, (F.49), and \[
+L/n\to\ell\in(0,\infty),\qquad M/n\to\rho\in(0,\infty),
+\] the minimax risk (F.13) satisfies \[
+\boxed{
+\mathfrak R_{n,L,M}\longrightarrow
+\sup_{P\in\mathcal P_\delta}
+V_{\mathrm{FB}}\!\left(
+K;\frac{c_P}{\sqrt\ell},\frac{c_P}{\sqrt\rho}
+\right).
+}
+\tag{F.50}
+\]
+
+If instead \(L/n\to\infty\), with \(M/n\to\rho\in(0,\infty)\), then \[
+\boxed{
+\mathfrak R_{n,L,M}\longrightarrow
+\sup_{P\in\mathcal P_\delta}V_G(K,c_P/\sqrt\rho).
+}
+\tag{F.51}
+\]
+
+This is an equality of prediction minimax values. It is not an assertion
+that the full infinite-dimensional experiment is equivalent to a scalar
+Gaussian experiment.
+
+\textbf{Proof: upper bound for finite \(\ell\).} The constants \(c_P\)
+lie in a fixed positive compact interval \(\mathcal C\). For every
+\(\epsilon>0\) and every \(c\in\mathcal C\), choose an
+\(\epsilon\)-optimal Gaussian rule for
+\(V_{\mathrm{FB}}(K;c/\sqrt\ell,c/\sqrt\rho)\).
+
+Such rules can be taken bounded Lipschitz with arbitrarily small extra
+risk. Indeed, replace a measurable rule \(d\) by \(d_h(x)=E_Wd(x+hW)\).
+Jensen and the TV distance between \(N(S,b^2)\) and \(N(S+hW,b^2)\),
+conditional on \(S,W\), give \[
+R_t(d_h)\le R_t(d)+\frac{h}{\pi b}.
+\tag{F.52}
+\] Gaussian smoothing also gives a finite Lipschitz constant.
+
+The joint Gaussian law of \((S,D)\) depends continuously in TV on \(c\),
+uniformly on \(\mathcal C\) and in \(t\). By Proposition F.7 the value
+function is continuous as well. Choose finitely many nearby \(c\)-values
+covering \(\mathcal C\), smooth a near-optimal rule at each, and
+interpolate the rules using a Lipschitz partition of unity in \(c\).
+Convexity of the loss gives a bounded jointly Lipschitz rule
+\(d_\epsilon(c,d)\) with risk at most \[
+V_{\mathrm{FB}}(K;c/\sqrt\ell,c/\sqrt\rho)+C\epsilon
+\] at every \(c\in\mathcal C\).
+
+Use the feasible predictor \[
+\widehat\pi_\epsilon
+=d_\epsilon(\widehat c,\widehat D_n).
+\tag{F.53}
+\] No independence between the scale estimate and the displacement
+estimate is needed. For fixed \(\epsilon\) the interpolated rule has a
+finite common Lipschitz constant \(J_\epsilon\), so replacing its
+estimated first argument by c\_P changes expected loss by at most
+\(J_\epsilon E|\widehat c-c_P|\), uniformly in P,k. Here \(\widehat c\)
+denotes the truncated scale estimate. Only after taking n to infinity
+for this fixed rule do we send epsilon to zero; we do not assert a
+uniform Lipschitz bound for all near-optimal rules. Uniform consistency
+of \(\widehat c\), the joint convergence in Theorem F.4 and the
+conditional exit approximation imply \[
+\limsup_n\mathfrak R_{n,L,M}
+\le
+\sup_PV_{\mathrm{FB}}(K;c_P/\sqrt\ell,c_P/\sqrt\rho)
++C\epsilon.
+\] Let \(\epsilon\downarrow0\). A sufficiently slow diagonal sequence
+gives asymptotically minimax feasible rules. In finite implementation,
+the Gaussian rule is selected using the known design ratios \(L/n,M/n\);
+no true baseline constants are supplied.
+
+\textbf{Proof: lower bound for finite \(\ell\).} Fix any interior
+baseline \(P_0\), any finite location window \(H\), and \(0\le K'<K\).
+The subfamily (F.41) is eventually contained in the full experiment. To
+check (F.49) at an endpoint, the strict inequality \(K'<K\) supplies the
+envelope slack needed for (F.42); its actual seed is \(t+O(n^{-1/2})\).
+Lemma F.8 yields \[
+\liminf_n\mathfrak R_{n,L,M}
+\ge V_H(K';c_0/\sqrt\ell,c_0/\sqrt\rho).
+\] Proposition F.6 sends \(H\to\infty\). Continuity in \(K\) then sends
+\(K'\uparrow K\). If \(K=0\), use the subfamily \(t=0\) directly, so the
+same conclusion holds.
+
+Interior baseline densities are dense in \(\mathcal P_\delta\) for the
+required constants: replace any multiplier \(b\) by \((1-\zeta)b\), then
+let \(\zeta\downarrow0\). Uniform monotonicity of the root equation and
+bounded moments give continuity of \(q,\lambda,s,c\) along this path.
+Thus taking the supremum over interior \(P_0\) gives the full right side
+of (F.50), completing the lower bound.
+
+\textbf{Proof for \(\ell=\infty\).} Theorem F.4 now has \(S=t\), so the
+same upper construction applies to the known-baseline Gaussian value,
+with \(\widehat c\) still estimated from data. For the lower bound,
+restrict the baseline to one fixed \(P_0\). Its sample is independent of
+the target parameter and the initialization error is \(o_P(n^{-1/2})\).
+The aligned target subfamily therefore has the original Gaussian
+calibration experiment and deterministic limiting target \(\Phi(t)\).
+The same bounded-window likelihood argument, or its one-sample
+specialization in Lemma F.8, yields the lower value
+\(V_G(K,c_0/\sqrt\rho)\). Supremizing over \(P_0\) proves (F.51).
+\(\square\)
+
+\subparagraph{Corollary F.10. The information
+threshold}\label{corollary-f.10.-the-information-threshold}
+
+Under (F.49), suppose \(L/n\to\ell\in(0,\infty]\).
+
+\begin{itemize}
+\tightlist
+\item
+  If \(K>0\), uniformly consistent conditional prediction is possible if
+  and only if \(M/n\to\infty\).
+\item
+  If \(K=0\) and \(\ell<\infty\), the same threshold holds over the
+  unknown-baseline class.
+\item
+  If \(K=0\) and \(\ell=\infty\), the constant forecast \(1/2\) is
+  uniformly consistent, without any target calibration.
+\end{itemize}
+
+\textbf{Proof.} Sufficiency in the first two cases follows from Theorem
+F.4. For necessity, if \(M/n\) does not diverge, select a subsequence
+with \(M/n\le C\). Give the predictor additional independent target
+observations until \(M'=\lceil(C+1)n\rceil\). This can only decrease
+minimax risk and does not change the target or initialization.
+
+When \(\ell<\infty\), Theorem F.9 and the strictly positive lower bound
+(F.35) give a positive limiting risk even at \(K=0\). When
+\(\ell=\infty,K>0\), (F.51) gives a positive value: two distinct
+\(t\)-values in the window have separated targets and overlapping
+Gaussian observation densities. Thus the original risk cannot converge
+to zero on this subsequence.
+
+If \(K=0,\ell=\infty\), (F.23) gives \(S_n=o_P(1)\) uniformly, and
+(F.21) gives the constant forecast assertion. \(\square\)
+
+\subparagraph{Corollary F.11. A closed-form optimal rule for
+root-preserving
+shifts}\label{corollary-f.11.-a-closed-form-optimal-rule-for-root-preserving-shifts}
+
+Suppose \(K=0\), \(L/n\to\ell\in(0,\infty)\), and
+\(M/n\to\rho\in(0,\infty)\). Then the fully feasible rule
+
+\[
+\boxed{
+\widehat\pi_{\mathrm{pool}}
+=\Phi\!\left(\frac{M}{L+M}\widehat D_n\right)
+}
+\tag{F.54}
+\]
+
+is asymptotically minimax, with value
+
+\[
+\sup_{P\in\mathcal P_\delta}
+\frac1\pi\arctan
+\left[
+\frac{(c_P/\sqrt\ell)(c_P/\sqrt\rho)}
+{\sqrt{c_P^2/\ell+c_P^2/\rho+c_P^4/\ell^2}}
+\right].
+\tag{F.55}
+\]
+
+The weight \(M/(L+M)\) does not depend on the unknown dynamical scale.
+
+\textbf{Proof.} In Proposition F.7, \[
+\alpha=\frac{a_P^2}{a_P^2+b_P^2}
+=\frac{\rho}{\ell+\rho}.
+\] The map \((\alpha,d)\mapsto\Phi(\alpha d)\) has a bounded derivative
+in \(\alpha\) on the positive compact range of design weights:
+\(|d|\phi(\alpha d)\) is uniformly bounded there. Thus the finite design
+weight \(M/(L+M)\), which converges to \(\alpha\), transfers the same
+Gaussian risk uniformly without requiring a rate for convergence of L/n
+or M/n.~Theorem F.4 transfers this risk uniformly, and Theorem F.9
+supplies the matching lower bound.
+
+There is also a direct pooling interpretation. When \(t_P(k)=0\), the
+target satisfies \(v_Q(q_P)=0\) exactly under (F.4), so baseline and
+target have the same selected root, even if \(k\ne0\). Let
+\(\widehat q_{\mathrm{pool}}\) solve the empirical root equation using
+all \(L+M\) observations, with the same bracket and fallback convention.
+Since the baseline empirical drift is zero at \(x_L\) on the good event,
+Taylor expansion gives \[
+\frac{\sqrt n(x_L-\widehat q_{\mathrm{pool}})}{\widehat s}
+=\frac{M}{L+M}\widehat D_n+o_P(1)
+\] uniformly. Thus the pooled-root forecast is asymptotically the same
+rule. Importantly, the future SGD still starts at \(x_L\); the pooled
+root is used only in the forecast. \(\square\)
+
+\paragraph{8. What this extension does and does not
+establish}\label{what-this-extension-does-and-does-not-establish}
+
+\subparagraph{8.1. A genuine unknown baseline, with a controlled
+reference
+class}\label{a-genuine-unknown-baseline-with-a-controlled-reference-class}
+
+The unknown \(P\) ranges over a fixed infinite-dimensional density
+neighborhood; it is not merely a Gaussian variance parameter. Its root
+can differ from the known reference root by a fixed small amount. The
+forecast estimates its root-dependent slope and noise scale from
+\(B_L\).
+
+The reference neighborhood, common risk and root bracket remain known.
+Thus the result removes exact baseline knowledge within a declared
+regular class. It does not remove every oracle component of the original
+risk-isolation experiment.
+
+The Gaussian reference supplies a concrete legal construction. The
+proofs use uniform drift smoothness, a positive root derivative, nonzero
+root noise, a common safe-region geometry, and a density lower bound for
+finite exit. They do not assume the actual unknown baseline has Gaussian
+class conditionals.
+
+\subparagraph{8.2. Conditional target versus averaging over
+initialization}\label{conditional-target-versus-averaging-over-initialization}
+
+Equation (F.21) also implies, for each fixed \(u>0\), \[
+\sup_{P,k}\Pr_B\{
+|\pi_n(P,k;B_L)-\Phi(S_n)|>u
+\}\longrightarrow0.
+\] It does not assert a bound for every possible realized baseline
+sample.
+
+At \(K=0\), the marginal target approaches \(1/2\), but the conditional
+target is approximately \(\Phi(a_PZ_L)\). The positive value in (F.35)
+measures uncertainty about this realized conditional probability when
+the baseline root is unknown. Averaging the initialization before
+defining the loss would remove precisely this difficulty.
+
+\subparagraph{8.3. Budget interpretation}\label{budget-interpretation}
+
+For \(L\asymp n\), the baseline error is of the same order as the
+stochastic seed of future SGD. This does not force \(L/n\to\infty\),
+since that error is part of the realized target and can be measured
+through target drift at the realized initialization.
+
+Finite \(L\) still changes the optimal decision rule and its minimax
+value. At \(K=0\), baseline and target observations estimate a common
+root, giving the explicit pooling rule. For \(K>0\), pooling without
+accounting for the bounded unknown root displacement can be biased; the
+posterior-median problem (F.33) describes the appropriate tradeoff.
+
+When \(L/n\to0\), the compact-seed argument in this chapter no longer
+applies. The Gaussian model alone suggests that probabilities may
+saturate and prediction may become easier. For example, its raw upper
+bound tends to zero when \(a\to\infty\) and \(b/a\to0\). This is not an
+actual-SGD theorem for that regime, and Corollary F.10 must not be
+extrapolated to it.
+
+\subparagraph{8.4. What still requires numerical or experimental
+work}\label{what-still-requires-numerical-or-experimental-work}
+
+The general-\(K\) value is characterized by (F.29)/(F.33), with matching
+asymptotic lower and upper bounds. This chapter does not compute a
+least-favorable prior or produce new numerical continuous-window
+certificates for it. Proposition F.7 supplies a direct starting point
+for that task.
+
+The scale estimates are feasible and the raw and \(K=0\) optimal rules
+are explicit. No actual-SGD confirmation is claimed here. Such
+confirmation must resample the baseline sample as an outer level, hold
+each realized initialization fixed across predictor comparisons, and
+retain reference-trajectory uncertainty conditional on that
+initialization.
+
+The original optimized fixed-window rule is not automatically valid in
+this new experiment. Equation (F.40) is a structural warning against
+transferring its restricted output range.
+
+\paragraph{9. Gaussian checks}\label{gaussian-checks}
+
+These checks are diagnostic evaluations of exact formulas, not
+statistical certificates for actual SGD.
+
+{\def\LTcaptype{table} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Initialization SD \(a\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Calibration SD \(b\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Exact \(K=0\) optimal MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Exact raw-rule maximum MAE
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+0.5 & 1 & 0.1309898804 & 0.2322795272 \\
+1 & 1 & \(1/6=0.1666666667\) & 0.1959132760 \\
+2 & 0.5 & 0.0696044873 & 0.0700243480 \\
+\end{longtable}
+}
+
+An independent numerical check used 1,500,000 Gaussian pairs and seed
+20261030. The empirical pooled-rule MAEs were respectively 0.13108073,
+0.16672833 and 0.06955975, with Monte Carlo standard errors 0.00007564,
+0.00010471 and 0.00006992. All agree with their analytic values within
+two Monte Carlo standard errors. These errors describe the numerical
+check only.
+
+A minimal reproduction is:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+from scipy.special import ndtr
+from math import atan, pi, sqrt
+
+rng = np.random.default_rng(20261030)
+n_draws = 1_500_000
+z = rng.standard_normal((2, n_draws))
+
+for a, b in [(0.5, 1.0), (1.0, 1.0), (2.0, 0.5)]:
+    seed = a * z[0]
+    observation = seed + b * z[1]
+    alpha = a * a / (a * a + b * b)
+    loss = np.abs(ndtr(alpha * observation) - ndtr(seed))
+    exact = atan(a * b / sqrt(a*a + b*b + a**4)) / pi
+    print(a, b, exact, loss.mean(), loss.std() / sqrt(n_draws))
+\end{lstlisting}
+
+\subsubsection{Experimental interface}\label{experimental-interface}
+
+Actual-SGD confirmation must resample baseline observations at an outer
+level, hold each realized initialization fixed across predictor
+comparisons, and preserve conditional reference-trajectory uncertainty.
+The pooling rule is optimal only for the declared scalar root-preserving
+subcase. Finite-horizon BN risk, batch-statistics coupling and omitted
+directions require separate validation.
+
+\subsubsection{Classical background and proof
+attribution}\label{classical-background-and-proof-attribution}
+
+\begin{itemize}
+\tightlist
+\item
+  Project source: the supplied manuscript, \emph{How Much Unlabeled
+  Information Is Needed to Predict Entropy-SGD Risk Exit?}, especially
+  its actual-SGD proof in Section 4, likelihood comparison in Section 5,
+  and bounded unknown-direction argument in Section 6. This chapter
+  repeats the relevant stopped-seed estimates and gives the additional
+  initialization and marked-loss arguments explicitly.
+\item
+  Yuri Bakhtin, \emph{Exit asymptotics for small diffusion about an
+  unstable equilibrium}, Stochastic Processes and their Applications
+  118(5), 839--851, 2008.
+  \href{https://arxiv.org/abs/math/0701569}{Author preprint}. Background
+  for the classical unstable-exit mechanism; its diffusion theorem is
+  not substituted for the fresh-batch discrete proof here.
+\item
+  A. W. van der Vaart, \emph{Asymptotic Statistics}, Cambridge
+  University Press, 1998, especially Chapter 9, \emph{Limits of
+  Experiments}.
+  \href{https://www.cambridge.org/core/books/abs/asymptotic-statistics/limits-of-experiments/3DCF37272E376213D53F0CABB3EB9CC5}{Publisher
+  chapter}. Background for experiment comparison; Lemma F.8 supplies the
+  initialization-preserving argument needed for this sample-dependent
+  loss.
+\end{itemize}
+
+No exhaustive novelty or priority search is claimed. The external
+sources above provide background attribution, not proofs of the new
+model-specific statements.

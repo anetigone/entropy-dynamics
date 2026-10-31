@@ -14,7 +14,7 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
 latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplement.tex
 ```
 
-输出为 [正文 PDF](build/main.pdf)与[完整补充 PDF](build/supplement.pdf)。正文由 `sections/` 中的摘要、引言、过程与共同风险、统一退出证明、统计决策与双向归约、未知方向证明、证书与双层实验区间、讨论组成；`references.bib`维护其参考文献。
+输出为 [正文 PDF](build/main.pdf)与[完整补充 PDF](build/supplement.pdf)。正文由 `sections/` 中的摘要、引言、过程与共同风险、统一退出证明、统计决策与双向归约、未知方向及有限基准条件预测、证书与双层实验区间、讨论组成；`references.bib`维护其参考文献。
 
 ## 理论与来源
 
@@ -27,3 +27,5 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build supplement.te
 研究状态和下一步只见 [STATUS.md](../../STATUS.md)。
 
 L.9–L.10 的 Markdown 源为 [gaussian_decision.md](../gaussian_decision.md)，N.1–N.4 的源为 [unknown_direction.md](../unknown_direction.md)，文献对照为 [RELATED_WORK.md](../RELATED_WORK.md)。这些文件已纳入 paper/，不再从原始包读取。
+
+F.1–F.11 已并入 `supplement/unknown_direction.tex`，正文对应 `sections/nuisance.tex` 中的有限基准小节；Markdown 完整证明在既有 unknown_direction.md §6。根目录独立证明稿已撤除。

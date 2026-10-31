@@ -4,6 +4,8 @@
 
 | 结果目录 | 用途 | 分析入口 |
 |---|---|---|
+| [bn_extended](bn_extended/) | BN/Tent平均路径、随机残差与风险适用性检查 | [分析](bn_extended/analysis.md) |
+| [bn_development](bn_development/) | 完整BN/Tent投影、动力学与有限时域风险开发检查 | [分析](bn_development/analysis.md) |
 | [corrupt_confirmation](corrupt_confirmation/) | 自然腐蚀方向校准的独立预算比较 | [分析](corrupt_confirmation/analysis.md) |
 | [unknown_directions](unknown_directions/) | 共同风险下非对齐局部方向数值检查 | [分析](unknown_directions/analysis.md) |
 | [precision confirmation](precision_confirmation) | 冻结规则、独立双层精度确认 | [原处分析](precision_confirmation/analysis.md) |

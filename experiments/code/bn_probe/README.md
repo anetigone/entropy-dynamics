@@ -6,8 +6,8 @@
 
 - 本地官方 CIFAR-10-C `gaussian_noise.npy`、`defocus_blur.npy`、`contrast.npy` 和 `labels.npy`；默认 severity=3，使用完整官方 10,000 张测试图像块，不添加数据划分。
 - 在官方 CIFAR-10 训练集上训练的十分类 torchvision ResNet-18 checkpoint：3×3 stride-1 stem、无 maxpool、10 类输出。支持原始 state dict 或 `state_dict` 字段及 `module.` 前缀。不会下载或训练模型。ImageNet 1000 类权重不能直接使用。
-- 已检查服务器现有 `models/resnet-18`：它是 Hugging Face `ResNetModel` backbone，权重中没有分类头；采用 ImageNet 归一化和224像素预处理。它不能传给当前 `--checkpoint`，也不能只换一个随机十分类头就用于风险实验。当前入口需要另行取得上述已训练的 CIFAR 十分类模型。若改为现有 backbone 加源训练分类头，需要同时修改加载器、预处理和源端训练协议。
-- 默认归一化 mean=(.4914,.4822,.4465)，std=(.2470,.2435,.2616)；必须按 checkpoint 的实际训练预处理传参。
+- 首轮使用 [edadaltocg/resnet18_cifar10](https://huggingface.co/edadaltocg/resnet18_cifar10) 的 `pytorch_model.bin`，下载到 `models/cifar_resnet18/`。已在服务器通过 torchvision 严格加载检查，并在完整官方 CIFAR-10 测试集上得到94.97%准确率（源模型 eval 模式）；这不是适配结果。已有 `models/resnet-18` 仍是无分类头的 ImageNet backbone，不用于本小试。
+- 默认归一化 mean=(.4914,.4822,.4465)，std=(.2023,.1994,.2010)；必须按 checkpoint 的实际训练预处理传参。
 - BN 配置遵循 [官方 Tent](https://github.com/DequanWang/tent/blob/master/tent.py)：只更新所有 BN2d 的 weight/bias，移除 running mean/variance，始终使用当前批次统计。优化器为固定 lr=.001、无 momentum 的 SGD，每批一步，批量64；H=50，epsilon=.02。此配置不代表官方所有 benchmark 的默认优化器。
 
 ## 信息与目标
@@ -23,8 +23,8 @@
 在服务器运行真实 GPU 计算。三个脚本分别进行开发、独立确认和绘图，不根据确认结果调整投影或规则。下面两个计算命令必须保持公共参数一致；改变预算或配置使用新的输出目录。
 
 ```bash
-python experiments/code/bn_probe/projection_fit.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18.pt --output experiments/results/bn_development
-python experiments/code/bn_probe/projection_check.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18.pt --development experiments/results/bn_development --output experiments/results/bn_confirmation
+python experiments/code/bn_probe/projection_fit.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18/pytorch_model.bin --std 0.2023 0.1994 0.2010 --output experiments/results/bn_development
+python experiments/code/bn_probe/projection_check.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18/pytorch_model.bin --std 0.2023 0.1994 0.2010 --development experiments/results/bn_development --output experiments/results/bn_confirmation
 python experiments/code/bn_probe/projection_plot.py --result experiments/results/bn_confirmation
 ```
 
@@ -35,6 +35,15 @@ python experiments/code/bn_probe/projection_plot.py --result experiments/results
 确认保存：投影路径、风险增量、遗漏方向范数、独立轨迹估计轴与冻结轴的余弦、一步漂移残差、预测概率及全部探针系数。绘图汇总报告风险映射误差、局部模型误差、超出开发探针半径的比例、批量方差、Brier及相对开发常数的改善。Brier平均所有独立校准预测与未来事件组合；区间分别重采样校准轴和未来轨迹轴，不把组合数当作独立样本量。
 
 ## 解释和后续决策
+
+已有开发状态的平均路径与运行残差分析，以及独立绘图：
+
+```bash
+python experiments/code/bn_probe/bn_variation.py --input experiments/results/bn_extended/projection.npz --output experiments/results/bn_extended/variation.json
+python experiments/code/bn_probe/variation_plot.py --result experiments/results/bn_extended
+```
+
+计算只读取既有NPZ，不运行网络。能量与原冻结轴诊断使用全部状态；残差SVD及奇偶运行方向迁移使用每25步状态。风险回归留出整条运行，但投影仍由全部开发数据估计，只作为开发关联检查。图表和数值保存在对应结果目录，判断见该目录分析及 [STATUS.md](../../../STATUS.md)。
 
 这是探索性小试。bootstrap 区间是描述性区间，不是预先保证覆盖率的同时确认；每环境一个概率不足以验证跨环境普适校准。常数基线只使用开发事件率。应同时看预测偏差、事件率和Brier，全部事件为0或1时不能据此主张预测困难已经解决。
 

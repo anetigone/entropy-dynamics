@@ -13,6 +13,8 @@ The proposed contribution has three parts:
 
 1. **Risk-known dynamical uncertainty.** Construct legal target environments sharing the complete risk function, fixed initialization, source information and a connected risk-safe set. Prove a uniform approximation for the actual nonlinear fresh-batch entropy-SGD exit functional on local environments. Risk exit equals interval exit path by path.
 2. **Information and best achievable precision.** Connect that functional to a Gaussian decision problem through experiment-level risk transfer. Establish the calibration threshold M/n->infinity and characterize the finite-ratio minimax value. Extend the same value to an unknown bounded local perturbation direction around a known baseline, identifying the entropy-gradient tilt as least favorable for the normalized root target.
+The finite-baseline extension additionally identifies the conditional random-target minimax problem, proves matching bounds over a regular unknown-baseline class, and derives a closed-form root-preserving pooling rule. This extension has numerical Gaussian checks but no actual-SGD confirmation.
+
 3. **Quantified practical improvement within the model.** Obtain Gaussian minimax brackets from a prior lower bound and a continuous-window rule upper bound, then evaluate the fixed rule on independent real entropy-SGD runs. Report calibration and reference-path uncertainty jointly. Do not turn finite-grid experiments into a theorem about continuum worst-case risk.
 
 Classical ingredients should be credited explicitly: unstable-equilibrium exit mechanisms, two-point testing, local asymptotic normality and experiment equivalence, influence-function geometry, posterior medians under absolute loss, and finite-prior numerical decision methods. The claim concerns their model-specific connection and its consequences, not invention of those tools.
@@ -51,7 +53,7 @@ The statistical result should not be described as:
 - proof that additional nuisance always worsens the leading information limit;
 - a general unknown-target-distribution result without the known-baseline and bounded-locality restrictions.
 
-The new unknown-direction theorem is stronger than the old known-tilt theorem, but its baseline remains known. Orthogonal local nuisance can be irrelevant at first order; unknown nonlocal baseline geometry is a different problem.
+The unknown-direction theorem initially keeps the baseline known. The integrated finite-baseline extension (F.1–F.11 in unknown_direction.md §6) instead learns its initialization and scales from an independent baseline sample in a fixed regular density neighborhood. Conditioning on the realized initialization yields a random-target Gaussian minimax problem and an explicit root-preserving pooling rule. General-window numerical rules and actual-SGD confirmation remain open. Orthogonal local nuisance can be irrelevant at first order; unknown nonlocal baseline geometry is a different problem.
 
 ## 5. Source comparison records
 

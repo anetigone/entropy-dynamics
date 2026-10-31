@@ -1,0 +1,1295 @@
+CVPR                                                                                                                                          CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+
+       How Much Unlabeled Information Is Needed to Predict Entropy-SGD Risk Exit?
+
+                                                    Anonymous CVPR submission
+
+
+                                Abstract                                     isolate the second uncertainty by supplying identical com-        040
+                                                                             plete risk information across environments and asking for an      041
+ 001   Predicting the consequences of entropy adaptation requires            independent forecast before adaptation begins.                    042
+ 002   knowledge of target-domain dynamics, even when classifi-
+ 003   cation risk is known. We study this distinction for a scalar
+                                                                                Entropy deterioration itself is established prior knowl-       043
+ 004   threshold following actual fresh-batch entropy-gradient up-
+                                                                             edge. POEM includes a one-dimensional Gaussian example            044
+ 005   dates. Target environments share initialization and their com-
+                                                                             of entropy collapse [2]; logit-adjusted TTA analyzes degra-       045
+ 006   plete classification-risk function, while unlabeled marginals
+                                                                             dation under class imbalance [8]. Risk monitoring observes        046
+ 007   move an unstable entropy root on the batch-noise scale. A
+                                                                             an evolving adapted model and test stream [6], while action-      047
+ 008   uniform exit-direction approximation connects this future
+                                                                             identifiability work studies what unlabeled evidence deter-       048
+ 009   trajectory to an independent calibration experiment. Around
+                                                                             mines about competing actions [3]. Here the action is fixed,      049
+ 010   a known baseline, uniformly consistent prediction is possible
+                                                                             risk is shared, and the target is a probability over a future     050
+ 011   exactly when calibration size M grows faster than future
+                                                                             independent stochastic path. The predictor is not asked to        051
+ 012   batch size n. At positive finite M/n, the minimax risk con-
+                                                                             guess that path’s realized branch.                                052
+ 013   verges to a bounded-parameter Gaussian decision value,
+ 014   for which we compute lower and continuous-window upper
+ 015   certificates. The same value holds over unknown uniformly                Our contribution is the connection between this infor-         053
+ 016   bounded local directions: the entropy-gradient tilt is already        mation experiment and a uniform approximation of actual           054
+ 017   least favorable for root displacement relative to Fisher infor-       entropy-SGD risk exit. It yields an exact consistency thresh-     055
+ 018   mation. A frozen prediction rule improves five-cell maximum           old, a finite-information minimax characterization, and a         056
+ 019   MAE over raw and clipped moment rules in real entropy-                least-favorable direction that remains sufficient to describe     057
+ 020   SGD confirmation, with simultaneous intervals accounting              worst-case difficulty in a larger bounded local class. Clas-      058
+ 021   for calibration and reference-trajectory uncertainty. Inde-           sical unstable-exit, experiment-comparison and efficiency         059
+ 022   pendent confirmation on frozen CIFAR-10 features reduces              tools are explicitly credited. The numerical contribution is      060
+ 023   five-point maximum MAE relative to clipping in all four class         a pair of valid decision bounds and a fixed-rule finite-batch     061
+ 024   pairs by point estimate, with positive simultaneous improve-          comparison, rather than a claim that an optimizer found an        062
+ 025   ment intervals in three; this visual experiment is conditional        exact least-favorable prior.                                      063
+ 026   on known empirical baselines and has environment-specific
+ 027   risk. With an independently estimated baseline, condition-
+                                                                                The paper proceeds from the observation experiment and         064
+ 028   ing on sample-based initialization yields a new random-
+                                                                             common-risk construction to the exit approximation, statis-       065
+ 029   target minimax problem; the calibration consistency thresh-
+                                                                             tical limits, unknown directions, numerical certificates and      066
+ 030   old remains unchanged for a positive baseline-to-batch ratio.
+                                                                             independent confirmation. Complete proofs remain in the           067
+ 031   A root-preserving subcase admits an optimal pooling rule.
+                                                                             linked chapters. Independent frozen-feature confirmation          068
+ 032   These results concern regular local scalar dynamics at fixed
+                                                                             tests the prediction interface on unknown local visual envi-      069
+ 033   step size, without general neural-network safety guarantees.
+                                                                             ronments. Earlier rebound, tolerance, source-transfer and         070
+ 034
+                                                                             stopping investigations remain supporting evidence.               071
+
+
+
+ 035   1. Introduction                                                          Finite baseline information introduces a conditional target    072
+                                                                             depending on the realized sample-based initialization. We de-     073
+ 036   Knowing which classifier states are unsafe does not deter-            rive matching minimax bounds for this random-target prob-         074
+ 037   mine how likely stochastic adaptation is to reach them. A             lem, retaining the calibration consistency threshold when the     075
+ 038   complete risk function specifies the first object; an unlabeled       baseline budget is proportional to batch size, and an explicit    076
+ 039   score distribution determines the entropy dynamics. We                optimal pooling rule for root-preserving shifts.                  077
+
+
+                                                                         1
+CVPR                                                                                                                                             CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 078   2. Information, dynamics and prediction loss                           Symmetry gives E0 h0 = 0, E0 h20 = 1, and h0 is bounded.            114
+                                                                              Choose 0 < κ < 1 and                                                115
+ 079   Fix confidence slope w > 0 and positive step size η. For
+ 080   s(u) = (1 + e−u )−1 and a(u) = s(u)(1 − s(u)), define                                          fθ = f0 (1 + θh0 )
+                                                                                                   g(z) = κ tanh(z)f0 (z)                         116
+                   U (x, z) = −w2 (z − x)a(w(z − x))
+ 081                                                                                         pθ (z, ±1) = 12 (fθ (z) ± g(z)).
+                          vQ (x) = EQ U (x, Z).
+                                                                              When |θ|∥h0 ∥∞ ≤ min(1/2, 1 − κ), these are legal joint             117
+ 082   Actual fresh-batch adaptation starts at x0 = 0 and uses                densities with equal class priors. For the classifier predicting    118
+                                       n                                      +1 when z > x, every environment has the same complete              119
+                                    η  X
+                                                                              risk                                                                120
+ 083                 xj+1 = xj +          U (xj , Zj,i ).                                                     Z x
+                                    n i=1
+                                                                                               R(x) = 12 +          g(z) dz
+                                                                                                               −∞
+                                                                                                            Z x                                   121
+ 084   All future scores are iid from the unknown score law Q.
+ 085   Labels do not enter this update. Uniformly in x,z, |U | ≤                        R(x) − R(0) = κ          tanh(z)f0 (z) dz.
+                                                                                                                  0
+ 086   BU = w/4 and |∂x U | ≤ LU = w2 /4; every fixed higher
+ 087   state derivative is bounded.                                           This function is even and strictly increases with |x|. Thus         122
+
+ 088      Let R Q be classification risk and ϵ > 0. Define                    for any chosen b>0 and ϵ = R(b) − R(0), its global safe set         123
+                                                                              is exactly [−b, b]. Interval exit and actual risk exit coincide     124
+ 089            Tϵ = inf{j ≥ 0 : RQ (xj ) > RQ (0) + ϵ}.                      path by path, even for discrete overshoots. The labeled con-        125
+                                                                              ditionals of this family are not assumed Gaussian mixtures.         126
+ 090   Our construction makes the entire risk-safe set exactly                    To establish uniform exit geometry, choose small d>0            127
+ 091   [−b, b], and exit is almost surely finite. The prediction target       with v0′ ≥ λ/2 on [−d, d], set b=d/2, and fix                       128
+ 092   is
+                                                                                            0 < η < min{1/LU , d/(4BU )}.                         129
+ 093                       πn (Q) = PQ (xTϵ > b).
+ 094       The predictor receives M iid calibration scores from Q,            For all sufficiently small |θ|, vθ′ ≥ λ/4 on this compact           130
+
+ 095   independent of all future SGD samples. It knows the de-                domain and there is a unique root with |qθ | ≤ b/2. The             131
+
+ 096   clared baseline family, initialization, fixed constants, and           overshoot interval stays strictly inside [−d, d], the root noise    132
+
+ 097   may receive the entire common risk function and identical              variance is bounded below, and                                      133
+
+ 098   source information. It does not receive the unknown envi-                                              σg
+                                                                                                    qθ = −       θ + O(θ2 ).                      134
+ 099   ronment, root, local seed displacement, future trajectory or                                           λ
+ 100   exact target marginal. The risk of a forecast is expected
+                                                                              These are Proposition L.1 and its proof in the local prediction     135
+ 101   absolute probability error over calibration randomness; πn
+                                                                              proof chapter. Complete risk knowledge therefore does not           136
+ 102   itself averages over future SGD.
+                                                                              remove uncertainty about the location of the entropy repeller.      137
+ 103       For a local parameter u in [−A0 , A0 ], define
+
+ 104       Rn,M (A0 ) = inf sup Eu/√n |b
+                                       π − πn (Qu/√n )|.
+                                                                              4. Uniform direction exit of actual SGD                             138
+                            π
+                            b |u|≤A0
+                                                                              Write λθ = vθ′ (qθ ), Aθ = 1 + ηλθ , and                            139
+
+ 105   The fixed width A0 > 0 is part of the declared prob-                                                η 2 Varθ U (qθ , Z)
+ 106   lem. Known exact centering is a different experiment: the                                   s2θ =                       .                  140
+                                                                                                                A2θ − 1
+ 107   symmetric center admits the exact forecast .5. The root-
+ 108   calibration arctangent error of a particular plug-in is conse-         At the baseline put s = s0 , A = 1 + ηλ and                         141
+ 109   quently not a universal lower bound.                                                                  s
+                                                                                                      σg       2 + ηλ
+ 110   3. A common-risk environment family                                                        c=       =
+                                                                                                      λs         ηλ                               142
+                                                                  2                                  −1/2                          1/3
+ 111   Let f0 be the centered Gaussian density with variance ν >                           en = n           + ((1 + log n)/n)            .
+ 112   0. Define
+                                                                                 Theorem 1 (Uniform actual-SGD direction law; L.2).               143
+                                w2                                            For every fixed finite A0 , a constant C independent of n, u        144
+                   λ = v0′ (0) = 2 E0 [Z 2 a(wZ)] > 0
+                                ν                                             satisfies                                                           145
+ 113                        2
+                          σg = E0 U (0, Z)2 > 0
+                                                                                           sup |πn (Qu/√n ) − Φ(cu)| ≤ Cen                        146
+                             h0 = U (0, ·)/σg .                                           |u|≤A0
+
+
+                                                                          2
+CVPR                                                                                                                                             CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 147   for all sufficiently large n. The step size and tolerance are         derivative, with Amax βˆ2<1. If y j=F tilde thetaˆj(y), then,        189
+ 148   fixed; C is not numerically calibrated.                               uniformly in θ,                                                      190
+ 149       The proof constructs increasing normalized C 2 conjuga-
+ 150   cies Hθ with Hθ (qθ ) = 0, Hθ′ (qθ ) = 1 and Hθ (Gθ (x)) =                                     |yj | ≤ Cβ j |y|
+ 151   Aθ Hθ (x). Uniform inverse contraction gives common                                                |yj′ | ≤ Cβ j                           191
+ 152   derivative bounds, including a positive lower bound. The lat-
+ 153   ter follows from a convergent product of positive derivatives,                                  |yj′′ | ≤ Cβ j .
+ 154   not normalization alone.                                                 For the second inequality use the derivative product. The         192
+ 155
+       √ At−τ  interval exit τ define the stopped coordinate Yτ =            third follows from                                                   193
+ 156      nAθ Hθ (xτ ). Compare it to the frozen-root weighted
+ 157   seed                                                                                ′′
+                       √              X −j−1 √                                            yj+1 = Feθ′′ (yj )(yj′ )2 + Feθ′ (yj )yj′′ .            194
+                 W = nHθ (0) + η          Aθ        n ξj (qθ )
+                                       j≥0                                      The successive differences in Aθ ˆj y j equal Aθ ˆ{j+1}           195
+ 158                             X                                           r theta(y j). Their functions, first derivatives and second          196
+                  ξj (x) = n−1        U (x, Zj,i ) − vθ (x).                 derivatives have summable bounds C(Amax β 2) j. This proves          197
+                                  i
+                                                                             local C 2 convergence. To establish positivity of the limiting       198
+ 159   The stopped martingale and Taylor expansion give uniformly            derivative, use its derivative product:                              199
+
+                              EA−2τ
+                                θ   ≤ C/n                                                             j−1
+ 160                                                                                                  Y
+                                 2
+                    E|Yτ − W | ≤ C(1 + log n)/n.                                                            Aθ Feθ′ (yk ).                        200
+                                                                                                      k=0
+ 161   The first bound is obtained from a stopped second moment
+ 162   without assuming a typical exit-time estimate. Batches af-                Each factor is positive and differs from one by O(|y k|).        201
+ 163   ter τ are fresh conditional on the stopping history, which            On a sufficiently small common neighborhood the sum of               202
+ 164   bounds the frozen tail. Grouping W by sample column gives             these deviations is uniformly bounded, so the limiting prod-         203
+ 165   a uniform Gaussian approximation. Anti-concentration han-             uct is bounded away from zero. A fixed number of inverse             204
+       dles seeds close to zero                                              iterations maps all of K into that neighborhood, since Fθ            205
+ 166
+                             √ before equating their signs to exit           contracts by γ. Finite composition gives uniform C 2 bounds
+ 167   directions. Finally nHθ (0)/sθ = cu + O(n−1/2 ). The                                                                                       206
+ 168   following subsections give the proof, retaining the source            and a positive derivative lower bound on K. This also verifies       207
+ 169   labels from L.2; the broader time-distribution theory remains         the functional equation wherever its two arguments are in K.         208
+ 170   in the scalar-exit proof chapter.                                         Thus, for constants independent of θ,                            209
+
+ 171   4.1. Proof of the uniform direction law                                                       ∥Hθ ∥C 2 (K) ≤ C
+ 172   Within this proof, K = [−d, d] denotes the compact state                                      inf Hθ′ ≥ m > 0
+                                                                                                      K
+ 173   interval. We supply the common constants and the stopped-                                                                         (L.3)    210
+ 174   seed argument, so this is not an application of a pointwise                             1 < Amin ≤ Aθ ≤ Amax
+ 175   exit limit to changing laws.                                                             0 < smin ≤ sθ ≤ smax .
+ 176      Construct normalized C 2 conjugacies Hθ with Hθ (qθ )=0,
+ 177   Hθ ’(qθ )=1 and Hθ (Gθ (x))=Aθ Hθ (x) whenever both argu-             The inverse derivative bounds use the uniform smoothness             211
+ 178   ments are in K. The uniform inverse construction is as fol-           of U and the positive derivative of Gθ . The root-to-boundary        212
+ 179   lows.                                                                 distances are at least b/2. These facts also give uniform            213
+ 180      Let K=[-d,d] and Gθ (x)=x+η vθ (x). The signs of vθ at             bounds above and below for the absolute conjugate boundary           214
+ 181   the endpoints imply Gθ (K) contains K. Thus Fθ =Gθ ˆ{-1} is           values.                                                              215
+ 182   defined on K, maps K into itself, and fixes qθ . Its derivative          Let τ be exit from [-b,b] and ξj (x)=nˆ{-1}sum i                  216
+ 183   satisfies                                                             U(x,Z {j,i})-vθ (x). Each θ has finite τ almost surely:              217
+                                                                             choose two fixed bounded score intervals respectively left           218
+ 184             0 < Fθ′ (x) ≤ γ := (1 + ηλ/4)−1 < 1.                        and right of K. Their masses are uniformly positive since            219
+                                                                             f theta>=f0 /2. Repeated batches entirely in the left inter-         220
+ 185      In centered coordinates write
+                                                                             val drive any state at least qθ rightward by a positive mini-        221
+                                                                             mum speed until exit; the right interval does the converse.          222
+                         Feθ (y) = A−1
+                                    θ y + rθ (y)
+ 186                                                                         Compactness supplies a fixed finite block length N. The con-         223
+                            rθ (0) = rθ′ (0) = 0.                            ditional chance of an appropriate exiting block is at least          224
+ 187      On a common small neighborhood, uniform smoothness                 pˆ{nN}>0; geometric blocking proves finiteness. This is              225
+ 188   gives bounded third derivatives and a bound β on the inverse          not a bound on the typical exit time.                                226
+
+
+                                                                         3
+CVPR                                                                                                                                             CVPR
+                                     CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+                         √                           √
+ 227      For |θ|<=A0 / n, (L.1) implies |qθ |<=C/ n and                          On the same infinite sample array introduce the frozen          258
+ 228   µ=sqrt(n)Hθ (0) is bounded. Conditional batch moments                   seed                    X −j−1 √                                   259
+ 229   give                                                                                W =µ+η         Aθ       n ξj (qθ ).                    260
+                                                                                                          j≥0
+                             E[ξj (x)2 | Fj ] ≤ C/n
+                                                                               The difference Hθ ‘(Gθ (xj ))ξj (xj )-ξj (qθ ) has conditional     261
+ 230                         E[ξj (x)4 | Fj ] ≤ C/n2                           mean zero and variance at most C|xj -qθ |²/n, using Hθ ’(qθ )=1    262
+                E[(ξj (x) − ξj (qθ ))2 | Fj ] ≤ C|x − qθ |2 /n.                and (L.3). Consequently its stopped weighted sum has sec-          263
+                                                                               ond moment at most                                                 264
+ 231   All constants are distribution independent, by bounded U and                    X −2j
+ 232   partial x U. Taylor expansion on the established overshoot                   C      Aθ min(A2j   θ /n, 1) ≤ C(1 + log n)/n.                265
+ 233   domain gives, for j<τ ,                                                         j≥0
+
+
+          Hθ (xj+1 ) = Aθ Hθ (xj ) + ηHθ′ (Gθ (xj ))ξj (xj ) + rj              Use the convention that batch j moves xj to x {j+1}. At τ ,        266
+ 234                                                                           all batches with indices j>=τ remain fresh. Conditional on         267
+                                |rj | ≤ Cξj (xj )2 .                           F tau, the frozen tail has mean zero and variance                  268
+               √
+ 235   Set Yt = n Aθ ˆ{-(t wedge τ )}Hθ (x {t wedge τ }).                                             X −2j−2
+                                                                                              η 2 σθ2    Aθ      = s2θ A−2τ
+                                                                                                                        θ   .                     269
+ 236      Let F j denote the history before batch j and write                                       j≥τ
+ 237   I j=1 {j<τ }. With
+                                                                                   This proves the O(1/n) tail second moment in (L.5) below.      270
+                         √                                                     It is a stopped-tail independence argument, not a claim that
+ 238              Dj =       n ηA−j−1
+                                 θ    Ij Hθ′ (Gθ (xj ))ξj (xj ),                                                                                  271
+                                                                               the stopped trajectory is independent of the full frozen seed.     272
+ 239      and                                                                      Together,                                                      273
+                                      √
+ 240                          Ej =        nA−j−1
+                                            θ    Ij rj ,                                     E|Yτ − W |2 ≤ C(1 + log n)/n.              (L.5)     274
+
+ 241      the stopped recursion gives                                          Grouping W-µ by sample column gives nˆ{-1/2}sum i                  275
+                                 X        X                                    V i with iid centered V i=η sum {j>=0} Aθ ˆ{-j-                    276
+ 242                   Yt = µ +      Dj +   Ej .                               1}U(qθ ,Z {j,i}). These variables have uniform absolute            277
+                                      j<t          j<t                         bounds η B U/(Amin -1), and variance   √ sθ ² bounded below.       278
+ 243     The indicator and the coefficient are F j-measurable.                 Berry–Esseen gives a uniform C/ n Kolmogorov error       √         279
+ 244   Thus D j are martingale differences and                                 relative to N(µ,sθ ²). In particular P(|W|<=δ)<=C δ+C/ n.          280
+                                                                                  The sign of Yτ is exactly the exit direction. Hence (L.5),      281
+                     X              X −2j
+ 245                     EDj2 ≤ C       Aθ ≤ C.                                Chebyshev, and the preceding anti-concentration bound give         282
+                         j                    j
+                                                                               |πn (Qθ )−Φ(µ/sθ )| ≤ C{n−1/2 +δ+(1+log n)/(nδ 2 )} ≤ Cen283
+                                                                                                                                        ,
+ 246      The conditional fourth-moment bound gives
+                                                                               choosing δ=((1+log n)/n)ˆ{1/3}. This explicitly controls           284
+                             ∥Ej ∥2 ≤ Cn−1/2 A−j
+                                              θ                                seeds near zero, rather than identifying their signs with-         285
+                                                                               out an error bound. Finally normalization and the uni-             286
+ 247
+                                                                               form C 2 bound imply Hθ (0)=-qθ +O(qθ ²); smoothness gives
+                              X
+                                     Ej       ≤ Cn−1/2 .                                                                                          287
+                               j<t                                             sθ =s+O(|θ|). Uniformly on |u|<=A0 ,                               288
+                                          2
+
+ 248       Therefore sup t E|Yt |ˆ2<=C without assuming a loga-                                  µ/sθ = cu + O(n−1/2 ).                           289
+ 249   rithmic exit-time estimate. Finite exit and Fatou then imply
+ 250   E|Yτ |ˆ2<=C. At exit, the uniform root-to-boundary separa-              The Lipschitz property of Phi proves (L.2). □                      290
+ 251   tion and positive derivative of H imply |Hθ (x tau)|>=bH >0.
+ 252   Consequently                                                            5. Information threshold and finite-information                    291
+                                                                                   precision                                                      292
+ 253                EA−2τ
+                      θ   ≤ (nb2H )−1 E|Yτ |2 ≤ C/n.
+                                                                               Theorem 2 (Calibration threshold and low information;              293
+ 254     There is no circular inference from a desired exit approxi-           L.3–L.7). Uniform consistency on any fixed positive local          294
+ 255   mation to its own moment estimate.                                      window is possible if and only if M/n tends to infinity. If        295
+ 256     Before exit, Hθ ’>=m and bounded K also imply                         eventually M/n ≤ C0 and                                            296
+
+                E[1j<τ |xj − qθ |2 ] ≤ C min(A2j
+                                                                                                               p
+ 257                                          θ /n, 1).            (L.4)                0 < a ≤ min{A0 , 1/(4 max(C0 , 1))},                      297
+
+
+                                                                           4
+CVPR                                                                                                                                           CVPR
+                                CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+                                                                                          √
+ 298   then                                                                     At θ=+/-a/ n, positivity gives                                  340
+
+ 299           lim inf Rn,M (A0 ) ≥ [2Φ(ca) − 1]/4 > 0.                                                                    h20
+                  n                                                           DKL (fθ ∥f−θ ) ≤ χ2 (fθ , f−θ ) = 4θ2 E0           ≤ 8θ2 .        341
+                                                                                                                         1 − θh0
+ 300   If M/n tends to zero, the exact limiting minimax MAE is
+ 301   Φ(cA0 ) − 1/2, attained by the constant forecast .5.                  Product KL is at most 8a²M/n. Pinsker gives total variation        342
+                                              √
+ 302      For necessity compare θ = ±a/ n. Product     p KL is at            at most 2a sqrt(M/n)<=1/2. Lemma L.2 implies the target            343
+ 303   most 8a2 M/n and total variation at most 2a M/n. Di-                  separation ∆n tends to Delta=2Phi(ca)-1>0. Let p +,p -             344
+ 304   rectly integrating absolute loss over the density overlap             be the calibration densities and t +,t - their true exit proba-    345
+ 305   gives maximum risk at least half the target separation times          bilities. For any forecast T, the triangle inequality on their     346
+ 306   1 − TV. This avoids the factor of two lost by reducing to a           common density overlap gives                                       347
+ 307   nearest-target testing error. Sufficiency uses Eθ h0 = θ and
+ 308   Varθ h0 = 1 − θ2 : the raw moment forecast                                   E+ |T − t+ | + E− |T − t− |
+                                                                                         Z
+                                          √
+ 309                        bmom = Φ(c n h0 )
+                            π                                                         ≥ min(p+ , p− )(|T − t+ | + |T − t− |)                    348
+
+                                    p        √                                          ≥ ∆n (1 − TV).
+ 310   has uniform error at most c n/M / 2π + Cen .
+ 311      Theorem 3 (Finite-ratio minimax limit; L.9–L.10). If
+ 312   M/n tends to ρ in (0,infinity), the entire local calibration          The maximum risk is at least half this sum, hence at least         349
+
+ 313   experiment on the known tilt subfamily is asymptotically              ∆n /4 when TV<=1/2. This proves (L.6). Common risk and             350
+                                      √                                      fixed source information have identical values and cannot          351
+ 314   equivalent to Y = u + Z/ ρ, uniformly for |u| ≤ A0 .
+ 315   Consequently                                                          change this comparison. Independent randomization cannot           352
+                                                                             improve the testing bound. □                                       353
+                        Rn,M (A0 ) −→ VG (K, r)                                 The matching consistency argument uses the raw mo-              354
+
+ 316                             K = cA0                                     ment estimator already defined above. Its exact variance           355
+                                      √                                      is at most 1/M, so the Lipschitz bound gives risk at most          356
+                                r = c/ ρ,                                    c sqrt(n/M)/sqrt(2pi)+Ce n. If the budget ratio does not di-       357
+
+ 317   where                                                                 verge, a bounded-ratio subsequence and the two-point lower         358
+                                                                             bound exclude consistency.                                         359
+ 318           VG (K, r) = inf sup E|d(t + rZ) − Φ(t)|.
+                             d |t|≤K                                         5.2. Exact low-information minimax limit                           360
+
+ 319      The complete experiment-level proof constructs both                Put B0 = Φ(cA0 ) − 1/2. For the upper bound, Theorem 1             361
+ 320   Markov kernels. Under the baseline, transform the stan-               and monotonicity of Φ give                                         362
+ 321   dardized sample moment SM by TM = Φ−1 (FM (SM )),
+ 322   with its known continuous baseline CDF FM . TM is ex-                             sup | 21 − πn (Qu/√n )| ≤ B0 + rn .                    363
+ 323   actly standard normal. A uniform log-likelihood expansion                        |u|≤A0
+
+ 324   and bounded exponential moments give uniform L1 approxi-
+                        √                                                       For the lower bound take a=A0 in the density-overlap            364
+ 325   mation by exp( ρuTM − ρu2 /2). A baseline conditional-
+ 326   distribution kernel reconstructs the auxiliary full sample            bound. The calibration TV bound tends to zero and the              365
+
+ 327   from TM . The two deficiencies tend to zero. Transporting             target separation tends to 2B0 , so liminf risk>=B0 . These        366
+
+ 328   bounded absolute loss and replacing πn by Φ(cu) proves the            two bounds agree. If M=0 is allowed, use the identical             367
+
+ 329   minimax limit; a scalar CLT alone would not establish it.             no-observation experiment, with TV exactly zero. □                 368
+
+ 330      For comparison, L.8 proves that the raw moment rule has               The endpoint argument establishes the exact asymptotic          369
+ 331   worst-window limiting risk arctan(r)/π. The constant rule             constant in the regime M/n → 0. The finite-ratio value is in-      370
+ 332   has risk Φ(K) − 1/2. Neither formula equals the general               stead characterized by Theorem 3. The result strengthens the       371
+ 333   finite-ratio minimax value. Window projection improves                interpretation of the sample threshold: a best constant pre-       372
+ 334   the raw rule’s loss against Φ(t), but does not itself establish       dictor may be optimal when information vanishes, while its         373
+ 335   optimality.                                                           nonzero worst-case error still prevents uniform consistency.       374
+
+
+ 336   5.1. Proof of the information threshold                               5.3. Full-experiment equivalence: likelihoods and                  375
+                                                                                   both kernels                                                 376
+ 337   Write rn for the uniform error in Theorem 1, so
+ 338   rn <=Ce n. We retain source equation labels to connect each           Within this likelihood proof put h = h0 . Write Pn,0 =             377
+ 339   step to the complete proof chapters.                                  Q⊗M
+                                                                              0   , ρn = M/n, and                                               378
+
+
+                                                                         5
+CVPR                                                                                                                                                CVPR
+                                  CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+                                                                                   moments of the last display are uniformly bounded. Also           411
+                                          M
+                                          X                                        sup u g u(Tn )<=exp(sqrt(ρ)A0 |Tn |), whose pth moment is         412
+                         Sn = M −1/2             h(Zj )                            bounded because Tn is exactly standard normal. Equation           413
+                                          j=1
+ 379                                                                               (G.4), tightness, and these bounds give uniform integrability     414
+                                         M
+                                         X                                         and hence                                                         415
+                         Vn = M −1             h(Zj )2 .
+                                         j=1
+
+ 380       Let FM be the CDF of Sn under Pn,0 . In the present fam-                    εn := 12 En,0 sup |Λn (u) − gu (Tn )| −→ 0.         (G.5)     416
+                                                                                                     |u|≤A0
+ 381   ily h is a nonconstant real-analytic function, so the preimage
+ 382   of any value is a Lebesgue-null set. Since f0 has a density,                   Define an auxiliary experiment on the original sample          417
+ 383   h(Z) has no atoms; the sum also has no atoms. Therefore                     space by                                                          418
+ 384   FM is continuous. Define
+                                                                                                     dPen,u = gu (Tn ) dPn,0 .                       419
+ 385                        Tn = Φ−1 (FM (Sn )).
+                                                                                       These     are     probability    measures,        because     420
+ 386       This parameter-independent statistic has the exact N(0,1)               E {n,0}g u(Tn )=1 exactly.        Equation (G.5) bounds           421
+ 387   law under Pn,0 ; events where the argument is zero or one
+                                                                                   sup u TV(Pn,u ,Pen,u ) by εn .                                    422
+ 388   have probability zero. The baseline law and the transform
+ 389   are known because the model family is known.                                    Under Pen,u , Tn has law N(sqrt(ρ)u,1). Conversely, use       423
+
+ 390       The CLT and continuity of Phi give sup x|FM (x)-Phi(x)|-                the regular conditional distribution Pn,0 (d z|Tn =t) to turn     424
+
+ 391   >0. On a compact interval for Sn the inverse normal CDF                     such a normal observation back into a full calibration sample.    425
+
+ 392   is uniformly continuous after restricting to a slightly larger              This kernel is independent of u; tilting by a function of Tn      426
+
+ 393   compact probability interval. Tightness of Sn then proves                   leaves the conditional law unchanged. Regular conditional         427
+                                                                                   distributions exist on the Euclidean sample spaces, and ar-       428
+                               Sn − Tn −→ 0                                        bitrary versions on baseline-null sets do not matter because      429
+ 394                                                                   (G.2)       all normal shifts are mutually absolutely continuous. Thus        430
+                             in Pn,0 -probability.
+                                                                                   the auxiliary experiment is exactly equivalent to observing       431
+ 395      This use of a CLT is only one part of the proof. The                                               √
+                                                                                   T˜N(sqrt(ρ)u,1), or Y=T/ ρ.                                       432
+ 396   essential next step controls the full likelihood ratios.                        Applying the statistic Tn in one direction and this base-     433
+ 397      Let Λn (u)=dP {n,u}/dP {n,0}. Boundedness of h and                       line conditional kernel in the other gives both deficiencies      434
+ 398   compactness of u allow a uniform Taylor expansion, valid                    bounded by εn . This proves the full-experiment equivalence       435
+ 399   for all sufficiently large n:                                               in Theorem 3. □                                                   436
+                                                                                       The proof supplies asymptotic equivalence on a fixed          437
+                         √                                                         compact local parameter interval. It does not give a cali-        438
+           log Λn (u) = u ρn Sn − 21 u2 ρn Vn + Rn (u)
+ 400                                                                   (G.3)       brated numerical value of εn , nor global equivalence over        439
+                      sup |Rn (u)| ≤ CM n−3/2 .                                    an expanding parameter range. The conditional kernel is an        440
+                   |u|≤A0
+                                                                                   existence construction; implementing it is not required to        441
+ 401      Under Pn,0 , Vn ->1 in probability, and ρn ->ρ. Equations                use a decision rule in the forward direction.                     442
+ 402   (G.2)–(G.3) imply
+                                                                                   5.4. Minimax risk transfer                                        443
+
+                                   √                                               Project all decision values to [0,1], which cannot increase       444
+                                       ρ uTn − 21 ρu2
+                                                           
+ 403        sup    log Λn (u) −                                −→ 0    (G.4)       loss. Absolute loss is then bounded by one, so transporting       445
+          |u|≤A0
+                                                                                   any randomized rule through either Markov kernel changes          446
+ 404     in probability. Define g u(t)=exp(sqrt(ρ)u t-ρ uˆ2/2). We                 each parameterwise risk by at most εn . Replacing the tar-        447
+ 405   now strengthen convergence of log likelihoods to uniform                    get πn by Φ(cu) changes each loss by at most rn . Taking          448
+ 406   L1 convergence of likelihoods.                                              supremum risks and then infima in both directions gives           449
+ 407     For any fixed p>1, log(1 + x) ≤ x gives
+                                                                                             |Rn,M (A0 ) − V (A0 , c, ρ)| ≤ εn + rn .                450
+                                                                                    This reasoning does not require the minimax infimum to         451
+                                               X               √                   be attained: apply it to arbitrarily near-optimal rules. Under    452
+ 408          sup Λn (u) ≤ exp A0                  h(Zj ) / n .
+             |u|≤A0                             j                                  absolute loss, averaging any external decision randomiza-         453
+                                                                                   tion conditionally on the observation cannot worsen risk, by      454
+ 409      The centered bounded summands have a sub-Gaussian                        convexity. Thus restricting to deterministic rules leaves the     455
+ 410   exponential-moment bound. Since M/n is bounded, the pth                     values unchanged. □                                               456
+
+
+                                                                               6
+CVPR                                                                                                                                         CVPR
+                                  CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 457      Standardize with                                                    Since D(0,0)=0, integration yields D(0, r)=arctan(r)/pi.        491
+                                                                           Uniform convergence in the uniform moment-risk conver-             492
+                                    t = cu                                 gence allows passage to the supremum, proving (L.17). □            493
+                                   K = cA0                                    The arctan expression remains a result for this specified       494
+ 458                                                                       predictor. It is now its worst-case local-window risk limit,       495
+                             X = cY = t + rZ
+                                      √                                    rather than a universal lower bound. In this known family,         496
+                                r = c/ ρ.
+                                                                           the constant predictor has worst-case limiting risk B0 ; it can    497
+ 459      The limiting decision problem depends only on (K,r):             outperform the raw moment predictor for some combinations          498
+                                                                           of window width and calibration ratio.                             499
+
+ 460          VG (K, r) = inf sup Et |d(X) − Φ(t)|.           (G.7)        6. Unknown local directions and nuisance                           500
+                              d |t|≤K
+                                                                           The known-tilt subfamily already realizes the hardest first-       501
+ 461      Actions may be restricted further to [Φ(−K),Φ(K)]. Re-           order direction around its known baseline. Define the influ-       502
+ 462   flection and averaging permit a symmetric rule d(-x)=1-d(x)         ence function                                                      503
+ 463   without increasing worst-case risk, although the certificates                                      U (0, z)
+                                                                                                ψ(z) =
+ 464   below do not require a proof that the candidate optimizer is                                         λs                                504
+ 465   minimax.                                                                                    E0 ψ 2 = c2 .
+
+ 466   5.5. Uniform risk of the raw moment predictor                       For any bounded centered score h with Ih = E0 h2 > 0,              505
+                                                                           differentiating the root equation gives normalized root sensi-     506
+ 467   By the exact calibration moment identities, the standardized        tivity dh = E0 [ψh]. Hence                                         507
+ 468   calibration sum
+                                                                                                     d2h
+                                √           √                                                             ≤ c2 ,                              508
+                                  M (θb − u/ n)                                                      Ih
+ 469                    Zn,u = p
+                                    1 − u2 /n                              with equality precisely for a nonzero multiple of the entropy      509
+                                                 √                         gradient U (0, ·). The comparison fixes the seed window,           510
+ 470      has a uniform Berry–Esseen bound C/ M on the com-                not an arbitrary common parameter window with different            511
+ 471   pact u-window: h is bounded and its variance is uniformly           attainable seeds.                                                  512
+ 472   bounded away from zero for large n. Hence                              Consider all unknown measurable k in                            513
+                 √            p   p                                            KB,K = {k : E0 k = 0, ∥k∥∞ ≤ B, |E0 ψk| ≤ K}
+ 473            c nθb = cu + c n/M 1 − u2 /n Zn,u .                                                              √                            514
+                                                                                              fn,k = f0 (1 + k/ n).
+ 474      The coefficient of Zn,u tends uniformly to r. This implies
+                                                                           The baseline, B and K are known; k is not. For large n, these      515
+ 475   uniform convergence of the bounded loss expectations to
+                                                                           densities preserve legality with the same signed density g and     516
+ 476   D(cu, r). One direct justification is by subsequences: any
+                                                                           the same complete risk. State derivatives of U are bounded,        517
+ 477   alleged nonuniformity supplies u n in the compact window;
+                                                                           so the whole class lies in a common shrinking smooth-field         518
+ 478   extract u n->u *, apply the triangular CLT and bounded con-
+                                                                           neighborhood. A repeated stopped-seed proof gives                  519
+ 479   tinuous mapping along that subsequence, and use continuity
+ 480   of D. Replacing Φ(cu) by the true πn changes expected abso-                    sup |πn (Qn,k ) − Φ(E0 ψk)| ≤ Cen .                     520
+                                                                                    k∈KB,K
+ 481   lute loss by at most rn . This proves the uniform moment-risk
+ 482   convergence.                                                           Theorem 4 (Unknown-direction minimax value; N.3).               521
+ 483      Pair positive and negative Z to obtain                           Suppose B ≥ K∥ψ∥∞ /c2 . For M/n tending to positive                522
+                                                                           finite ρ, the minimax prediction risk over this unknown-           523
+                                                                                                                 √
+                     Z ∞                                                   direction class converges to VG (K, c/ ρ). Uniform consis-         524
+ 484     D(t, r) =         [Φ(t + rz) − Φ(t − rz)]φ(z) dz. (L.18)          tency is possible exactly when M/n tends to infinity; for          525
+                     0                                                     M/n tending to zero the value tends to Φ(K) − 1/2.                 526
+ 485       Symmetry makes this even in t. For t>0 and z>0,                    The lower bound restricts to kt = tψ/c2 , |t| ≤ K, which        527
+ 486   |t+rz|>|t-rz|, so differentiation under the integral gives a        the envelope condition guarantees is contained in the class.       528
+ 487   strictly negative derivative in t. Therefore the maximum over       For the upper bound use the direction-free statistic               529
+ 488   a window containing zero is D(0, r).                                                         √ X  M
+                                                                                                      n
+ 489       Finally,                                                                            t=
+                                                                                               b            ψ(Zej )
+                                                                                                    M j=1
+                                                                                                                                              530
+           ∂
+                             Z ∞
+                                                       1                                            t = E0 ψk
+                                                                                                   Eb
+ 490          D(0, r) = 2          zφ(rz)φ(z) dz =            .
+           ∂r                 0                    π(1 + r2 )                              Varn,k ψ = c2 + O(n−1/2 ).
+
+                                                                       7
+CVPR                                                                                                                                            CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 531   Its uniform CLT transfers any bounded Lipschitz Gaussian                  Their true right risk-exit probabilities obey                   575
+ 532   rule’s risk. Gaussian smoothing approximates an arbitrary
+ 533   near-optimal bounded rule with no asymptotic loss, com-
+ 534   pleting the upper bound. Fixed finite step rules also transfer                   sup       |πn (Qn,k ) − Φ(t(k))| ≤ Cen ,
+                                                                                     k∈KBloc ,K
+ 535   because the limiting Gaussian puts vanishing probability                                                                         (N.7)    576
+       near their thresholds.                                                                     −1/2                    1/3
+ 536                                                                                    en = n            + ((1 + log n)/n)     .
+ 537       This is equality of minimax decision values, not scalar
+ 538   equivalence of the full infinite-dimensional experiment. Or-              Proof. For every fixed derivative order j needed by the         577
+
+ 539   thogonal directions may still contain additional informa-              stopped-seed proof,                                                578
+
+ 540   tion about nuisance. N.4 gives, for a finite score span
+ 541   with information matrix I and d = E0 [Hψ], the variance                                        Bloc
+                                                                                    ∥vn,k − v0 ∥C j ≤ √ max sup |∂xl U (x, z)|.                  579
+ 542   d⊤ I −1 d/ρ = ∥Πspan(H) ψ∥22 /ρ ≤ c2 /ρ. Root-preserving                                         n 0≤l≤j x,z
+ 543   nuisance is orthogonal to ψ; it causes no additional first-
+ 544   order penalty for the influence-aligned entropy tilt. These               Thus the entire class lies in one shrinking smooth-field        580
+ 545   facts do not extend without a new argument to an unknown               neighborhood. No derivative of k with respect to z is needed.      581
+ 546   baseline or growing local envelope. Complete proofs and                                                                   √ signs
+                                                                              The baseline derivative lower bound and endpoint drift             582
+ 547   projection qualifications are in N.1–N.4.                              persist uniformly. Since v {n,k}(0)=E0 U0 k/ n, Tay-               583
+                                                                              lor expansion at zero and the common positive derivative           584
+ 548   6.1. Root sensitivity and the information bound                        give q=O(nˆ{-1/2}) and the root expansion (N.6). Bounded           585
+                                                                              derivatives and bounded Uˆ2 give the remaining expansions.         586
+ 549   Differentiate E epsilon U(q epsilon,Z)=0. At epsilon=0 the
+                                                                              The baseline root noise is nonzero, so its uniform lower           587
+ 550   state derivative is λ and the distribution derivative is E0 U0
+                                                                              bound persists.                                                    588
+ 551   h, proving (N.2). Differentiating log f epsilon at zero gives
+                                                                                 For completeness, the probabilistic part can be repeated        589
+ 552   score h and information E0 hˆ2. Cauchy–Schwarz gives (E0
+                                                                              with exactly the uniform constants of L.2 rather than apply-       590
+ 553   ψ h)ˆ2<=E0 ψˆ2 E0 hˆ2. Its equality condition proves the
+                                                                              ing a fixed-law theorem. All maps have inverse contraction         591
+ 554   last assertion. □
+                                                                              and C2 conjugacy bounds in the same smooth neighborhood;           592
+ 555       Thus the original h0 =U0/σg is not merely a convenient
+                                                                              their root-to-boundary distances and conjugate exit mag-           593
+ 556   tilt: it maximizes normalized seed displacement for a given
+                                                                              nitudes are bounded away from zero. Bounded U and its              594
+ 557   local statistical distinguishability. The term “least favorable”
+                                                                              derivative give common batch second/fourth moments and             595
+ 558   here concerns estimation of this target, after fixing the target
+                                                                              the state-difference noise bound. For the stopped normalized       596
+ 559   window; it is not an ordering of all nonlinear environmental
+                                                                              conjugacy Y and frozen-root seed W, the same orthogonality         597
+ 560   shifts.
+                   √                                                          and Taylor estimates yield                                         598
+ 561       If θ=u/ n and the score h is known, its limiting seed is
+ 562   dh u, while the calibration information is ρ Ih . At a fixed                                   sup E|Yj |2 ≤ C
+ 563   seed window t=dh u in [-K,K], the resulting Gaussian noise                                        k,j
+ 564   standard deviation is                                                                        sup EA−2τ
+                                                                                                          n,k ≤ C/n                              599
+                                                                                                      k
+                                 |dh |   c                                               sup E|Yτ − W |2 ≤ C(1 + log n)/n.
+ 565                        rh = √     ≤√ .                      (N.4)                    k
+                                   ρIh    ρ
+                                                                                 Exit is finite for every member because f {n,k}>=f0 /2          600
+ 566      For dh =0 the first-order seed is zero, so this reparameteri-       supplies a common positive mass in each of the fixed forcing       601
+ 567   zation is not applicable; a second-order analysis would be             intervals. Frozen seed columns have uniformly bounded              602
+ 568   a different local problem. Comparing different h at a fixed            third moments and variances bounded below, so Berry–               603
+ 569   u-window would change the attainable target window and                 Esseen and seed anti-concentration hold uniformly. Choos-          604
+ 570   would not be the same least-favorability comparison.                   ing the same anti-concentration cutoff as in L.2 bounds the        605
+
+ 571   6.2. Uniform exit over the unknown-direction class                     error of identifying the final exit sign by Ce n. Finally,         606
+
+                                                                                         √
+ 572   For sufficiently large n, all these fields have one root q {n,k}                      nHn,k (0)/sn,k = t(k) + O(n−1/2 )                   607
+ 573   on the same compact exit domain, and uniformly over k,                                                                       2
+                                                                                 uniformly by (N.6) and the normalized C bound. The              608
+                                 E0 [U0 k]                                    global risk-safe interval is unchanged, so this is actual risk     609
+                      qn,k = −      √      + O(n−1 )                          exit without a component-transfer correction. This proves          610
+                                  λ n
+ 574                                                             (N.6)        (N.7). □                                                           611
+                          λn,k = λ + O(n−1/2 )                                   The proof uses a uniform bounded envelope and a finite          612
+                          sn,k = s + O(n−1/2 ).                               number of smooth U derivatives. It does not require entropy        613
+
+
+                                                                          8
+CVPR                                                                                                                                          CVPR
+                                   CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 614   or covering-number control of the function class of direc-              The last expectation differs from that under X˜N(t,r2 ) by      652
+ 615   tions, since no uniform empirical process over k is estimated.       at most TV(N(0,r2 + a2 ),N(0,r2 )), uniformly in t. This tends     653
+                                                                            to zero as a->0. Thus bounded Lipschitz rules are sufficient       654
+ 616   6.3. Upper and lower minimax arguments                               to approximate the Gaussian minimax value. Apply their             655
+ 617   Here Bloc denotes the envelope B used in the main statement,         uniform risk convergence, then let a and epsilon tend to zero.     656
+ 618   and the class has the same target window K.                          The upper and lower bounds agree.                                  657
+ 619      Define the scalar statistic from independent calibration             For sufficiency when M/n → ∞, use Φ(b       t). Its error is    658
+ 620   scores                                                               bounded uniformly by                                               659
+
+                                   √ XM
+                                                                                             r
+                                    n                                                  1         n    p
+ 621                          t=
+                              b          ψ(Zej ).              (N.8)                  √            sup Varn,k ψ + Cen → 0.                     660
+                                   M j=1                                                2π       M k
+
+ 622      It is available without knowing k. Under Qn,k ,                For necessity, a bounded-ratio subsequence contains the               661
+                                                                      original nondegenerate least-favorable subfamily, to which               662
+                                                                      the two-point lower bound applies. □                                     663
+                                   Ebt = t(k)                            This theorem equates a particular decision problem’s                  664
+                        2    −1/2       2         2      2      −1/2 minimax value. It does not assert that the entire infinite-               665
+       Var(ψ(Z)) = c + n
+                e                  E0 [ψ k] − t(k) /n = c + O(n     )
+ 623                                                       (N.9)      dimensional experiment is equivalent to a scalar Gaussian                666
+
+ 624      uniformly. Boundedness of ψ gives a uniform triangular-     observation: the full sample may contain information about               667
+
+ 625   array CLT. For M/n → ρ in (0,infinity), the distribution       orthogonal nuisance directions. The lower bound comes                    668
+
+ 626   of t is uniformly approximated in Kolmogorov distance by
+          b                                                           from a subexperiment and the upper bound from a direction-               669
+
+ 627             2
+       N(t(k),c /ρ).                                                  free rule.                                                               670
+
+ 628             K
+          Let Rn,M be the minimax expected absolute prediction           If M/n → 0, the same subfamily lower bound and the                    671
+                                                                                                                 K
+ 629   loss over the declared unknown-direction class, using the      constant  forecast upper bound also give Rn,M  ->Φ(K)-1/2.               672
+
+ 630   exact πn as the target. Let                                    This  extends  the earlier  zero-information constant  to the            673
+                                                                      enlarged class, without characterizing the entire nuisance               674
+                                                                      experiment.                                                              675
+ 631            VG (K, r) = inf sup E|d(t + rZ) − Φ(t)|.                 The fixed finite step rules already computed for the Gaus-            676
+                             d |t|≤K
+                                                                      sian problem also transfer uniformly: their finitely many                677
+                                                                      discontinuities have vanishing neighborhood probability un-              678
+ 632      Lower bound. The unknown-direction class contains the
+                                                                      der the limiting normal densities. Consequently the existing             679
+ 633   subfamily
+                                                                      numerical minimax brackets are relevant to the enlarged                  680
+                                   2
+                          k = (t/c )ψ = (t/c)h                        local class without rerunning the optimizer or knowing k.                681
+                          t                         0
+ 634
+                                    |t| ≤ K,                                6.4. Tangent projection and target-preserving nui-                 682
+ 635       by the envelope condition of Theorem 4. Its seed coor-                 sance                                                        683
+ 636
+                       √ t, and it is the original entropy-gradient
+       dinate is exactly                                                    For a finite collection of bounded centered scores                 684
+ 637   tilt with θ=t/(c n). Restricting to this subfamily and even          H=(h1,. . . ,hd) with nonsingular information I=E0 HH ⊤ ,          685
+ 638   telling the predictor that this restriction holds can only re-       let d=E0 [H ψ]. The usual local variance associated with           686
+ 639   duce the minimax risk. The experiment-level Gaussian                 estimating the seed functional in this score span is               687
+ 640   reduction already proved for that subfamily gives liminf
+                        √
+ 641   RˆK>=VG (K,c/ ρ). This invokes a full-experiment lower                       1 ⊤ −1   1                c2
+ 642   bound, not a lower bound inferred from a moment CLT.                           d I d = ∥Πspan(H) ψ∥22 ≤ .                   (N.12)      688
+                                                                                    ρ        ρ                ρ
+ 643       Proof of the upper bound. Any fixed bounded Lips-
+ 644   chitz Gaussian rule d, applied to b  t, has uniformly conver-           Proof. The projection has coefficients I −1 d, so its           689
+ 645   gent risk by (N.9), its uniform CLT, and (N.7). This suf-            squared L2 norm is d⊤ I −1 d. Projection contracts norm.           690
+ 646   fices to approach VG arbitrarily closely. To see why arbi-           Equivalently, an empirical mean of d⊤ Iˆ{-1}H estimates the        691
+ 647   trary measurable Gaussian rules do not create a gap, start           derivative functional in this local model with that first-order    692
+ 648   with an epsilon-optimal rule valued in [0,1]. Smooth it by           variance. □                                                        693
+ 649   d a(x)=E[d(x+aZ’)], with independent standard-normal Z’.                For a closed admissible tangent space T, the correspond-        694
+ 650   The smoothed rule is bounded Lipschitz. Jensen gives                 ing sensitivity supremum is                                        695
+
+                                                                                                      ⟨ψ, h⟩2        2
+                                                        ′
+             Et |da (X) − Φ(t)| ≤ Et |d(X + aZ ) − Φ(t)|.
+                                                                                              sup          2 = ∥ΠT ψ∥2 .           (N.13)      696
+ 651                                                                                      h∈T, ∥h∥2 >0 ∥h∥2
+
+
+                                                                        9
+CVPR                                                                                                                                               CVPR
+                                  CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 697       Equality as an operational bounded density tilt requires              deterministic-target Gaussian value with an added vari-            744
+ 698   that the maximizing direction be admissible and bounded, or               ance. We prove matching upper and lower bounds over the            745
+ 699   be approximable by admissible bounded scores. Equation                    unknown-baseline class. For K > 0 and L/n → ℓ ∈ (0, ∞],            746
+ 700   (N.13) alone does not supply the geometry and uniform exit                consistent conditional prediction remains possible exactly         747
+ 701   proof for a new model class.                                              when M/n → ∞; superlinear baseline information is un-              748
+ 702       If an interest score h is accompanied by nuisance scores              necessary. In the root-preserving case K = 0, the opti-            749
+ 703   spanning N, and those nuisance directions preserve the seed               mal limiting rule shrinks the raw displacement estimate by         750
+ 704   functional to first order, then N is orthogonal to ψ. The                 M/(L + M ), and its MAE has the closed form (F.35) in              751
+ 705   efficient interest score is heff = h − ΠN h and                           the complete integrated proofs. These claims concern a reg-        752
+                                                                                 ular scalar experiment and do not establish a reduction of         753
+                        ⟨ψ, h⟩2    ⟨ψ, heff ⟩2                                   neural-network adaptation.                                         754
+ 706                           2 =             ≤ c2 .            (N.14)
+                        ∥heff ∥2    ∥heff ∥22                                       The added model-specific contribution is the connection         755
+                                                                                 between sample-based initialization, conditional actual-SGD        756
+ 707       Thus nuisance can reduce information relative to a re-                exit and the joint baseline/calibration decision problem. The      757
+ 708   stricted one-direction model, but cannot exceed the full tan-             conjugacy and unstable-exit mechanism, likelihood compar-          758
+ 709   gent variance c2 in this known-baseline first-order problem.              ison, Gaussian conditioning, convex minimax and posterior-         759
+ 710   In particular, for h=h0 proportional to ψ and root-preserving             median facts are classical. The result should not be presented     760
+ 711   nuisance, heff =h0 : there is no additional first-order penalty.          as a new general principle of statistical efficiency.              761
+ 712       If a proposed nuisance direction has E0 ψ k nonzero, it                                                                √
+                                                                                    For finite positive ratios, writing aP = cP / ℓ and bP =        762
+ 713   changes the target and is not a target-preserving nuisance.                    √
+                                                                                 cP / ρ, the asymptotic minimax value over the declared             763
+ 714   It must be included in t(k), as in Theorem N.3, rather than               regular class is supP VFB (K; aP , bP ), where                     764
+ 715   projected out while keeping the target fixed. Moreover, a
+ 716   bounded multidimensional parameter window can permit                          VFB (K; a, b) = inf sup Et |d(S + bZC ) − Φ(S)|,
+ 717   decision improvements beyond a scalar variance comparison;                                      d |t|≤K
+                                                                                                                                                    765
+ 718   (N.12) is an information calculation, not a general finite-                                      S = t + aZL .
+ 719   window minimax formula.
+ 720       Concrete nuisance example. At the symmetric Gaussian                  In the root-preserving subcase the feasible asymptotically         766
+ 721   baseline, let b(z)=cos(z)-E0 cos(Z). It is bounded, centered              optimal forecast is                                                767
+ 722   and even, whereas ψ and h0 are odd. Thus E0 ψ b=E0 h0                                                           
+ 723   b=0. The two-direction perturbation k {t,v}=(t/c)h0 +v b has                                            M b
+                                                                                                 bpool = Φ
+                                                                                                 π                   Dn .                           768
+ 724   seed t, with an unknown bounded v changing other aspects                                              L+M
+ 725   of the score distribution. It stays in the declared unknown-
+ 726   direction class whenever |t| H */c+|v| ||b|| infinity<=Bloc .             The pooled observations affect only prediction; the future         769
+
+ 727   This supplies a legal common-risk nuisance family with no                 trajectory still starts at the baseline-sample initialization.     770
+
+ 728   additional first-order penalty. No new nuisance simulation is             If K = 0 and L/n → ∞, the constant forecast 1/2 is                 771
+
+ 729   claimed in the present confirmation run.                                  consistent without target calibration. General-window nu-          772
+                                                                                 merical optimization and actual-SGD confirmation of this           773
+ 730   6.5. Finite baseline information and conditional                          finite-baseline experiment remain open.                            774
+ 731        prediction
+                                                                                 7. Gaussian certificates and real-SGD confirma-                    775
+ 732   We also allow the baseline marginal to be unknown in a
+ 733   fixed bounded density neighborhood, while preserving the
+                                                                                     tion                                                           776
+
+ 734   complete common classification risk. An independent base-                 7.1. Gaussian decision certificates                                777
+ 735   line sample of size L selects the initialization through an
+                                                                                 A finite prior supplies a Bayes lower bound, and its finite-       778
+ 736   empirical entropy root. The prediction target is the future
+                                                                                 decimal posterior-median step rule supplies an upper bound.        779
+ 737   risk-exit probability conditional on this realized initialization.
+                                                                                 The certificate encloses the true posterior crossings and nor-     780
+ 738   A uniform actual-SGD approximation and a two-sample ex-
+                                                                                 mal probabilities with directed arithmetic. An interpolation       781
+ 739   pansion give the Gaussian interface
+                                                                                 remainder based on a risk-curvature bound controls the en-         782
+              c                        c                                         tire continuous parameter window between all loss kinks. It        783
+ 740   S = t+ √ ZL ,          D = S + √ ZC ,            target = Φ(S),
+               ℓ                        ρ                                        neither assumes the prior is exactly least favorable nor relies    784
+                                                                                 on optimizer convergence.                                          785
+ 741   when L/n → ℓ ∈ (0, ∞) and M/n → ρ ∈ (0, ∞).                                   At K = r = 1, the candidate rule’s certified worst risk        786
+ 742   The shared initialization noise changes the decision prob-                is at most .164587, at least 34.16% below the raw moment           787
+ 743   lem: its minimax value is VFB , rather than the original                  rule’s exact .25. This is a Gaussian worst-risk improvement,       788
+
+
+                                                                            10
+CVPR                                                                                                                                                            CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+              K     r   Minimax MAE interval      Raw moment                  reference error to each rule-risk bound and twice that error to                    828
+                                                                              paired differences. Propagate cellwise risk intervals through                      829
+               1    2    [0.226230, 0.226386]       0.352416
+               1    1    [0.164401, 0.164587]       0.250000                  maxima and differences. This provides simultaneous cover-                          830
+               1   .5    [0.107333, 0.107539]       0.147584                  age at least 95% under the declared iid experiment, including                      831
+               2    2    [0.244686, 0.244931]       0.352416                  both uncertainty layers. The beta quantiles use floating-point                     832
+               2    1    [0.169889, 0.170268]       0.250000                  routines, so these statistical intervals are distinct from the                     833
+               2   .5    [0.108534, 0.109092]       0.147584                  directed Gaussian numerical certificate.                                           834
+                                                                                 Complete design, uncertainty formulas, cellwise tables                          835
+       Table 1. Directed lower and continuous-window upper bounds for         and original raw arrays are in the confirmation report. Re-                        836
+       the Gaussian decision value. Endpoints are rounded outward. The        sults and code stay in their original directories. The earlier                     837
+       raw moment column is predictor-specific.                               pilot is exploratory and is not pooled into these intervals.                       838
+
+                                                                              7.4. Constructing a certified minimax bracket                                      839
+ 789   not pointwise dominance or a finite-n SGD certificate. The
+ 790   interval implementation trusts the stated Decimal runtime; it          Choose any finite prior with ordered support t 1<. . . <t m in                     840
+
+ 791   is not a proof-assistant verification. Full numerical analysis         [-K,K] and positive weights w i. Its posterior median under                        841
+
+ 792   and specifications.                                                    absolute loss is a Bayes rule taking the values Phi(t i). The                      842
+                                                                              boundary between actions k and k+1 solves                                          843
+ 793   7.2. Independent fixed-rule confirmation
+ 794   The experiment keeps the pilot’s selected rule and ten cells             X               2   2        2    X                 2   2          2
+                                                                                       wi exti /r −ti /(2r ) =           wi exti /r −ti /(2r ) .        (G.8)    844
+ 795   fixed, excludes pilot data, and uses actual sampled non-
+                                                                                 i≤k                               i>k
+ 796   linear entropy updates. Fix w = 2, ν = 1, η = .1,
+ 797   x0 = 0, b = .25, κ = .5, with ϵ approximately .0060745243                  The ratio of the left sum to the right sum is strictly de-                     845
+ 798   and c approximately 9.1436882. For n ∈ {128,          √ 512},          creasing: its log derivative is the difference of two tilted                       846
+ 799   set M = round(c2 n) and generate θ = t/(c n) at                        means divided by r2 , and every left support point is smaller                      847
+ 800   t ∈ {−1, −.5, 0, .5, 1}. Predictors receive calibration scores         than every right support point. Its limits are infinity and zero.                  848
+ 801   and common constants only. The rule is not optimized again             Thus every crossing is unique; the ordered crossings define                        849
+ 802   after seeing these trajectories.                                       the posterior-median rule.                                                         850
+ 803      Each cell has 16,384 reference paths and 4,096 indepen-                 For any step rule with thresholds b j and action values a j,                   851
+ 804   dent calibration repetitions. All four rules share calibration         its exact risk is                                                                  852
+ 805   scores within a repetition; reference streams are independent.
+ 806   The fixed cap is 1,500 steps. All 163,840 paths exited, and                                                               
+ 807   the largest observed exit step was 720. Numerical geome-
+                                                                                         X                    bj+1 − t        bj − t
+                                                                              Rd (t) =         |aj − Φ(t)| Φ             −Φ             ,
+ 808   try checks are diagnostic rather than interval-certified. No                        j
+                                                                                                                 r               r
+ 809   nuisance simulation is claimed.                                                                                                   (G.9)                   853
+ 810      These maxima are over five fixed parameter cells. The                   including b 0=-infinity and the last boundary +infinity.                       854
+ 811   comparison subtracts maxima of expected losses, not a max-             Therefore the full unbounded observation domain is inte-                           855
+ 812   imum of paired gains. Joint reference/calibration intervals            grated through CDF differences, with no omitted integration                        856
+ 813   show positive five-cell maximum-risk improvement over                  tail.                                                                              857
+ 814   both baselines at both batch sizes. Clipping remains better at             The code optimizes a finite prior using floating-point                         858
+ 815   some endpoints, so there is no pointwise dominance claim.              quadrature only to find a candidate. It then rounds support                        859
+                                                                              points, prior numerators and rule thresholds to explicit finite                    860
+ 816   7.3. Two uncertainty layers
+                                                                              decimals. These rounded quantities define the actual certified                     861
+ 817   Allocate .025 error to reference paths and .025 to calibration         prior and rule.                                                                    862
+ 818   losses. At each cap, right-exit probability by the cap is                  For each true crossing, directed interval arithmetic verifies                  863
+ 819   below eventual πn , while the probability of not having exited         opposite signs of (G.8) at endpoints l j and u j, with the                         864
+ 820   left is above it. One-sided exact binomial bounds bracket              candidate threshold inside the bracket. The candidate rule                         865
+ 821   these probabilities with a union bound over cells; possible            and exact Bayes rule can differ only on the union of these                         866
+ 822   population censoring is thus covered even when no sampled              strips. Gaussian mixture density is at most 1/(r sqrt(2 pi));                      867
+ 823   paths are censored.                                                    loss differences are at most one. Hence                                            868
+ 824       Conditional on the independent reference sample, losses
+ 825   lie in [0,1] and paired differences in [-1,1]. Two-sided empir-                                                      P
+ 826   ical Bernstein bounds [4], with a union bound over 40 rule                                                               j (uj − lj )
+                                                                                                    X
+                                                                                  Bayes risk ≥              wi Rd (ti ) −        √             .       (G.10)    869
+ 827   risks and 30 paired gains, control calibration error. Add the                                    i
+                                                                                                                                r 2π
+
+                                                                         11
+CVPR                                                                                                                                                 CVPR
+                                   CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+                                 Estimated five-cell maximum MAE                Reduction: simultaneous 95% interval
+                            n   Raw moment Clipped Optimized               Moment minus optimized Clipped minus optimized
+                          128       .2481        .2238        .1663              [.0299, .1338]             [.0076, .1075]
+                          512       .2476        .2228        .1684              [.0273, .1311]             [.0046, .1043]
+
+       Table 2. Independent fixed-rule confirmation. Intervals jointly include reference-path and calibration uncertainty. The maxima concern five
+       predeclared cells, not a continuous window; the Gaussian rule was frozen before generating confirmation samples.
+
+
+ 870       A lower enclosure for the right side is a valid minimax               mathematical bounds, the correctness of the supplied imple-          906
+ 871   lower bound. This does not assume that the candidate prior                mentation, and the documented Decimal arithmetic; it is not          907
+ 872   is least favorable, that the search objective was computed                a proof-assistant verification of the runtime.                       908
+ 873   exactly, or that the optimizer converged.                                     The search gap and the certified gap are different quanti-       909
+                                                                                 ties. The final upper-minus-lower interval accounts for an im-       910
+ 874   7.5. Continuous-window upper bound                                        perfect prior/rule pair as well as root, probability-evaluation      911
+
+ 875   The candidate step rule itself gives an upper bound once                  and continuous-window errors.                                        912
+
+ 876   sup {|t|<=K} R d(t) is bounded. Its action values are ex-                 7.7. Using the fixed rule without the local parameter                913
+ 877   actly Phi(t i), so the only absolute-loss kinks are at the
+ 878   known support points t i. Between successive kinks, dif-                  For an arbitrary measurable Gaussian rule, the direct risk-          914
+                                                                                                                            √
+ 879   ferentiation under the Gaussian integral gives                            transfer construction applies it to c Tn / ρ. This uses the          915
+                                                                                 known baseline CDF FM , not the unknown environment                  916
+                                                                                 parameter.                                                           917
+ 880                |Rd′′ (t)| ≤ C2 := 1 + 2/r + 2/r2 .           (G.11)
+                                                                                     For each of the fixed finite step rules produced here, a         918
+
+ 881      Indeed the target’s first and second derivatives are                   simpler implementation
+                                                                                                    √       is also asymptotically justified: ap-     919
+
+       bounded in absolute value by one; the sum of absolute bin-                ply it to Xhat=c n hat theta, the raw empirical moment               920
+ 882                                                                                                                           √
+ 883   probability derivatives is bounded by E|Z|/r<=1/r, and that               coordinate. Under the baseline, Xhat-c Tn / ρ tends to zero          921
+
+ 884   of second derivatives by E|Z2-1|/(r 2)<=2/r2 . All action losses          in probability. The likelihood-ratio moment bounds used              922
+
+ 885   are bounded by one. The bound is deliberately conservative.               in (G.5) transfer this to the compact local family uniformly.        923
+                                                                                 The Gaussian statistic has a continuous density uniformly            924
+ 886      For a partition interval [a,b] with no kink in its interior,
+                                                                                 bounded on the local window, so the probability of lying near        925
+ 887   linear interpolation and (G.11) imply
+                                                                                 one of the finitely many thresholds tends to zero with the           926
+                                                                                 threshold neighborhood. Therefore the two implementations            927
+                                                                                 have uniformly vanishing risk difference.                            928
+           sup Rd (t) ≤ max{Rd (a), Rd (b)} + C2 (b − a)2 /8.
+          t∈[a,b]                                                                    This argument is for a fixed finite rule. Refining the rule      929
+ 888                                                        (G.12)               with n so that the number of thresholds diverges requires            930
+ 889      The partition includes every support point and both end-               additional control. No finite-n risk certificate for the SGD         931
+ 890   points. Adaptive refinement produces an upper bound over                  experiment follows merely from the Gaussian numerical                932
+ 891   the entire continuous window, not just the evaluated grid.                certificate.                                                         933
+
+
+ 892   7.6. Arithmetic and probability enclosures                                7.8. Simultaneous reference and calibration uncer-                   934
+                                                                                       tainty                                                         935
+ 893   certify.py uses Python Decimal with 90-digit preci-
+                                                                                 At the fixed cap, let pR be the probability of a right exit by       936
+ 894   sion and outward rounding for interval operations. Cor-
+                                                                                 the cap and pN L the probability of not having exited left by        937
+ 895   rectly rounded Decimal exponentials and square roots are ex-
+                                                                                 the cap. The eventual right-exit probability satisfies               938
+ 896   panded by a representable value on each side. Pi is enclosed
+ 897   by Machin’s identity and alternating arctangent remainders.
+                                                                                                       pR ≤ πn ≤ pN L .                               939
+ 898   Normal CDF values are enclosed by integrating the Taylor
+ 899   expansion of exp(-xˆ2/2), including a rigorous next-term re-                 For each cell use a one-sided exact Clopper–Pearson               940
+ 900   mainder once the terms decrease. For |x|>=12 a Mills-ratio                lower bound on pR and upper bound on pN L , each with                941
+ 901   tail bound is used instead. Both negative and positive tails              error αref /(2C). Their endpoints [l i,u i] jointly cover every      942
+ 902   are retained in their intervals.                                          cell’s eventual πn with probability at least 1-αref . This re-       943
+ 903       The optimizer’s normal CDF, integration grid, stopping                mains valid if a cell has censored paths; lack of an observed        944
+ 904   tolerance and floating-point objective do not enter the valid-            censor is not treated as proof that its population censoring         945
+ 905   ity of the final bounds. The certificate relies on the stated             probability is zero.                                                 946
+
+
+                                                                            12
+CVPR                                                                                                                                               CVPR
+                                    CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+ 947                                 pi -l i,u i-b
+          Set pbi =NR /N and ei =max(b           pi ). On the refer-             7.9. Cellwise confirmation and interpretation                      992
+ 948   ence event, |b
+                    pi -pi i|<=ei .
+                                                                                 The interval construction supports positive paired improve-        993
+ 949   7.8.1. Calibration loss uncertainty conditional on the ref-               ments over the raw moment rule in 6/10 cells and over the          994
+ 950           erence sample                                                     clipped rule in 2/10 cells. At endpoint cells clipping is often    995
+                                                                                 better, so there is no claim of uniform pointwise improve-         996
+ 951   For each rule and cell, score calibration repetition j by
+                                                                                 ment. At t=0 the target equals .5 exactly by symmetry in           997
+ 952                   pi |. Conditional on the independent refer-
+       L j=|forecast j-b
+                                                                                 this family; for consistency of the primary analysis, that cell    998
+ 953   ence sample, these are iid in [0,1]. Paired baseline-minus-
+                                                                                 was scored with the independent reference estimate, without        999
+ 954   optimized loss differences are iid in [-1,1].
+                                                                                 using the exact value to narrow its interval.                     1000
+ 955      For m observations taking values in an interval of width                  The largest observed exit step was 720. Raw exit arrays,       1001
+                                               2
+ 956   B, with unbiased sample variance Sm       , use the two-sided             forecast arrays, fixed-design metadata and the frozen rule        1002
+ 957   empirical Bernstein radius                                                are retained. The aggregate counts and MAEs agree with the        1003
+                                                                                 retained NPZ files.                                               1004
+                              r
+                                    2 log(4/δ)
+                                  2Sm            7B log(4/δ)
+ 958          bm (B, δ) =                      +             .                   7.10. Unknown local visual environments: indepen-                 1005
+                                       m          3(m − 1)                              dent confirmation                                          1006
+
+ 959       This follows by scaling and applying both tails of Maurer–            Setup and information. We next test prospective prob-             1007
+
+ 960   Pontil (2009), Theorem 4. Allocate δ=αcal /(7C) to each of                ability prediction on real visual scores, using the frozen        1008
+
+ 961   40 rule-risk estimates and 30 paired gains. Their conditional             ImageNet-pretrained ResNet-18 features and four prespec-          1009
+
+ 962   coverage is at least 1-αcal by a union bound; integration over            ified CIFAR-10 class pairs. Official training features de-        1010
+
+ 963   the reference sample preserves that bound. Independence                   termine a fixed projection. For each pair, the official test      1011
+
+ 964   between the different rules is not required.                              empirical baseline determines one root q0 and its constants;      1012
+                                                                                 all environments retain x0 = q0 . With centered, unit-            1013
+ 965       For each rule risk, add ei to its calibration radius. For a
+                                                                                 variance baseline entropy velocity h0 (z), we draw images√        1014
+ 966   paired gain add 2ei , by the reverse triangle inequality. For
+                                                                                 with weights proportional to 1+θh0 (z), where θ = t/(c n)         1015
+ 967   the deterministic constant rule, propagate [l i,u i] through
+                                                                                 and c = σ0 /(λ0 s0 ). The generator knows t; predictors re-       1016
+ 968   |.5-p| exactly instead of using an unnecessary calibration
+                                                                                 ceive only independent unlabeled calibration scores and the       1017
+ 969   bound.
+                                                                                 declared baseline constants. They do not receive target roots,    1018
+ 970       The resulting risk and gain intervals have simultaneous
+                                                                                 labels, generating coordinates or reference exits. Unlike the     1019
+ 971   coverage at least 95% over all reported cells and rules, un-
+                                                                                 theoretical construction, reweighting labeled images changes      1020
+ 972   der the declared iid simulation experiment. They include
+                                                                                 the complete classification-risk function: risk is evaluated      1021
+ 973   both uncertainty layers. They are not just conditional stan-
+                                                                                 under each environment’s actual weighted label law.               1022
+ 974   dard errors or pointwise normal intervals. Evaluation of β
+ 975   quantiles uses SciPy floating-point routines; these are sta-
+ 976   tistical confidence statements, distinct from the previous                Exploration and independent confirmation. The ex-                 1023
+ 977   directed-arithmetic Gaussian decision certificates.                       ploratory study covered four pairs, n ∈ {32, 128, 512} and        1024
+                                                                                 t ∈ {−1, −.5, 0, .5, 1}, with 1,024 reference paths per envi-     1025
+ 978   7.8.2. Finite-grid maximum risks                                          ronment and 256 calibration repetitions    per budget. Fixed      1026
+                       grid
+                                                                                                                  p
+ 979   For each n let Rrule be the maximum of the five true expected             relative calibration noise r = c n/M ∈ {.5, 1, 2} gave an         1027
+ 980   calibration losses at the fixed t cells. If cellwise intervals are        error plateau across batch sizes; the sequence r = 2, 1, .5       1028
+ 981   [L i,U i], then                                                           gave decreasing error. These are finite-grid trends condi-        1029
+                                                                                 tional on fixed image pools, not new independent images           1030
+
+ 982
+                                  grid
+                        max Li ≤ Rrule ≤ max Ui .                                or a consistency theorem for a finite collection of frozen        1031
+                          i                     i                                rules. All 36 fixed-ratio settings favored the optimized rule     1032
+
+ 983      For the improvement in grid maximum risk, subtract in-                 in maximum-MAE point estimates, but their simultaneous            1033
+
+ 984   tervals: its lower bound is max i L baseline,i minus max i                improvement intervals crossed zero. We therefore fixed            1034
+
+ 985   U optimized,i. The same simultaneous event covers all these               a new confirmation design before generating its samples,          1035
+
+ 986   derived comparisons. This is a five-cell statement, not a                 rather than pooling exploration into confirmation.                1036
+
+ 987   continuous-window maximum or finite-n minimax theorem.
+ 988      Reference:       Andreas Maurer and Massimiliano                       Fixed design and scoring. Confirmation retains all four           1037
+ 989   Pontil, Empirical Bernstein Bounds and Sample                             pairs, fixes n = 128, K = r = 1, and uses the same five-          1038
+ 990   Variance Penalization, COLT 2009, Theorem 4.                              point t grid. Each of the 20 environments has 16,384 fresh        1039
+ 991   https://www.cs.mcgill.ca/˜colt2009/papers/012.pdf                         reference paths and 4,096 independent calibration repeti-         1040
+
+
+                                                                            13
+CVPR                                                                                                                                                  CVPR
+                                  CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+            n       t   Reference right probability    Simultaneous reference interval      Moment MAE       Clipped MAE      Optimized MAE
+          128      -1             0.16321                      [0.1545, 0.1721]                0.18038          0.12645            0.15757
+          128    -0.5             0.30817                      [0.2973, 0.3192]                0.23400          0.20093            0.16552
+          128       0             0.49817                      [0.4863, 0.5101]                0.24813          0.22381            0.16306
+          128     0.5             0.69037                      [0.6793, 0.7013]                0.23015          0.19765            0.16299
+          128       1             0.84259                      [0.8338, 0.8511]                0.18340          0.13257            0.16626
+          512      -1             0.16205                      [0.1534, 0.1710]                0.18425          0.13184            0.16259
+          512    -0.5             0.30695                      [0.2960, 0.3180]                0.22602          0.19352            0.16187
+          512       0             0.50385                      [0.4920, 0.5157]                0.24760          0.22282            0.16288
+          512     0.5             0.68506                      [0.6739, 0.6960]                0.23076          0.19884            0.16429
+          512       1             0.84711                      [0.8384, 0.8556]                0.18185          0.13448            0.16837
+
+       Table 3. All ten fixed confirmation cells. Reference intervals are simultaneous; MAE columns are empirical calibration means, not additional
+       confidence bounds.
+
+
+1041   tions, totaling 327,680 paths and 81,920 repetitions. We                   provement on the declared finite visual grid. It does not val-      1076
+1042   use η = .1, slope w = 2, tolerance ϵ = .02, baseline prior                 idate shared risk on images, unknown-baseline robustness,           1077
+1043   .5, M = round(c2 n), and a fixed 4,000-update cap for ev-                  corruption transfer, continuous-window finite-n minimax             1078
+1044   ery pair. Five predictors share each calibration repetition:               optimality or exit-time accuracy.                                   1079
+1045   constant .5, empirical-root plug-in, raw influence-function
+1046   moment, window-clipped moment, and the previously frozen                   7.11. Natural corruptions: independent direction-                   1080
+1047   Gaussian step rule. Root failures would fall back to .5 and re-                   calibration confirmation                                     1081
+1048   main in the score. The primary comparison is clipped minus                 The target remains P (T < ∞, xT > x0 ), not the probabil-           1082
+1049   optimized five-point maximum expected MAE, separately                      ity of any deterioration. Complete labeled risk is used for         1083
+1050   for each pair.                                                             offline applicability and evaluation; it is not an unlabeled        1084
+                                                                                  deployment detector. Finite exit makes this an ordinary di-         1085
+                                                                                  rection probability in the theoretical family, but must not be      1086
+1051   Uncertainty and results. We allocate error .0125 to each
+                                                                                  assumed for arbitrary corruptions.                                  1087
+1052   pair, giving at least 95% simultaneous coverage across
+                                                                                      Four frozen ResNet-18 class-pair projections and source         1088
+1053   all four pairs, five rules and recorded paired compar-
+                                                                                  initializations are retained across clean and six CIFAR-10-C        1089
+1054   isons by a union bound. Censor-compatible exact one-
+                                                                                  conditions. Before sampling, complete empirical risk enu-           1090
+1055   sided binomial reference bounds and conditional empirical-
+                                                                                  meration fixes 22 geometrically eligible environments; six          1091
+1056   Bernstein calibration bounds account for both uncertainty
+                                                                                  with no unsafe state remain separately reported. Attainability      1092
+1057   layers. Maximum-risk differences are obtained by subtract-
+                                                                                  does not prove almost-sure exit. Each eligible environment          1093
+1058   ing maximum-risk intervals, not by maximizing cellwise
+                                                                                  uses 1,024 fresh paths, a 4,000-update cap, and 256 calibra-        1094
+1059   paired gains. The optimized rule has a lower grid maximum
+                                                                                  tion repetitions at M = 2048, 16384, 131072, with nested            1095
+1060   MAE in every pair. Its improvement over clipping has a
+                                                                                  prefixes. These are replacement draws from fixed official           1096
+1061   positive interval in three pairs; automobile/truck remains un-
+                                                                                  pools, not new independent images or full multiclass Tent           1097
+1062   resolved, with interval [−.0030, .1032]. Comparisons with
+                                                                                  evaluation.                                                         1098
+1063   constant, empirical-root and raw-moment baselines have
+1064   positive improvement intervals in all four pairs. These are                    The sole primary comparison is target-root prediction’s         1099
+
+1065   finite-grid comparisons, with no claim of pointwise domi-                  equal-environment mean MAE at low minus high budget.                1100
+
+1066   nance.                                                                     Paired empirical-Bernstein calibration bounds and simulta-          1101
+                                                                                  neous censor-compatible binomial reference bounds give at           1102
+                                                                                  least 95% coverage. MAE is .108344, .047292, .016906; the           1103
+1067   Dynamics diagnostics and scope. There are three cen-                       gain .091438 has interval [−.037798, .220674], so confirma-         1104
+1068   sored reference paths and no empirical-root failures. The                  tion remains unresolved. No paths are censored. The cali-           1105
+1069   maximum point-estimate discrepancy between actual right-                   bration and reference radius terms are .101054 and .028182.         1106
+1070   risk-exit probability and Φ(t) is .01046. Initial-safe-                    The run used illustrative 1,024/256 budgets without a prior         1107
+1071   component exit and actual risk exit have different times                   precision calculation.                                              1108
+1072   on 18,378 paths, but no direction disagreement among paths                     Offline strata |t| ≤ 1, 1 < |t| ≤ 3 and                         1109
+1073   with observed risk exits; censored paths remain in the bounds.             |t| > 3 contain 2, 3 and 17 environments. Their                     1110
+1074   The optimized rule trades endpoint accuracy for a smaller                  low/high MAEs are .369887/.103069, .361697/.054515,                 1111
+1075   central peak. This confirms a reproducible prediction im-                  and .032865/.000132. These are descriptive observations,            1112
+
+
+                                                                           14
+CVPR                                                                                                                                           CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+                         Pair                    M     Moment     Clipped     Optimized      Gain    Simultaneous interval
+                         Cat/dog             17625      0.2530     0.2266         0.1682   0.0585    [0.0052, 0.1117]
+                         Automobile/truck    48557      0.2552     0.2288         0.1787   0.0501    [-0.0030, 0.1032]
+                         Deer/horse          38254      0.2536     0.2276         0.1676   0.0600    [0.0068, 0.1129]
+                         Airplane/ship       20213      0.2502     0.2246         0.1680   0.0566    [0.0036, 0.1095]
+
+       Table 4. Independent visual confirmation: five-point maximum MAE and clipped-minus-optimized gain. Intervals jointly account for
+       reference paths, calibration randomness and all four pairs. All pairs remain in the report; automobile/truck’s interval crosses zero.
+
+
+
+
+       Figure 1. Independent prediction on frozen visual scores, n = 128, r = 1. Curves are MAE point estimates. The optimized rule trades
+       endpoint accuracy for a smaller central peak; root and moment curves nearly overlap. Table 4 gives the simultaneous maximum-risk
+       comparison.
+
+
+1113   not a universal difficulty law. Target noise ratios are offline        free moment predictor receives only independent calibration      1124
+1114   diagnostics. Exploration found almost identical untrimmed-             scores and baseline constants.                                   1125
+1115   moment and target-root errors. Fixed K = 1 rules cannot
+1116   output outside [.158655, .841345], explaining a structural                 Each of 18 environments has 1,024 paths and 256 cal-         1126
+1117   transfer limitation without refuting the local theorem.                ibration repetitions per noise level. All 18,432 paths exit      1127
+                                                                              within 1,500 steps. The largest point discrepancy from Φ(t)      1128
+1118   7.12. Bounded nonaligned local directions                              is .023962; all simultaneous reference intervals contain Φ(t),   1129
+1119   We use k = tψ/c2 + a(tanh2 (z) − E0 tanh2 (Z)), t ∈                    which is not an equivalence test. Mean MAEs over the three       1130
+1120   {−1, 0, 1}, a ∈ {0, −.5, .5}, n ∈ {128, 512}. The cen-                 targets range over .297–.321, .202–.212 and .111–.120 for        1131
+1121   tered even nuisance is orthogonal to the odd influence and             r = 2, 1, .5. These describe the mechanism beyond the            1132
+1122   preserves the first-order target. Continuous rejection sam-            original tilt; they do not certify infinite-dimensional mini-    1133
+1123   pling preserves the common risk construction; the direction-           max optimality or optimized-rule superiority. Quadrature         1134
+
+
+                                                                         15
+CVPR                                                                                                                                               CVPR
+                                 CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+1135   geometry and slope grids are diagnostic.                                fixed regular density neighborhood, with L/n tending to a           1185
+
+1136   7.12.1. 7.11. Full-network BN development checks                        positive limit or infinity. Neither setting covers arbitrary        1186
+                                                                               target distributions. The envelope is uniformly bounded,            1187
+1137   A CIFAR-10 ResNet-18 with all 9,600 BN affine parameters                perturbations are of order n−1/2 , the seed window is fixed,        1188
+1138   adapted by current-batch entropy gradients was checked                  and the least-favorable subfamily must fit in that envelope.        1189
+1139   on Gaussian noise, defocus blur and contrast at severity                Step size and risk tolerance stay fixed and positive. Momen-        1190
+1140   3. The 500-update development design uses 12 trajectories               tum, schedules, temporal dependence, batch reuse, online            1191
+1141   per environment, batch size 64, fixed SGD learning rate                 trajectory information and feature learning require separate        1192
+1142   .001 and a two-percentage-point finite-horizon risk-increase            analysis.                                                           1193
+1143   event. Risk is measured on the complete official test block
+                                                                                   The minimax transfer is asymptotic, with no numerically         1194
+1144   with a separately randomized evaluation grouping held fixed
+                                                                               usable bound on experiment deficiency or the exit remainder.        1195
+1145   within each trajectory. This differs from the scalar eventual
+                                                                               The Gaussian intervals certify a limiting decision value; the       1196
+1146   direction target.
+                                                                               confirmation intervals certify finite-grid comparisons in the       1197
+1147       None of the 36 trajectories triggered the event. At update
+                                                                               stated simulation experiment. Neither certifies continuous-         1198
+1148   500, mean error changes were -4.942, -.520 and -1.150 per-
+                                                                               window finite-n minimax optimality. The optimized-rule              1199
+1149   centage points, respectively; mean risks continued improving
+                                                                               confirmation does not test nuisance directions; the separate        1200
+1150   at the recorded checkpoints. The global first axis explained
+                                                                               finite-direction check tests the raw moment interface, and a        1201
+1151   74.11% of squared displacements from initialization, with
+                                                                               known risk function is an analytical control, not an unlabeled      1202
+1152   .99494 absolute cosine between axes estimated from alter-
+                                                                               risk-estimation method.                                             1203
+1153   nating runs. These uncentered displacement diagnostics can
+1154   reflect mean drift and do not identify an unstable stochastic               The original Gaussian geometry and exit-time results            1204
+
+1155   mode. The development quadratic risk map cannot reach the               remain in the supporting Gaussian-model chapter and the             1205
+
+1156   declared deterioration threshold at any scalar coordinate, so           Gaussian-proof chapter. Earlier frozen-feature studies and          1206
+
+1157   the resulting probability forecast is identically zero and pro-         failed stopping tests remain in the supporting experimen-           1207
+
+1158   vides no informative prediction confirmation. Development               tal chapter with their individual limitations. They motivate        1208
+
+1159   labels were used to fit that map. No finite-baseline optimal-           calibration sensitivity but do not enlarge the scope to gen-        1209
+
+1160   ity or one-dimensional Tent reduction is inferred. See the              eral neural-network adaptation. The present work supplies           1210
+
+1161   500-step analysis and initial development.                              a prospective probability-prediction theory and a model-            1211
+                                                                               specific validation; it does not supply a general unlabeled         1212
+1162   8. Related work and contribution boundary                               stopping algorithm.                                                 1213
+                                                                                   The visual confirmation conditions on a known official-         1214
+1163   POEM [2, 3.2] already exhibits scalar Gaussian entropy col-             test empirical baseline and independent draws with replace-         1215
+1164   lapse; imbalance-driven deterioration and stabilization are             ment from fixed image pools. Its environment-specific               1216
+1165   established [8]. Sequential risk monitoring [6] and unlabeled           weighted label risk differs across tilts, so it is a mechanism      1217
+1166   action identifiability [3] have different observation timing            and prediction validation rather than a test of the common-         1218
+1167   and targets. Our full risk function is identical across environ-        risk construction. Automobile/truck does not have a posi-           1219
+1168   ments, while score marginals differ locally and the target is           tive simultaneous improvement interval over clipping; no            1220
+1169   an independent future path probability. Merely changing as-             pair was excluded or given extra confirmation budget. The           1221
+1170   sumptions is not the contribution; the quantitative shared-risk         natural-corruption primary comparison remains unresolved;           1222
+1171   prediction result is.                                                   finite-baseline guarantees remain experimentally untested.          1223
+1172      The random-seed amplification mechanism is classi-                       The scalar update adapts one threshold on a frozen projec-      1224
+1173   cal unstable-exit theory [1]. Experiment comparison and                 tion with actual entropy gradients. It retains batch random-        1225
+1174   bounded-loss transfer [5], influence-aligned least-favorable            ness, local instability and risk exit, but is not an established    1226
+1175   directions [7], and posterior medians under absolute loss               reduction of BN-affine Tent. Exit side describes threshold          1227
+1176   are classical tools. The new model-specific objects are the             bias rather than inevitable class collapse. The BN develop-         1228
+1177   legal common-risk family, the uniform real-SGD exit inter-              ment checks measure projection and risk changes but do not          1229
+1178   face and the resulting information/precision characterization.          establish an unstable mode or predictive reduction.                 1230
+1179   The focused literature table records the comparisons and
+1180   the limits of its source audit; it is not an exhaustive priority        References                                                          1231
+1181   claim.
+                                                                               [1] Yuri Bakhtin. Exit asymptotics for small diffusion about an     1232
+1182   9. Limitations and discussion                                               unstable equilibrium. Stochastic Processes and their Applica-   1233
+                                                                                   tions, 118(5):839–851, 2008. 16                                 1234
+1183   The initial results assume a known baseline; the finite-                [2] Yarin Bar, Shalev Shaer, and Yaniv Romano. Protected test-      1235
+1184   baseline extension estimates its root and scales within a                   time adaptation via online entropy matching: A betting ap-      1236
+
+
+                                                                          16
+CVPR                                                                                                   CVPR
+                                  CVPR 2027 Submission. CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.
+
+
+
+1237       proach. In Advances in Neural Information Processing Systems,
+1238       2024. 1, 16
+1239   [3] Kartik Jhawar and Lipo Wang. When is test-time adapta-
+1240       tion identifiable from unlabeled evidence? arXiv preprint
+1241       arXiv:2609.11235, 2026. 1, 16
+1242   [4] Andreas Maurer and Massimiliano Pontil. Empirical bernstein
+1243       bounds and sample variance penalization. In Conference on
+1244       Learning Theory, 2009. 11
+1245   [5] Michael Nussbaum. Asymptotic equivalence of statistical
+1246       experiments. Author manuscript. 16
+1247   [6] Mona Schirmer, Metod Jazbec, Christian A. Naesseth, and
+1248       Eric Nalisnick. Monitoring risks in test-time adaptation. In
+1249       Advances in Neural Information Processing Systems, 2025. 1,
+1250       16
+1251   [7] Mark van der Laan and Susan Gruber. One-step targeted mini-
+1252       mum loss-based estimation based on universal least favorable
+1253       one-dimensional submodels. International Journal of Biostatis-
+1254       tics, 12(1):351–378, 2016. 16
+1255   [8] Thilina Weerasinghe, Ruwan Tennakoon, WeiQin Chuah, and
+1256       Alireza Bab-Hadiashar. Logit-adjusted test-time adaptation
+1257       under partial class imbalance. In Proceedings of the IEEE/CVF
+1258       Winter Conference on Applications of Computer Vision, 2026.
+1259       1, 16
+
+
+
+
+                                                                            17
+

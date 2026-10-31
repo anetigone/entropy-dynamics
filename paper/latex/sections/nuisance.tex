@@ -212,3 +212,51 @@ Thus nuisance can reduce information relative to a restricted one-direction mode
 If a proposed nuisance direction has \(E_0\) \(\psi\) k nonzero, it changes the target and is not a target-preserving nuisance. It must be included in \(t(k)\), as in Theorem N.3, rather than projected out while keeping the target fixed. Moreover, a bounded multidimensional parameter window can permit decision improvements beyond a scalar variance comparison; (N.12) is an information calculation, not a general finite-window minimax formula.
 
 \textbf{Concrete nuisance example.} At the symmetric Gaussian baseline, let b(z)=cos(z)-\(E_0\) cos(Z). It is bounded, centered and even, whereas \(\psi\) and \(h_0\) are odd. Thus \(E_0\) \(\psi\) b=\(E_0\) \(h_0\) b=0. The two-direction perturbation k\_\{t,v\}=(t/c)\(h_0\)+v b has seed t, with an unknown bounded v changing other aspects of the score distribution. It stays in the declared unknown-direction class whenever \textbar t\textbar{} H\_*/c+\textbar v\textbar{} \textbar\textbar b\textbar\textbar\_infinity\textless=\(B_{\mathrm{loc}}\). This supplies a legal common-risk nuisance family with no additional first-order penalty. No new nuisance simulation is claimed in the present confirmation run.
+
+\subsection{Finite baseline information and conditional
+prediction}\label{finite-baseline-information-and-conditional-prediction}
+
+We also allow the baseline marginal to be unknown in a fixed bounded
+density neighborhood, while preserving the complete common
+classification risk. An independent baseline sample of size \(L\)
+selects the initialization through an empirical entropy root. The
+prediction target is the future risk-exit probability conditional on
+this realized initialization. A uniform actual-SGD approximation and a
+two-sample expansion give the Gaussian interface \[
+S=t+\frac{c}{\sqrt\ell}Z_L,\qquad
+D=S+\frac{c}{\sqrt\rho}Z_C,\qquad
+\text{target}=\Phi(S),
+\] when \(L/n\to\ell\in(0,\infty)\) and \(M/n\to\rho\in(0,\infty)\). The
+shared initialization noise changes the decision problem: its minimax
+value is \(V_{\mathrm{FB}}\), rather than the original
+deterministic-target Gaussian value with an added variance. We prove
+matching upper and lower bounds over the unknown-baseline class. For
+\(K>0\) and \(L/n\to\ell\in(0,\infty]\), consistent conditional
+prediction remains possible exactly when \(M/n\to\infty\); superlinear
+baseline information is unnecessary. In the root-preserving case
+\(K=0\), the optimal limiting rule shrinks the raw displacement estimate
+by \(M/(L+M)\), and its MAE has the closed form (F.35) in
+\href{unknown_direction.md\#6-finite-baseline-information-and-conditional-prediction}{the
+complete integrated proofs}. These claims concern a regular scalar
+experiment and do not establish a reduction of neural-network
+adaptation.
+
+The added model-specific contribution is the connection between
+sample-based initialization, conditional actual-SGD exit and the joint
+baseline/calibration decision problem. The conjugacy and unstable-exit
+mechanism, likelihood comparison, Gaussian conditioning, convex minimax
+and posterior-median facts are classical. The result should not be
+presented as a new general principle of statistical efficiency.
+
+For finite positive ratios, writing \(a_P=c_P/\sqrt{\ell}\) and
+\(b_P=c_P/\sqrt{\rho}\), the asymptotic minimax value over the declared
+regular class is \(\sup_P V_{\mathrm{FB}}(K;a_P,b_P)\), where \[
+\begin{gathered}V_{\mathrm{FB}}(K;a,b)=\inf_d\sup_{|t|\le K}E_t|d(S+bZ_C)-\Phi(S)|,\\ S=t+aZ_L.\end{gathered}
+\] In the root-preserving subcase the feasible asymptotically optimal
+forecast is \[
+\widehat\pi_{\mathrm{pool}}=\Phi\!\left(\frac{M}{L+M}\widehat D_n\right).
+\] The pooled observations affect only prediction; the future trajectory
+still starts at the baseline-sample initialization. If \(K=0\) and
+\(L/n\to\infty\), the constant forecast \(1/2\) is consistent without
+target calibration. General-window numerical optimization and actual-SGD
+confirmation of this finite-baseline experiment remain open.

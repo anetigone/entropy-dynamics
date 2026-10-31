@@ -92,7 +92,7 @@ For each true crossing, directed interval arithmetic verifies opposite signs of 
 
 A lower enclosure for the right side is a valid minimax lower bound. This does not assume that the candidate prior is least favorable, that the search objective was computed exactly, or that the optimizer converged.
 
-\subsection{Continuous-window upper bound}\label{continuous-window-upper-bound}
+\subsubsection{Continuous-window upper bound}\label{continuous-window-upper-bound}
 
 The candidate step rule itself gives an upper bound once sup\_\{\textbar t\textbar\textless=K\} R\_d(t) is bounded. Its action values are exactly Phi(t\_i), so the only absolute-loss kinks are at the known support points t\_i. Between successive kinks, differentiation under the Gaussian integral gives
 
@@ -113,7 +113,7 @@ For a partition interval {[}a,b{]} with no kink in its interior, linear interpol
 
 The partition includes every support point and both endpoints. Adaptive refinement produces an upper bound over the entire continuous window, not just the evaluated grid.
 
-\subsection{Arithmetic and probability enclosures}\label{arithmetic-and-probability-enclosures}
+\subsubsection{Arithmetic and probability enclosures}\label{arithmetic-and-probability-enclosures}
 
 \texttt{certify.py} uses Python Decimal with 90-digit precision and outward rounding for interval operations. Correctly rounded Decimal exponentials and square roots are expanded by a representable value on each side. Pi is enclosed by Machin's identity and alternating arctangent remainders. Normal CDF values are enclosed by integrating the Taylor expansion of exp(-x\^{}2/2), including a rigorous next-term remainder once the terms decrease. For \textbar x\textbar\textgreater=12 a Mills-ratio tail bound is used instead. Both negative and positive tails are retained in their intervals.
 
@@ -244,3 +244,33 @@ Offline strata $|t|\le1$, $1<|t|\le3$ and $|t|>3$ contain 2, 3 and 17 environmen
 We use $k=t\psi/c^2+a(\tanh^2(z)-E_0\tanh^2(Z))$, $t\in\{-1,0,1\}$, $a\in\{0,-.5,.5\}$, $n\in\{128,512\}$. The centered even nuisance is orthogonal to the odd influence and preserves the first-order target. Continuous rejection sampling preserves the common risk construction; the direction-free moment predictor receives only independent calibration scores and baseline constants.
 
 Each of 18 environments has 1,024 paths and 256 calibration repetitions per noise level. All 18,432 paths exit within 1,500 steps. The largest point discrepancy from $\Phi(t)$ is $.023962$; all simultaneous reference intervals contain $\Phi(t)$, which is not an equivalence test. Mean MAEs over the three targets range over $.297$--$.321$, $.202$--$.212$ and $.111$--$.120$ for $r=2,1,.5$. These describe the mechanism beyond the original tilt; they do not certify infinite-dimensional minimax optimality or optimized-rule superiority. Quadrature geometry and slope grids are diagnostic.
+
+\subsection{Full-network BN: testing the bridge to scalar dynamics}
+\label{full-network-bn-development-checks}
+
+A CIFAR-10 ResNet-18 with all 9,600 BN affine parameters adapted by current-batch entropy gradients was checked on Gaussian noise, defocus blur and contrast at severity 3. The 500-update development design uses 12 trajectories per environment, batch size 64, fixed SGD learning rate .001 and a two-percentage-point finite-horizon risk-increase event. Risk is measured on the complete official test block with a separately randomized evaluation grouping held fixed within each trajectory. This differs from the scalar eventual direction target.
+
+None of the 36 trajectories triggered the event. At update 500, mean error changes were -4.942, -.520 and -1.150 percentage points, respectively; mean risks continued improving at the recorded checkpoints. Zero events among 12 runs per environment do not exclude rare deterioration. The global first axis explained 74.11\% of squared displacements from initialization, with .99494 absolute cosine between axes estimated from alternating runs. To determine whether this represents the stochastic mode required by the scalar mechanism, we separate each environment's displacement at each update into its across-run mean and residual. The two components are orthogonal in the sum of squared norms over runs and updates.
+
+\begin{center}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Environment & Mean (\%) & Axis (\%) & Cosine \\
+\midrule
+Gaussian noise & 92.39 & .56 & .034 \\
+Defocus blur & 90.11 & .90 & .011 \\
+Contrast & 96.56 & 2.18 & .090 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent Mean is mean-path energy divided by total displacement energy;
+Axis is global-axis residual energy divided by total residual energy;
+Cosine compares residual axes from alternating run groups.
+
+
+Energy fractions use all 501 recorded states per run. Residual axes use updates $25,50,\ldots,500$, centering each update separately within the fitted run group. Their in-sample first-axis fractions are 9.21\%, 9.55\% and 11.90\%; fitting on alternating runs and scoring on the other half yields only .12\%--.60\% residual energy across the six train/test directions. Thus the stable uncentered direction primarily describes common mean motion; it does not establish a reproducible dominant stochastic direction. These are descriptive checks with 12 runs in 9,600 dimensions, not a proof that all stochastic structure is absent. Residual energies increase by factors 8.76, 9.52 and 9.57 between updates 50 and 500, compared with a tenfold time increase. This does not display clear accelerated spread, but does not establish local stability or exclude weaker unstable modes.
+
+The development quadratic risk map has a maximum increase of .0797 percentage points over all scalar coordinates, below the two-point event threshold. Its probability forecast is therefore structurally zero, regardless of the fitted scalar dynamics or calibration budget. This is a limitation of the fitted prediction interface, distinct from the absence of observed events; zero Brier loss would not validate the mechanism. Development labels were used to fit that map. Auxiliary risk regressions show some association with small risk fluctuations, but use a projection estimated from all development runs and do not validate prospective event prediction.
+
+The theoretical bridge consequently has two complementary forms of evidence. Controlled scalar experiments test the exit approximation and prediction rules where the unstable-root structure is present. This full-network applicability check shows that a stable mean direction alone does not supply the stochastic reduction or risk-event link needed to transfer those conclusions to BN-affine Tent. Under this configuration and horizon, those links remain unestablished; this limits direct extrapolation rather than contradicting the conditional scalar theorems. This supplies an applicability boundary rather than a validation of full-network risk prediction. No finite-baseline optimality or general Tent safety claim follows.

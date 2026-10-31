@@ -24,7 +24,7 @@ def parser(description):
     p.add_argument('--severity', type=int, default=3)
     p.add_argument('--corruptions', nargs='+', default=['gaussian_noise', 'defocus_blur', 'contrast'])
     p.add_argument('--mean', nargs=3, type=float, default=[0.4914, 0.4822, 0.4465])
-    p.add_argument('--std', nargs=3, type=float, default=[0.2470, 0.2435, 0.2616])
+    p.add_argument('--std', nargs=3, type=float, default=[0.2023, 0.1994, 0.2010])
     return p
 
 
