@@ -23,7 +23,22 @@ python experiments/code/tent_risk/fit_forecast.py --development experiments/resu
 
 拟合会先保存按腐蚀、严重度、学习率及启动步数分组的coverage.json。事件全0或全1时停止，不写predictor.json。出现两类后拟合三个固定正则逻辑模型，目标为每个启动任务的未来事件比例：static仅使用状态特征，drift加入探针平均变化，dynamics再加入变化标准差。常数基线仅使用开发事件率；不作类别重加权，以保持概率目标。默认正则.1，任何调参仅限开发；按腐蚀留一的开发评分不等于确认。
 
-模型冻结后，下面是新随机流、留出腐蚀的独立确认示例。它不是必须立即运行的第二轮预算；确认设计应在开发结束后固定。同一checkpoint、归一化、批量、H、epsilon及探针预算保持一致。
+### Contrast 后续开发
+
+基于首轮观察到的contrast局部转折，限定一次新的开发试验：只用contrast、severity=5，学习率.001（对照）及.01（压力配置），均预适配100步；每个配置6个独立启动、每启动4条未来，H=500，epsilon=.02，seed=31415。共12个启动任务、48条未来、24000次未来更新和完整面板逐步评估。checkpoint、归一化、batch=64、eval batch=200和探针预算保持原值。已有采集脚本直接支持，无需新运行入口。
+
+```bash
+python experiments/code/tent_risk/collect_tasks.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18/pytorch_model.bin --corruptions contrast --severity 5 --learning-rates 0.001 0.01 --start-steps 100 --starts 6 --futures 4 --horizon 500 --epsilon 0.02 --seed 31415 --output experiments/results/contrast_followup
+python experiments/code/tent_risk/summarize_tasks.py --tasks experiments/results/contrast_followup --output experiments/results/contrast_followup/coverage.json
+```
+
+启动状态重新独立生成，不是首轮异常路径的定点续跑；两种学习率同时用于各自预适配和未来，因此对照比较的是完整适配配置，不能解释成相同状态下仅改变未来学习率的因果效应。使用新随机流防止重复已有路径。H由100改到500后，预测任务也改变，不混合两个时域的事件率。
+
+先完成全部预定任务并按启动状态、学习率报告事件数、最早超阈值时间、实际风险增量和反弹；不因中途出现事件提前停止或只保留失效路径。若仍全零，保留本轮负结果，不自动增加预算；若仅一个启动出现事件，也不立即拟合并宣布可预测。首要判断是恶化是否在多个独立启动上复现，再决定模型训练和新的确认设计。这是看过首轮结果后的定向开发，不是冻结方法的独立确认，不能合并首轮样本提高名义确认精度。
+
+### 独立确认示例
+
+模型冻结后，下面是新随机流、留出腐蚀的独立确认示例。它不是必须立即运行的第二轮预算；确认设计应在开发结束后固定。同一checkpoint、归一化、批量、H、epsilon及探针预算保持一致。若模型以H=500开发，确认采集也需显式传入`--horizon 500`，不能沿用下面H=100的原始示例。
 
 ```bash
 python experiments/code/tent_risk/collect_tasks.py --data-root data/CIFAR-10-C --checkpoint models/cifar_resnet18/pytorch_model.bin --corruptions shot_noise motion_blur brightness --seed 2718 --output experiments/results/tent_confirmation
@@ -50,6 +65,14 @@ python experiments/code/tent_risk/test_forecast.py
 验证使用小型BN网络和合成事件，检查批次探针重置、概率学习、独立确认及退化任务处理；不验证真实数据事件覆盖或预测效力。采集与数值拟合保持分进程，避免混合本机Torch和数值拟合的运行库。
 
 ## 证据与限制
+
+已有任务可直接重算事件覆盖、初始风险、最终变化与路径反弹；不拟合模型，不运行网络。最大反弹与相对启动风险的阈值事件分别报告。
+
+```bash
+python experiments/code/tent_risk/summarize_tasks.py --tasks experiments/results/tent_development --output experiments/results/tent_development/coverage.json
+```
+
+此处coverage.json是完整风险曲线汇总；拟合目录中的coverage.json是拟合入口保存的条件事件计数，两者位置不同。
 
 比较常数、static、drift、dynamics的Brier，以及dynamics相对各基线的配对改善。区间重采样整个启动任务，不把重复未来当作独立启动点；只描述选定环境下任务抽样的不确定性，不提供跨环境总体置信保证。可靠性分箱为描述性检查；4次未来只能粗略估计单状态概率，独立确认预算需另行确定。
 

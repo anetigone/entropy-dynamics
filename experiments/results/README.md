@@ -4,6 +4,7 @@
 
 | 结果目录 | 用途 | 分析入口 |
 |---|---|---|
+| [tent_development](tent_development/) | Tent固定启动状态与独立未来的事件覆盖检查 | [分析](tent_development/analysis.md) |
 | [bn_extended](bn_extended/) | BN/Tent平均路径、随机残差与风险适用性检查 | [分析](bn_extended/analysis.md) |
 | [bn_development](bn_development/) | 完整BN/Tent投影、动力学与有限时域风险开发检查 | [分析](bn_development/analysis.md) |
 | [corrupt_confirmation](corrupt_confirmation/) | 自然腐蚀方向校准的独立预算比较 | [分析](corrupt_confirmation/analysis.md) |
