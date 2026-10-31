@@ -9,6 +9,7 @@
 - [冻结视觉特征实验](code/frozen_visual/README.md)：特征提取、独立校准、尺度和 LA 对照。
 - [CIFAR-10-C 独立预测](code/corrupt_visual/README.md)：腐蚀特征、固定源端初始化、独立无标签校准与风险退出方向评价。
 - [BN/Tent 投影小试](code/bn_probe/README.md)：完整多分类 BN 更新、冻结投影、整批噪声和有限时域风险预测。
+- [Tent 失效概率预测开发](code/tent_risk/README.md)：固定启动状态、多条独立未来、无标签完整批次探针和冻结概率模型比较。
 
 共用的退出分布与含删失 CDF 数值模块在 [code/common/](code/common/)。计算与绘图分别运行，不使用 `--phase`；数据、模型、缓存和输出位置使用各脚本提供的参数。不同参数的计算结果使用独立目录，已有结果保持原位。
 
